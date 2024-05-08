@@ -19,6 +19,7 @@ import Html.Events exposing (on)
 import Json.Decode as Decode
 import Lib.Audio.Audio exposing (audioPortFromJS, audioPortToJS, loadAudio, stopAudio)
 import Lib.Coordinate.Coordinates exposing (fromMouseToVirtual, getStartPoint, maxHandW)
+import Lib.Event.Event as Event exposing (Event)
 import Lib.LocalStorage.LocalStorage exposing (decodeLSInfo, encodeLSInfo, sendInfo)
 import Lib.Resources.Base exposing (getTexture, saveSprite)
 import Lib.Resources.SpriteSheets exposing (allSpriteSheets)
@@ -67,7 +68,7 @@ init : Flags -> ( Model, Cmd Msg, AudioCmd Msg )
 init flags =
     let
         ms =
-            loadSceneByName NullMsg { initModel | currentGlobalData = newgd } initScene initSceneSettings
+            loadSceneByName Event.NullEvent { initModel | currentGlobalData = newgd } initScene initSceneSettings
 
         ( gw, gh ) =
             maxHandW ( flags.windowWidth, flags.windowHeight )
@@ -101,8 +102,8 @@ init flags =
 If you add some SceneOutputMsg, you have to add corresponding updating logic here.
 
 -}
-gameUpdate : Msg -> Model -> ( Model, Cmd Msg, AudioCmd Msg )
-gameUpdate msg model =
+gameUpdate : Event -> Model -> ( Model, Cmd Msg, AudioCmd Msg )
+gameUpdate evnt model =
     if List.length (Dict.keys model.currentGlobalData.internalData.sprites) < List.length allTexture then
         -- Still loading assets
         ( model, Cmd.none, Audio.cmdNone )
@@ -113,14 +114,14 @@ gameUpdate msg model =
                 model.currentGlobalData.localStorage
 
             ( sdt, som, newenv ) =
-                (getCurrentScene model).update { msg = msg, globalData = model.currentGlobalData, t = model.time, commonData = () } model.currentData
+                (getCurrentScene model).update { globalData = model.currentGlobalData, t = model.time, commonData = () } model.currentData
 
             newGD1 =
                 newenv.globalData
 
             timeUpdatedModel =
-                case msg of
-                    Tick _ ->
+                case evnt of
+                    Event.Tick _ ->
                         -- Tick event needs to update time
                         { model | time = model.time + 1, currentGlobalData = newGD1 }
 
@@ -136,7 +137,7 @@ gameUpdate msg model =
                         case singleSOM of
                             SOMChangeScene ( tm, s, Nothing ) ->
                                 --- Load new scene
-                                ( loadSceneByName msg lastModel s tm
+                                ( loadSceneByName evnt lastModel s tm
                                     |> resetSceneStartTime
                                 , lastCmds
                                 , lastAudioCmds
@@ -181,7 +182,7 @@ gameUpdate msg model =
                 case newmodel.transition of
                     Just ( trans, ( d, n ) ) ->
                         if trans.currentTransition == trans.outT then
-                            loadSceneByName msg newmodel d n
+                            loadSceneByName evnt newmodel d n
                                 |> resetSceneStartTime
 
                         else
@@ -305,10 +306,10 @@ update _ msg model =
             ( { model | currentGlobalData = { gd | mousePos = mp } }, Cmd.none, Audio.cmdNone )
 
         MouseDown e pos ->
-            gameUpdate (MouseDown e <| fromMouseToVirtual model.currentGlobalData pos) model
+            gameUpdate (Event.MouseDown e <| fromMouseToVirtual model.currentGlobalData pos) model
 
         MouseUp pos ->
-            gameUpdate (MouseUp <| fromMouseToVirtual model.currentGlobalData pos) model
+            gameUpdate (Event.MouseUp <| fromMouseToVirtual model.currentGlobalData pos) model
 
         KeyDown 112 ->
             if debug then
@@ -316,7 +317,7 @@ update _ msg model =
                 ( model, prompt { name = "load", title = "Enter the scene you want to load" }, Audio.cmdNone )
 
             else
-                gameUpdate msg model
+                gameUpdate (Event.event msg) model
 
         KeyDown 113 ->
             if debug then
@@ -324,11 +325,11 @@ update _ msg model =
                 ( model, prompt { name = "setVolume", title = "Set volume (0-1)" }, Audio.cmdNone )
 
             else
-                gameUpdate msg model
+                gameUpdate (Event.event msg) model
 
         Prompt "load" result ->
             if existScene result then
-                ( loadSceneByName msg model result NullSceneInitData
+                ( loadSceneByName Event.NullEvent model result NullSceneInitData
                     |> resetSceneStartTime
                 , Cmd.none
                 , Audio.cmdNone
@@ -379,13 +380,13 @@ update _ msg model =
                         Nothing ->
                             trans
             in
-            gameUpdate msg { model | currentGlobalData = newGD, transition = newTrans }
+            gameUpdate (Event.event msg) { model | currentGlobalData = newGD, transition = newTrans }
 
         NullMsg ->
             ( model, Cmd.none, Audio.cmdNone )
 
         _ ->
-            gameUpdate msg model
+            gameUpdate (Event.event msg) model
 
 
 {-| subscriptions
@@ -457,7 +458,7 @@ view _ model =
                 , style "position" "fixed"
                 ]
                 [ MainConfig.background model.currentGlobalData
-                , makeTransition model.currentGlobalData transitiondata <| (getCurrentScene model).view { msg = NullMsg, t = model.time, globalData = model.currentGlobalData, commonData = () } model.currentData
+                , makeTransition model.currentGlobalData transitiondata <| (getCurrentScene model).view { t = model.time, globalData = model.currentGlobalData, commonData = () } model.currentData
                 ]
     in
     Html.div [ on "wheel" (Decode.map MouseWheel (Decode.field "deltaY" Decode.int)) ]

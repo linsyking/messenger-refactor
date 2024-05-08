@@ -40,6 +40,10 @@ type alias SceneT =
     Scene SceneDataTypes
 
 
+type alias UnrolledAbsSceneT =
+    {}
+
+
 {-| nullSceneT
 -}
 nullSceneT : SceneT

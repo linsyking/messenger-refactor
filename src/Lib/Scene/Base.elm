@@ -24,6 +24,7 @@ You have to send data to next scene if you don't store the data in globaldata.
 import Canvas exposing (Renderable)
 import Lib.Audio.Base exposing (AudioOption)
 import Lib.Env.Env exposing (Env)
+import Lib.Event.Event exposing (Event)
 import Lib.Scene.Transitions.Base exposing (Transition)
 import Scenes.Home.SceneInit exposing (HomeInit)
 
@@ -32,7 +33,7 @@ import Scenes.Home.SceneInit exposing (HomeInit)
 -}
 type alias Scene a =
     { init : Env () -> SceneInitData -> a
-    , update : Env () -> a -> ( a, List SceneOutputMsg, Env () )
+    , update : Env () -> Event -> a -> ( a, List SceneOutputMsg, Env () )
     , view : Env () -> a -> Renderable
     }
 

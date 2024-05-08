@@ -25,21 +25,21 @@ import Messenger.Recursion exposing (Matcher, RecBody)
 
 {-| Recursively update all the objects in the List
 -}
-updateObjects : RecBody a b c d -> c -> List a -> ( List a, List b, c )
-updateObjects rec env objs =
+updateObjects : RecBody a b c d e -> c -> e -> List a -> ( List a, List b, c )
+updateObjects rec env evt objs =
     let
         ( newObjs, ( newMsgUnfinished, newMsgFinished ), newEnv ) =
-            updateOnce rec env objs
+            updateOnce rec env evt objs
 
         ( resObj, resMsg, resEnv ) =
-            updateRemain rec (rec.clean newEnv) ( newMsgUnfinished, newMsgFinished ) newObjs
+            updateRemain rec newEnv ( newMsgUnfinished, newMsgFinished ) newObjs
     in
-    ( resObj, resMsg, rec.patch env resEnv )
+    ( resObj, resMsg, resEnv )
 
 
 {-| Recursively update all the objects in the List, but also uses target
 -}
-updateObjectsWithTarget : RecBody a b c d -> c -> List ( d, b ) -> List a -> ( List a, List b, c )
+updateObjectsWithTarget : RecBody a b c d e -> c -> List ( d, b ) -> List a -> ( List a, List b, c )
 updateObjectsWithTarget rec env msgs objs =
     updateRemain rec env ( msgs, [] ) objs
 
@@ -48,13 +48,13 @@ updateObjectsWithTarget rec env msgs objs =
 -- Below are some helper functions
 
 
-updateOnce : RecBody a b c d -> c -> List a -> ( List a, ( List ( d, b ), List b ), c )
-updateOnce rec env objs =
+updateOnce : RecBody a b c d e -> c -> e -> List a -> ( List a, ( List ( d, b ), List b ), c )
+updateOnce rec env evt objs =
     List.foldr
         (\ele ( lastObjs, ( lastMsgUnfinished, lastMsgFinished ), lastEnv ) ->
             let
                 ( newObj, newMsg, newEnv ) =
-                    rec.update ele lastEnv
+                    rec.update ele lastEnv evt
 
                 finishedMsg =
                     List.filterMap
@@ -78,7 +78,7 @@ updateOnce rec env objs =
 
 {-| Recursively update remaining objects
 -}
-updateRemain : RecBody a b c d -> c -> ( List ( d, b ), List b ) -> List a -> ( List a, List b, c )
+updateRemain : RecBody a b c d e -> c -> ( List ( d, b ), List b ) -> List a -> ( List a, List b, c )
 updateRemain rec env ( unfinishedMsg, finishedMsg ) objs =
     if List.isEmpty unfinishedMsg then
         ( objs, finishedMsg, env )

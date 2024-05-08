@@ -2,6 +2,7 @@ module Lib.Layer.Base exposing
     ( LayerMsg, LayerMsg_(..)
     , LayerTarget(..)
     , Layer
+    , AbsLayer, GeneralLayer
     )
 
 {-| Layer Base
@@ -22,8 +23,9 @@ import Base exposing (ObjectTarget)
 import Canvas exposing (Renderable)
 import Lib.Audio.Base exposing (AudioOption)
 import Lib.Env.Env exposing (Env)
+import Lib.Event.Event exposing (Event)
 import Lib.Scene.Base exposing (MsgBase)
-import Messenger.GeneralModel exposing (GeneralModel)
+import Messenger.GeneralModel exposing (AbsGeneralModel, GeneralModel)
 
 
 {-| Layer
@@ -33,8 +35,16 @@ Layer data type.
 a is the layer data, b is the common data that shares between layers, c is the init data
 
 -}
+type alias GeneralLayer a b c =
+    GeneralModel a (Env b) c LayerTarget Renderable Event
+
+
 type alias Layer a b =
-    GeneralModel a (Env b) LayerMsg LayerTarget Renderable
+    GeneralLayer a b LayerMsg
+
+
+type alias AbsLayer b =
+    AbsGeneralModel (Env b) LayerMsg LayerTarget Renderable Event
 
 
 {-| LayerMsg

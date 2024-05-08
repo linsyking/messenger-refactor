@@ -17,45 +17,46 @@ module Lib.Layer.LayerHandler exposing
 
 import Base exposing (ObjectTarget(..))
 import Canvas exposing (Renderable, group)
-import Lib.Env.Env exposing (Env, cleanEnv, patchEnv)
-import Lib.Layer.Base exposing (Layer, LayerMsg, LayerTarget(..))
-import Messenger.GeneralModel exposing (viewModelList)
+import Lib.Env.Env exposing (Env)
+import Lib.Event.Event exposing (Event)
+import Lib.Layer.Base exposing (AbsLayer, LayerMsg, LayerTarget(..))
+import Messenger.GeneralModel exposing (AbsGeneralModel(..), unroll, viewModelList)
 import Messenger.Recursion exposing (RecBody)
 import Messenger.RecursionList exposing (updateObjects)
 
 
 {-| Updater
 -}
-update : Layer a b -> Env b -> ( Layer a b, List ( LayerTarget, LayerMsg ), Env b )
-update layer env =
+update : AbsLayer b -> Env b -> Event -> ( AbsLayer b, List ( LayerTarget, LayerMsg ), Env b )
+update layer env evt =
     let
-        ( newData, newMsgs, newEnv ) =
-            layer.update env layer.data
+        ( newLayer, newMsgs, newEnv ) =
+            (unroll layer).update env evt
     in
-    ( { layer | data = newData }, newMsgs, newEnv )
+    ( newLayer, newMsgs, newEnv )
 
 
 {-| RecUpdater
 -}
-updaterec : Layer a b -> Env b -> LayerMsg -> ( Layer a b, List ( LayerTarget, LayerMsg ), Env b )
+updaterec : AbsLayer b -> Env b -> LayerMsg -> ( AbsLayer b, List ( LayerTarget, LayerMsg ), Env b )
 updaterec layer env lm =
     let
-        ( newData, newMsgs, newEnv ) =
-            layer.updaterec env lm layer.data
+        ( newLayer, newMsgs, newEnv ) =
+            (unroll layer).updaterec env lm
     in
-    ( { layer | data = newData }, newMsgs, newEnv )
+    ( newLayer, newMsgs, newEnv )
 
 
 {-| Matcher
 -}
-match : Layer a b -> LayerTarget -> Bool
+match : AbsLayer b -> LayerTarget -> Bool
 match l t =
     case t of
         Layer Parent ->
             False
 
         Layer (Name n) ->
-            n == l.name
+            n == (unroll l).name
 
         Layer _ ->
             False
@@ -75,9 +76,9 @@ super t =
 
 {-| Recbody
 -}
-recBody : RecBody (Layer a b) LayerMsg (Env b) LayerTarget
+recBody : RecBody (AbsLayer b) LayerMsg (Env b) LayerTarget Event
 recBody =
-    { update = update, updaterec = updaterec, match = match, super = super, clean = cleanEnv, patch = patchEnv }
+    { update = update, updaterec = updaterec, match = match, super = super }
 
 
 {-| updateLayer
@@ -85,9 +86,9 @@ recBody =
 Update all the layers.
 
 -}
-updateLayer : Env b -> List (Layer a b) -> ( List (Layer a b), List LayerMsg, Env b )
-updateLayer env =
-    updateObjects recBody env
+updateLayer : Env b -> Event -> List (AbsLayer b) -> ( List (AbsLayer b), List LayerMsg, Env b )
+updateLayer env evt =
+    updateObjects recBody env evt
 
 
 {-| viewLayer
@@ -95,6 +96,6 @@ updateLayer env =
 Get the view of the layer.
 
 -}
-viewLayer : Env b -> List (Layer a b) -> Renderable
+viewLayer : Env b -> List (AbsLayer b) -> Renderable
 viewLayer env models =
     group [] <| viewModelList env models

@@ -12,6 +12,7 @@ Don't modify this file.
 
 import Canvas exposing (Renderable)
 import Lib.Env.Env exposing (Env)
+import Lib.Event.Event exposing (Event)
 import Lib.Scene.Base exposing (Scene, SceneInitData, SceneOutputMsg)
 import Scenes.Home.Common exposing (nullModel)
 import Scenes.Home.Export exposing (Data)
@@ -42,11 +43,11 @@ sceneToST sd =
         init t tm =
             dataToSDT (sd.init t tm)
 
-        update : Env () -> SceneDataTypes -> ( SceneDataTypes, List SceneOutputMsg, Env () )
-        update env sdt =
+        update : Env () -> Event -> SceneDataTypes -> ( SceneDataTypes, List SceneOutputMsg, Env () )
+        update env evt sdt =
             let
                 ( newm, som, newgd ) =
-                    sd.update env (sdtToData sdt)
+                    sd.update env evt (sdtToData sdt)
             in
             ( dataToSDT newm, som, newgd )
 

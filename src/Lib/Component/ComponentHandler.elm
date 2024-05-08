@@ -18,8 +18,9 @@ The mosy commonly used one is the `updateComponents` function, which will update
 
 import Base exposing (ObjectTarget(..))
 import Canvas exposing (Renderable, group)
-import Lib.Component.Base exposing (Component, ComponentMsg, ComponentTarget(..))
-import Lib.Env.Env exposing (Env, cleanEnv, patchEnv)
+import Lib.Component.Base exposing (Component(..), TargetBase(..))
+import Lib.Env.Env exposing (Env)
+import Lib.Event.Event exposing (Event)
 import Messenger.GeneralModel exposing (viewModelList)
 import Messenger.Recursion exposing (RecBody)
 import Messenger.RecursionList exposing (updateObjects, updateObjectsWithTarget)
@@ -31,63 +32,54 @@ import Messenger.RecursionList exposing (updateObjects, updateObjectsWithTarget)
 
 {-| RecUpdater
 -}
-updaterec : Component a -> Env () -> ComponentMsg -> ( Component a, List ( ComponentTarget, ComponentMsg ), Env () )
-updaterec c env ct =
-    let
-        ( newx, newmsg, newenv ) =
-            c.updaterec env ct c.data
-    in
-    ( { c | data = newx }, newmsg, newenv )
+update : env -> event -> Component env event tar cmsg ren -> ( Component env event tar cmsg ren, List ( tar, cmsg ), env )
+update env event comp =
+    case comp of
+        Unroll cc ->
+            cc.update env event
 
 
-{-| Updater
--}
-update : Component a -> Env () -> ( Component a, List ( ComponentTarget, ComponentMsg ), Env () )
-update c env =
-    let
-        ( newx, newmsg, newenv ) =
-            c.update env c.data
-    in
-    ( { c | data = newx }, newmsg, newenv )
+updaterec : env -> cmsg -> Component env event tar cmsg ren -> ( Component env event tar cmsg ren, List ( tar, cmsg ), env )
+updaterec env msg comp =
+    case comp of
+        Unroll cc ->
+            cc.updaterec env msg
 
 
 {-| Matcher
 -}
-match : Component a -> ComponentTarget -> Bool
-match c ct =
-    case ct of
-        Component Parent ->
-            False
-
-        Component (ID x) ->
-            c.data.uid == x
-
-        Component (Name x) ->
-            c.name == x
+match : Component env event tar cmsg ren -> tar -> Bool
+match comp tar =
+    case comp of
+        Unroll cc ->
+            cc.matcher tar
 
 
 {-| Super
 -}
-super : ComponentTarget -> Bool
-super ct =
-    case ct of
-        Component Parent ->
+super : tar -> Bool
+super tar =
+    case tar of
+        Parent ->
             True
 
-        Component _ ->
+        _ ->
             False
+
+
+
+--- Undo:
 
 
 {-| Rec body for the component
 -}
-recBody : RecBody (Component a) ComponentMsg (Env ()) ComponentTarget
+recBody : RecBody (Component env event tar cmsg ren) cmsg env tar Event
 recBody =
     { update = update
     , updaterec = updaterec
-    , match = match
+
+    -- , match = match
     , super = super
-    , clean = cleanEnv
-    , patch = patchEnv
     }
 
 

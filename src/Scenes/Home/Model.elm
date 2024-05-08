@@ -15,6 +15,7 @@ module Scenes.Home.Model exposing
 import Canvas exposing (Renderable)
 import Lib.Audio.Base exposing (AudioOption(..))
 import Lib.Env.Env exposing (Env, addCommonData, noCommonData)
+import Lib.Event.Event exposing (Event)
 import Lib.Layer.Base exposing (LayerMsg, LayerMsg_(..))
 import Lib.Layer.LayerHandler exposing (updateLayer, viewLayer)
 import Lib.Scene.Base exposing (MsgBase(..), SceneInitData(..), SceneOutputMsg(..))
@@ -55,11 +56,11 @@ handleLayerMsg env msgb model =
 Default update function. Normally you won't change this function.
 
 -}
-updateModel : Env () -> Model -> ( Model, List SceneOutputMsg, Env () )
-updateModel env model =
+updateModel : Env () -> Event -> Model -> ( Model, List SceneOutputMsg, Env () )
+updateModel env evt model =
     let
         ( newdata, msgs, newenv ) =
-            updateLayer (addCommonData model.commonData env) model.layers
+            updateLayer (addCommonData model.commonData env) evt model.layers
 
         nmodel =
             { model | commonData = newenv.commonData, layers = newdata }

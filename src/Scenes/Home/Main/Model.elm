@@ -13,6 +13,7 @@ module Scenes.Home.Main.Model exposing
 -}
 
 import Canvas exposing (Renderable, empty)
+import Lib.Event.Event exposing (Event)
 import Lib.Layer.Base exposing (LayerMsg, LayerTarget(..))
 import Scenes.Home.Main.Common exposing (Env, Model, nullModel)
 import Scenes.Home.SceneInit exposing (HomeInit)
@@ -32,8 +33,8 @@ Default update function
 Add your logic to handle msg here
 
 -}
-updateModel : Env -> Model -> ( Model, List ( LayerTarget, LayerMsg ), Env )
-updateModel env model =
+updateModel : Env -> Event -> Model -> ( Model, List ( LayerTarget, LayerMsg ), Env )
+updateModel env _ model =
     ( model, [], env )
 
 

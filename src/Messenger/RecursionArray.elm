@@ -26,21 +26,21 @@ import Messenger.Recursion exposing (Matcher, RecBody)
 
 {-| Recursively update all the objects in the List
 -}
-updateObjects : RecBody a b c d -> c -> Array a -> ( Array a, List b, c )
-updateObjects rec env objs =
+updateObjects : RecBody a b c d e -> c -> e -> Array a -> ( Array a, List b, c )
+updateObjects rec env evt objs =
     let
         ( newObjs, ( newMsgUnfinished, newMsgFinished ), newEnv ) =
-            updateOnce rec env objs
+            updateOnce rec env evt objs
 
         ( resObj, resMsg, resEnv ) =
-            updateRemain rec (rec.clean newEnv) ( newMsgUnfinished, newMsgFinished ) newObjs
+            updateRemain rec newEnv ( newMsgUnfinished, newMsgFinished ) newObjs
     in
-    ( resObj, resMsg, rec.patch env resEnv )
+    ( resObj, resMsg, resEnv )
 
 
 {-| Recursively update all the objects in the Array, but also uses target
 -}
-updateObjectsWithTarget : RecBody a b c d -> c -> List ( d, b ) -> Array a -> ( Array a, List b, c )
+updateObjectsWithTarget : RecBody a b c d e -> c -> List ( d, b ) -> Array a -> ( Array a, List b, c )
 updateObjectsWithTarget rec env msgs objs =
     updateRemain rec env ( msgs, [] ) objs
 
@@ -49,13 +49,13 @@ updateObjectsWithTarget rec env msgs objs =
 -- Below are all helper functions
 
 
-updateOnce : RecBody a b c d -> c -> Array a -> ( Array a, ( List ( d, b ), List b ), c )
-updateOnce rec env objs =
+updateOnce : RecBody a b c d e -> c -> e -> Array a -> ( Array a, ( List ( d, b ), List b ), c )
+updateOnce rec env evt objs =
     Array.foldr
         (\ele ( lastObjs, ( lastMsgUnfinished, lastMsgFinished ), lastEnv ) ->
             let
                 ( newObj, newMsg, newEnv ) =
-                    rec.update ele lastEnv
+                    rec.update ele lastEnv evt
 
                 finishedMsg =
                     List.filterMap
@@ -83,7 +83,7 @@ updateOnce rec env objs =
 -}
 
 
-updateRemain : RecBody a b c d -> c -> ( List ( d, b ), List b ) -> Array a -> ( Array a, List b, c )
+updateRemain : RecBody a b c d e -> c -> ( List ( d, b ), List b ) -> Array a -> ( Array a, List b, c )
 updateRemain rec env ( unfinishedMsg, finishedMsg ) objs =
     if List.isEmpty unfinishedMsg then
         ( objs, finishedMsg, env )

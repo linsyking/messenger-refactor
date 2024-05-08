@@ -16,6 +16,7 @@ module Lib.Scene.Loader exposing
 
 import Base exposing (Msg)
 import Common exposing (Model)
+import Lib.Event.Event exposing (Event)
 import Lib.Scene.Base exposing (SceneInitData)
 import List exposing (head)
 import Scenes.AllScenes exposing (allScenes)
@@ -65,8 +66,8 @@ getScene i =
 
 {-| loadScene
 -}
-loadScene : Msg -> Model -> SceneT -> SceneInitData -> Model
-loadScene msg model cs sid =
+loadScene : Event -> Model -> SceneT -> SceneInitData -> Model
+loadScene evnt model cs sid =
     { model
         | currentScene = cs
         , currentData = cs.init { t = model.time, globalData = model.currentGlobalData, msg = msg, commonData = () } sid
@@ -75,11 +76,11 @@ loadScene msg model cs sid =
 
 {-| loadSceneByName
 -}
-loadSceneByName : Msg -> Model -> String -> SceneInitData -> Model
-loadSceneByName msg model name sid =
+loadSceneByName : Event -> Model -> String -> SceneInitData -> Model
+loadSceneByName evnt model name sid =
     let
         newModel =
-            loadScene msg model (getScene name) sid
+            loadScene evnt model (getScene name) sid
 
         gd =
             newModel.currentGlobalData
