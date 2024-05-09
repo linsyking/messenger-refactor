@@ -7,15 +7,20 @@ If you add some SceneOutputMsg, you have to add corresponding updating logic her
 -}
 
 import Audio exposing (AudioCmd, AudioData)
+import Canvas.Texture
 import Dict
-import Messenger.Audio.Audio exposing (stopAudio)
+import Messenger.Audio.Audio exposing (loadAudio, stopAudio)
 import Messenger.Base exposing (Env, WorldEvent(..))
+import Messenger.Coordinate.Coordinates exposing (fromMouseToVirtual, getStartPoint, maxHandW)
 import Messenger.LocalStorage exposing (sendInfo)
 import Messenger.Model exposing (Model, resetSceneStartTime, updateSceneTime)
-import Messenger.Scene.Loader exposing (SceneStorage, loadSceneByName)
+import Messenger.Resources.Base exposing (saveSprite)
+import Messenger.Scene.Loader exposing (SceneStorage, existScene, loadSceneByName)
 import Messenger.Scene.Scene exposing (SceneOutputMsg(..), unroll)
 import Messenger.Tools.Browser exposing (alert, prompt)
 import Messenger.UserConfig exposing (UserConfig)
+import Task
+import Time
 
 
 gameUpdate : UserConfig localstorage scenemsg -> List ( String, SceneStorage localstorage scenemsg ) -> WorldEvent -> Model localstorage scenemsg -> ( Model localstorage scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
@@ -26,9 +31,6 @@ gameUpdate config scenes evnt model =
 
     else
         let
-            oldLocalStorage =
-                model.currentGlobalData.localStorage
-
             ( sdt, som, newenv ) =
                 (unroll model.currentScene).update (Env model.currentGlobalData ()) evnt
 
@@ -84,6 +86,22 @@ gameUpdate config scenes evnt model =
 
                             SOMPrompt name title ->
                                 ( lastModel, lastCmds ++ [ prompt { name = name, title = title } ], lastAudioCmds )
+
+                            SOMSaveLocalStorage ->
+                                let
+                                    oldgd =
+                                        lastModel.currentGlobalData
+
+                                    newls =
+                                        config.saveGlobalData oldgd
+
+                                    newgd =
+                                        { oldgd | localStorage = newls }
+
+                                    encodedLS =
+                                        config.localStorageCodec.encode newls
+                                in
+                                ( { lastModel | currentGlobalData = newgd }, lastCmds ++ [ sendInfo encodedLS ], lastAudioCmds )
                     )
                     ( timeUpdatedModel, [], [] )
                     som
@@ -102,31 +120,25 @@ gameUpdate config scenes evnt model =
                         updatedModel2
         in
         ( updatedModel3
-        , Cmd.batch <|
-            if updatedModel3.currentGlobalData.localStorage /= oldLocalStorage then
-                -- Save local storage
-                sendInfo (config.localStorageCodec.encode updatedModel3.currentGlobalData.localStorage) :: cmds
-
-            else
-                cmds
+        , Cmd.batch cmds
         , Audio.cmdBatch audiocmds
         )
 
 
-{-| update : AudioData -> WorldEvent -> Model localstorage scenemsg -> ( Model localstorage scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
-update \_ msg model =
-let
-gd =
-model.currentGlobalData
-in
-case msg of
-TextureLoaded name Nothing ->
-( model, alert ("Failed to load sprite " ++ name), Audio.cmdNone )
+update : UserConfig localstorage scenemsg -> List ( String, SceneStorage localstorage scenemsg ) -> AudioData -> WorldEvent -> Model localstorage scenemsg -> ( Model localstorage scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
+update config scenes _ msg model =
+    let
+        gd =
+            model.currentGlobalData
+    in
+    case msg of
+        TextureLoaded name Nothing ->
+            ( model, alert ("Failed to load sprite " ++ name), Audio.cmdNone )
 
         TextureLoaded name (Just t) ->
             let
                 newgd =
-                    case Dict.get name allSpriteSheets of
+                    case Dict.get name config.allSpriteSheets of
                         Just sprites ->
                             -- Save all sprites in the spritesheet
                             List.foldl
@@ -184,10 +196,10 @@ TextureLoaded name Nothing ->
         NewWindowSize t ->
             let
                 ( gw, gh ) =
-                    maxHandW t
+                    maxHandW gd t
 
                 ( fl, ft ) =
-                    getStartPoint t
+                    getStartPoint gd t
 
                 oldIT =
                     gd.internalData
@@ -211,30 +223,30 @@ TextureLoaded name Nothing ->
             ( { model | currentGlobalData = { gd | mousePos = mp } }, Cmd.none, Audio.cmdNone )
 
         MouseDown e pos ->
-            gameUpdate (Event.MouseDown e <| fromMouseToVirtual model.currentGlobalData pos) model
+            gameUpdate config scenes (MouseDown e <| fromMouseToVirtual model.currentGlobalData pos) model
 
         MouseUp pos ->
-            gameUpdate (Event.MouseUp <| fromMouseToVirtual model.currentGlobalData pos) model
+            gameUpdate config scenes (MouseUp <| fromMouseToVirtual model.currentGlobalData pos) model
 
         KeyDown 112 ->
-            if debug then
+            if config.debug then
                 -- F1
                 ( model, prompt { name = "load", title = "Enter the scene you want to load" }, Audio.cmdNone )
 
             else
-                gameUpdate msg model
+                gameUpdate config scenes msg model
 
         KeyDown 113 ->
-            if debug then
+            if config.debug then
                 -- F2
                 ( model, prompt { name = "setVolume", title = "Set volume (0-1)" }, Audio.cmdNone )
 
             else
-                gameUpdate msg model
+                gameUpdate config scenes msg model
 
         Prompt "load" result ->
-            if existScene result then
-                ( loadSceneByName Event.NullEvent model result NullSceneInitData
+            if existScene result scenes then
+                ( loadSceneByName result scenes Nothing model
                     |> resetSceneStartTime
                 , Cmd.none
                 , Audio.cmdNone
@@ -251,16 +263,10 @@ TextureLoaded name Nothing ->
             case vol of
                 Just v ->
                     let
-                        ls =
-                            gd.localStorage
-
-                        newls =
-                            { ls | volume = v }
-
                         newGd =
-                            { gd | localStorage = newls }
+                            { gd | volume = v }
                     in
-                    ( { model | currentGlobalData = newGd }, sendInfo (encodeLSInfo newls), Audio.cmdNone )
+                    ( { model | currentGlobalData = newGd }, Cmd.none, Audio.cmdNone )
 
                 Nothing ->
                     ( model, alert "Not a number", Audio.cmdNone )
@@ -285,12 +291,10 @@ TextureLoaded name Nothing ->
                         Nothing ->
                             trans
             in
-            gameUpdate msg { model | currentGlobalData = newGD, transition = newTrans }
+            gameUpdate config scenes msg { model | currentGlobalData = newGD, transition = newTrans }
 
         NullEvent ->
             ( model, Cmd.none, Audio.cmdNone )
 
         _ ->
-            gameUpdate msg model
-
--}
+            gameUpdate config scenes msg model

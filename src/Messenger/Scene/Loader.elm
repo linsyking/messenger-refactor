@@ -9,7 +9,7 @@ import Messenger.Scene.Scene exposing (MAbsScene, MConcreteScene, abstract)
 
 
 type alias SceneStorage localstorage scenemsg =
-    Env () localstorage -> scenemsg -> MAbsScene localstorage scenemsg
+    Env () localstorage -> Maybe scenemsg -> MAbsScene localstorage scenemsg
 
 
 sceneInit : MConcreteScene data localstorage scenemsg -> SceneStorage localstorage scenemsg
@@ -42,7 +42,7 @@ getScene i scenes =
 
 {-| loadScene
 -}
-loadScene : Maybe (SceneStorage localstorage scenemsg) -> scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
+loadScene : Maybe (SceneStorage localstorage scenemsg) -> Maybe scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
 loadScene scenest smsg model =
     case scenest of
         Just s ->
@@ -58,7 +58,7 @@ loadScene scenest smsg model =
 
 {-| loadSceneByName
 -}
-loadSceneByName : String -> List ( String, SceneStorage localstorage scenemsg ) -> scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
+loadSceneByName : String -> List ( String, SceneStorage localstorage scenemsg ) -> Maybe scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
 loadSceneByName name scenes smsg model =
     let
         newModel =

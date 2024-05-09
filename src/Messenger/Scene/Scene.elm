@@ -7,7 +7,7 @@ import Messenger.Scene.Transitions.Base exposing (Transition)
 
 
 type alias ConcreteScene data env event ren scenemsg ls =
-    { init : env -> scenemsg -> data
+    { init : env -> Maybe scenemsg -> data
     , update : env -> event -> data -> ( data, List (SceneOutputMsg scenemsg ls), env )
     , view : env -> data -> ren
     }
@@ -36,7 +36,7 @@ unroll (Roll un) =
     un
 
 
-abstract : ConcreteScene data env event ren scenemsg ls -> env -> scenemsg -> AbsScene env event ren scenemsg ls
+abstract : ConcreteScene data env event ren scenemsg ls -> env -> Maybe scenemsg -> AbsScene env event ren scenemsg ls
 abstract conmodel initEnv initMsg =
     let
         abstractRec data =
@@ -83,10 +83,11 @@ addCommonData commonData env =
 
 
 type SceneOutputMsg scenemsg ls
-    = SOMChangeScene ( scenemsg, String, Maybe (Transition ls) )
+    = SOMChangeScene (Maybe scenemsg, String, Maybe (Transition ls) )
     | SOMPlayAudio String String AudioOption -- audio name, audio url, audio option
     | SOMAlert String
     | SOMStopAudio String
     | SOMSetVolume Float
     | SOMPrompt String String -- name, title
+    | SOMSaveLocalStorage
 

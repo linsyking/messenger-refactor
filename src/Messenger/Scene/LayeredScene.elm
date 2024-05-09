@@ -54,7 +54,7 @@ viewLayeredScene env { renderSettings, commonData, layers } =
         |> group renderSettings
 
 
-genLayeredScene : (Env () ls -> scenemsg -> LayeredSceneData cdata ls tar msg scenemsg) -> (Env () ls -> WorldEvent -> LayeredSceneData cdata ls tar msg scenemsg -> List Setting) -> ConcreteLayeredScene cdata ls tar msg scenemsg
+genLayeredScene : (Env () ls -> Maybe scenemsg -> LayeredSceneData cdata ls tar msg scenemsg) -> (Env () ls -> WorldEvent -> LayeredSceneData cdata ls tar msg scenemsg -> List Setting) -> ConcreteLayeredScene cdata ls tar msg scenemsg
 genLayeredScene init settingsFunc =
     { init = init
     , update = updateLayeredScene settingsFunc

@@ -27,7 +27,7 @@ type alias Model localstorage scenemsg =
     { currentScene : MAbsScene localstorage scenemsg
     , currentGlobalData : GlobalData localstorage
     , audiorepo : AudioRepo
-    , transition : Maybe ( Transition localstorage, ( String, scenemsg ) )
+    , transition : Maybe ( Transition localstorage, ( String, Maybe scenemsg ) )
     }
 
 
