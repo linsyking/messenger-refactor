@@ -1,107 +1,14 @@
-module Main exposing (main)
-
-{-| This is the main module which is the main entry of the whole game
-
-@docs main
-
--}
-
-import Audio exposing (AudioCmd, AudioData)
-import Base exposing (Flags, Msg(..))
-import Browser.Events exposing (onKeyDown, onKeyUp, onMouseDown, onMouseMove, onMouseUp, onResize, onVisibilityChange)
-import Canvas
-import Canvas.Texture
-import Common exposing (Model, audio, initGlobalData, resetSceneStartTime, updateSceneStartTime)
-import Dict
-import Html exposing (Html)
-import Html.Attributes exposing (style)
-import Html.Events exposing (on)
-import Json.Decode as Decode
-import Messenger.Audio.Audio exposing (audioPortFromJS, audioPortToJS, loadAudio, stopAudio)
-import Lib.Coordinate.Coordinates exposing (fromMouseToVirtual, getStartPoint, maxHandW)
-import Lib.Event.Event as Event exposing (Event)
-import Lib.LocalStorage.LocalStorage exposing (decodeLSInfo, encodeLSInfo, sendInfo)
-import Lib.Resources.Base exposing (getTexture, saveSprite)
-import Lib.Resources.SpriteSheets exposing (allSpriteSheets)
-import Lib.Resources.Sprites exposing (allTexture)
-import Lib.Scene.Base exposing (SceneInitData(..), SceneOutputMsg(..))
-import Lib.Scene.Loader exposing (existScene, getCurrentScene, loadSceneByName)
-import Lib.Scene.Transition exposing (makeTransition)
-import Lib.Tools.Browser exposing (alert, prompt, promptReceiver)
-import MainConfig exposing (debug, initScene, initSceneSettings, timeInterval)
-import Scenes.SceneSettings exposing (SceneDataTypes(..), nullSceneT)
-import Task
-import Time
-
-
-{-| initModel
--}
-initModel : Model
-initModel =
-    { currentData = NullSceneData
-    , currentScene = nullSceneT
-    , currentGlobalData = initGlobalData
-    , time = 0
-    , audiorepo = []
-    , transition = Nothing
-    }
-
-
-{-| main
-
-Main Function
-
--}
-main : Program Flags (Audio.Model Msg Model) (Audio.Msg Msg)
-main =
-    Audio.elementWithAudio
-        { init = init
-        , update = update
-        , subscriptions = subscriptions
-        , view = view
-        , audio = audio
-        , audioPort = { toJS = audioPortToJS, fromJS = audioPortFromJS }
-        }
-
-
-init : Flags -> ( Model, Cmd Msg, AudioCmd Msg )
-init flags =
-    let
-        ms =
-            loadSceneByName Event.NullEvent { initModel | currentGlobalData = newgd } initScene initSceneSettings
-
-        ( gw, gh ) =
-            maxHandW ( flags.windowWidth, flags.windowHeight )
-
-        ( fl, ft ) =
-            getStartPoint ( flags.windowWidth, flags.windowHeight )
-
-        ls =
-            decodeLSInfo flags.info
-
-        oldIT =
-            initGlobalData.internalData
-
-        newIT =
-            { oldIT
-                | browserViewPort = ( flags.windowWidth, flags.windowHeight )
-                , realWidth = gw
-                , realHeight = gh
-                , startLeft = fl
-                , startTop = ft
-            }
-
-        newgd =
-            { initGlobalData | currentTimeStamp = Time.millisToPosix flags.timeStamp, localStorage = ls, internalData = newIT }
-    in
-    ( { ms | currentGlobalData = newgd }, Cmd.none, Audio.cmdNone )
-
+module Messenger.UI.Update exposing (..)
 
 {-| This is the update function for updating the model.
 
 If you add some SceneOutputMsg, you have to add corresponding updating logic here.
 
 -}
+import Messenger.Base exposing (WorldEvent(..))
+import Audio
+
+
 gameUpdate : Event -> Model -> ( Model, Cmd Msg, AudioCmd Msg )
 gameUpdate evnt model =
     if List.length (Dict.keys model.currentGlobalData.internalData.sprites) < List.length allTexture then
@@ -382,90 +289,8 @@ update _ msg model =
             in
             gameUpdate (Event.event msg) { model | currentGlobalData = newGD, transition = newTrans }
 
-        NullMsg ->
+        NullEvent ->
             ( model, Cmd.none, Audio.cmdNone )
 
         _ ->
             gameUpdate (Event.event msg) model
-
-
-{-| subscriptions
-DO NOT EDIT THIS UNLESS YOU KNOW WHAT YOU ARE DOING.
-
-Subscriptions are event listeners.
-
-These are common event listeners that are commonly used in most games.
-
--}
-subscriptions : AudioData -> Model -> Sub Msg
-subscriptions _ _ =
-    Sub.batch
-        [ Time.every timeInterval Tick --- Slow down the fps
-        , onKeyDown
-            (Decode.map2
-                (\x rep ->
-                    if not rep then
-                        KeyDown x
-
-                    else
-                        NullMsg
-                )
-                (Decode.field "keyCode" Decode.int)
-                (Decode.field "repeat" Decode.bool)
-            )
-        , onKeyUp
-            (Decode.map2
-                (\x rep ->
-                    if not rep then
-                        KeyUp x
-
-                    else
-                        NullMsg
-                )
-                (Decode.field "keyCode" Decode.int)
-                (Decode.field "repeat" Decode.bool)
-            )
-        , onResize (\w h -> NewWindowSize ( toFloat w, toFloat h ))
-        , onVisibilityChange (\v -> WindowVisibility v)
-        , onMouseDown (Decode.map3 (\b x y -> MouseDown b ( x, y )) (Decode.field "button" Decode.int) (Decode.field "clientX" Decode.float) (Decode.field "clientY" Decode.float))
-        , onMouseUp (Decode.map2 (\x y -> MouseUp ( x, y )) (Decode.field "clientX" Decode.float) (Decode.field "clientY" Decode.float))
-        , onMouseMove (Decode.map2 (\x y -> MouseMove ( x, y )) (Decode.field "clientX" Decode.float) (Decode.field "clientY" Decode.float))
-        , promptReceiver (\p -> Prompt p.name p.result)
-        ]
-
-
-{-| view
-DO NOT EDIT THIS UNLESS YOU KNOW WHAT YOU ARE DOING.
-
-Canvas viewer
-You can change the mouse style here.
-
--}
-view : AudioData -> Model -> Html Msg
-view _ model =
-    let
-        transitiondata =
-            Maybe.map Tuple.first model.transition
-
-        canvas =
-            Canvas.toHtmlWith
-                { width = floor model.currentGlobalData.internalData.realWidth
-                , height = floor model.currentGlobalData.internalData.realHeight
-                , textures = getTexture
-                }
-                [ style "left" (String.fromFloat model.currentGlobalData.internalData.startLeft)
-                , style "top" (String.fromFloat model.currentGlobalData.internalData.startTop)
-                , style "position" "fixed"
-                ]
-                [ MainConfig.background model.currentGlobalData
-                , makeTransition model.currentGlobalData transitiondata <| (getCurrentScene model).view { t = model.time, globalData = model.currentGlobalData, commonData = () } model.currentData
-                ]
-    in
-    Html.div [ on "wheel" (Decode.map MouseWheel (Decode.field "deltaY" Decode.int)) ]
-        (case model.currentGlobalData.extraHTML of
-            Just x ->
-                [ canvas, x ]
-
-            Nothing ->
-                [ canvas ]
-        )
