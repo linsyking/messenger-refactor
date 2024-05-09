@@ -1,28 +1,20 @@
 module Messenger.GeneralModel exposing
-    ( viewModelList, viewModelArray
-    , AbsGeneralModel(..), ConcreteGeneralModel, UnrolledAbsGeneralModel, abstract
-    )
+    (..)
 
 {-|
 
 
 # General Model
 
-General model is designed to be an abstract interface of scenes, layers, components, game components, etc..
-
-  - a: data type
-  - b: environment type
-  - c: message type
-  - d: target type
-  - e: render type
-  - f: event type
+General model is designed to be an abstract interface of layers, components, game components, etc..
 
 @docs GeneralModel
-@docs viewModelList, viewModelArray
+@docs viewModelList
 
 -}
 
-import Array exposing (Array)
+import Canvas exposing (Renderable)
+import Messenger.Base exposing (Env, WorldEvent)
 import Messenger.Scene exposing (MsgBase)
 
 
@@ -111,16 +103,17 @@ abstract conmodel initEnv initMsg =
     abstractRec init_d init_bd
 
 
+type alias MConcreteGeneralModel data common localstorage tar msg bdata scenemsg =
+    ConcreteGeneralModel data (Env common localstorage) WorldEvent tar msg Renderable bdata scenemsg
+
+
+type alias MAbsGeneralModel common localstorage tar msg bdata scenemsg =
+    AbsGeneralModel (Env common localstorage) WorldEvent tar msg Renderable bdata scenemsg
+
+
 {-| View model list.
+TODO
 -}
-viewModelList : b -> List (AbsGeneralModel b c d e f) -> List e
+viewModelList : env -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> List ren
 viewModelList env models =
-    List.map (\model -> (unroll model).view env) models
-
-
-{-| View model array.
--}
-viewModelArray : b -> Array (AbsGeneralModel b c d e f) -> List e
-viewModelArray env models =
-    Array.toList models
-        |> List.map (\model -> (unroll model).view env)
+    List.map (\model -> (unroll model).view env (unroll model).baseData) models

@@ -32,7 +32,7 @@ import Messenger.RecursionList exposing (updateObjects, updateObjectsWithTarget)
 
 {-| RecUpdater
 -}
-update : env -> event -> Component env event tar cmsg ren -> ( Component env event tar cmsg ren, List ( tar, cmsg ), env )
+update : Component env event tar cmsg ren -> env -> event  -> ( Component env event tar cmsg ren, List ( tar, cmsg ), env )
 update env event comp =
     case comp of
         Unroll cc ->

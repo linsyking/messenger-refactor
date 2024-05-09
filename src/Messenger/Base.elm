@@ -1,27 +1,4 @@
-module Base exposing
-    ( Msg(..)
-    , GlobalData
-    , Flags
-    , LSInfo
-    )
-
-{-| Base module
-
-WARNING: This file should have no dependencies
-
-Otherwise it will cause import-cycles
-
-I storage TMsg here that every scene can use it to transmit data, however, those data can only be Int, Float, Strong, etc.
-
-This message is the GLOBAL scope message. This message limits what messsages you can get inside a scene.
-
-@docs Msg
-@docs GlobalData
-@docs Flags
-@docs LSInfo
-@docs ObjectTarget
-
--}
+module Messenger.Base exposing (..)
 
 import Audio
 import Browser.Events exposing (Visibility)
@@ -43,7 +20,7 @@ This is the msg data for main.
 `MouseWheel` records the wheel event for mouse, it can be also used for touchpad
 
 -}
-type Msg
+type WorldEvent
     = Tick Time.Posix
     | KeyDown Int
     | KeyUp Int
@@ -57,7 +34,6 @@ type Msg
     | MouseMove ( Float, Float )
     | MouseWheel Int
     | Prompt String String
-    | NullMsg
 
 
 {-| GlobalData
@@ -79,15 +55,22 @@ It is mainly used for display and reading/writing some localstorage data.
 `windowVisibility` records whether users stay in this tab/window
 
 -}
-type alias GlobalData =
+type alias GlobalData localstorage =
     { internalData : InternalData
     , sceneStartTime : Int
+    , globalTime : Int
     , currentTimeStamp : Time.Posix
     , windowVisibility : Visibility
     , mousePos : ( Float, Float )
-    , extraHTML : Maybe (Html Msg)
-    , localStorage : LSInfo
+    , extraHTML : Maybe (Html WorldEvent)
+    , localStorage : localstorage
     , currentScene : String
+    }
+
+
+type alias Env common localstorage =
+    { globalData : GlobalData localstorage
+    , commonData : common
     }
 
 
@@ -98,18 +81,6 @@ type alias InternalData =
     , startLeft : Float
     , startTop : Float
     , sprites : Dict String Texture
-    }
-
-
-{-| LSInfo
-
-LocalStorage data
-
-ADD your own localstorage info here.
-
--}
-type alias LSInfo =
-    { volume : Float
     }
 
 
@@ -126,4 +97,3 @@ type alias Flags =
     , timeStamp : Int
     , info : String
     }
-
