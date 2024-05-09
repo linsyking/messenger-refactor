@@ -60,18 +60,6 @@ abstract conmodel initEnv initMsg =
     in
     abstractRec (conmodel.init initEnv initMsg)
 
-genRawScene : MConcreteScene data localstorage scenemsg -> (Env () localstorage) -> scenemsg -> MAbsScene localstorage scenemsg
-genRawScene conraw initEnv initMsg =
-    abstract conraw initEnv initMsg
-
-type alias LayeredModel cdata =
-    { commonData : cdata 
-    , layers : List MAbsLayer --TODO: Layer type
-    }
-
-genScene : MConcreteScene (LayeredModel cdata) localstorage scenemsg -> (Env () localstorage) -> scenemsg -> MAbsScene localstorage scenemsg
-genScene conscene initEnv initMsg = 
-    abstract conscene initEnv initMsg
 
 {-| Remove common data from environment.
 
@@ -87,11 +75,12 @@ noCommonData env =
 
 {-| Add the common data back.
 -}
-addCommonData : cdata -> Env () localstorage -> Env cdata localstorage 
+addCommonData : cdata -> Env () localstorage -> Env cdata localstorage
 addCommonData commonData env =
     { globalData = env.globalData
     , commonData = commonData
     }
+
 
 type SceneOutputMsg scenemsg
     = SOMChangeScene ( scenemsg, String, Maybe Transition )

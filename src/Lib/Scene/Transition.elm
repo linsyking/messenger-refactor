@@ -11,7 +11,7 @@ module Lib.Scene.Transition exposing (makeTransition)
 
 import Base exposing (GlobalData)
 import Canvas exposing (Renderable)
-import Lib.Scene.Transitions.Base exposing (Transition)
+import Messenger.Scene.Transitions.Base exposing (Transition)
 
 
 {-| Generate transition from transition data

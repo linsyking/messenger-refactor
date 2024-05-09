@@ -9,19 +9,19 @@ module Scenes.Home.Model exposing (..)
 -}
 
 import Canvas exposing (Renderable)
-import Messenger.Audio.Base exposing (AudioOption(..))
 import Lib.Layer.Base exposing (LayerMsg, LayerMsg_(..))
-import Messenger.Base exposing (Env)
-import Messenger.Scene.Scene exposing (SceneOutputMsg, MsgBase(..), SceneOutputMsg(..), addCommonData, noCommonData, MConcreteScene, LayeredModel)
-import Messenger.Base exposing (WorldEvent)
-import Scenes.SceneSettings exposing (SceneInitMsg(..))
+import Messenger.Audio.Base exposing (AudioOption(..))
+import Messenger.Base exposing (Env, WorldEvent)
+import Messenger.Scene.Scene exposing (LayeredModel, MConcreteScene, MsgBase(..), SceneOutputMsg(..), addCommonData, noCommonData)
 import Scenes.Home.SceneInit exposing (InitDataT, nullHomeInit)
+import Scenes.SceneSettings exposing (SceneInitMsg(..))
 
 
 {-| Model
 -}
 type alias Data =
     LayeredModel CommonData
+
 
 {-| CommonData
 Edit your own CommonData here.
@@ -36,9 +36,11 @@ nullCommonData : CommonData
 nullCommonData =
     {}
 
+
 initCommonData : Env () localstorage -> InitDataT -> CommonData
 initCommonData _ _ =
     nullCommonData
+
 
 {-| Initialize the model
 -}
@@ -57,6 +59,7 @@ initModel env init =
     , layers = initAllLayers env layerInitData
     }
 
+
 {-| handleLayerMsg
 
 Handle Layer Messages
@@ -69,9 +72,9 @@ handleLayerMsg env msgb model =
     case msgb of
         SOMMsg sommsg ->
             ( model, [ sommsg ], env )
+
         OtherMsg _ ->
             ( model, [], env )
-
 
 
 {-| updateModel
@@ -82,7 +85,7 @@ Default update function. Normally you won't change this function.
 updateModel : Env () localstorage -> WorldEvent -> Data -> ( Data, List (SceneOutputMsg SceneInitMsg), Env () localstorage )
 updateModel env evt model =
     let
-        ( newlayers, msgs, (newenv, _) ) =
+        ( newlayers, msgs, ( newenv, _ ) ) =
             --TODO
             updateLayers (addCommonData model.commonData env) evt model.layers
 
@@ -110,6 +113,7 @@ viewModel : Env () localstorage -> Data -> Renderable
 viewModel env model =
     -- TODO
     viewLayers (addCommonData model.commonData env) model.layers
+
 
 concreteScene : MConcreteScene Data localstorage SceneInitMsg
 concreteScene =

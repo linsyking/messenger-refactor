@@ -22,11 +22,11 @@ import Messenger.Scene.Scene exposing (MsgBase)
 
 {-| Recursively update all the objects in the List
 -}
-updateObjects : env -> event -> Bool -> (event -> event) -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> ( List (AbsGeneralModel env event tar msg ren bdata scenemsg), List (MsgBase msg scenemsg), ( env, Bool ) )
-updateObjects env evt blockInit blockfunc objs =
+updateObjects : env -> event -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> ( List (AbsGeneralModel env event tar msg ren bdata scenemsg), List (MsgBase msg scenemsg), ( env, Bool ) )
+updateObjects env evt objs =
     let
         ( newObjs, ( newMsgUnfinished, newMsgFinished ), ( newEnv, newBlock ) ) =
-            updateOnce env evt blockInit blockfunc objs
+            updateOnce env evt objs
 
         ( resObj, resMsg, resEnv ) =
             updateRemain newEnv ( newMsgUnfinished, newMsgFinished ) newObjs
@@ -45,8 +45,9 @@ updateObjectsWithTarget env msgs objs =
 -- Below are some helper functions
 
 
-updateOnce : env -> event -> Bool -> (event -> event) -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> ( List (AbsGeneralModel env event tar msg ren bdata scenemsg), ( List (Msg tar msg scenemsg), List (MsgBase msg scenemsg) ), ( env, Bool ) )
-updateOnce env evt blockInit blockfunc objs =
+updateOnce : env -> event -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> ( List (AbsGeneralModel env event tar msg ren bdata scenemsg), ( List (Msg tar msg scenemsg), List (MsgBase msg scenemsg) ), ( env, Bool ) )
+updateOnce env evt objs =
+    --TODO:
     List.foldr
         (\ele ( lastObjs, ( lastMsgUnfinished, lastMsgFinished ), ( lastEnv, lastBlock ) ) ->
             let
@@ -55,7 +56,7 @@ updateOnce env evt blockInit blockfunc objs =
                         (unroll ele).update lastEnv evt
 
                     else
-                        (unroll ele).update lastEnv <| blockfunc evt
+                        (unroll ele).update lastEnv evt
 
                 newBlock =
                     if not block && lastBlock then
@@ -90,7 +91,7 @@ updateOnce env evt blockInit blockfunc objs =
             in
             ( newObj :: lastObjs, ( lastMsgUnfinished ++ unfinishedMsg, lastMsgFinished ++ finishedMsg ), ( newEnv, newBlock ) )
         )
-        ( [], ( [], [] ), ( env, blockInit ) )
+        ( [], ( [], [] ), env )
         objs
 
 

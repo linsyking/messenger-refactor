@@ -12,7 +12,7 @@ General model is designed to be an abstract interface of layers, components, gam
 
 -}
 
-import Canvas exposing (Renderable)
+import Canvas exposing (Renderable, group)
 import Messenger.Base exposing (Env, WorldEvent)
 import Messenger.Scene.Scene exposing (MsgBase)
 
@@ -112,6 +112,6 @@ type alias MAbsGeneralModel common localstorage tar msg bdata scenemsg =
 
 {-| View model list.
 -}
-viewModelList : env -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> List ren
+viewModelList : Env common localstorage -> List (MAbsGeneralModel common localstorage tar msg bdata scenemsg) -> List Renderable
 viewModelList env models =
     List.map (\model -> (unroll model).view env) models
