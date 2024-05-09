@@ -73,6 +73,26 @@ genScene : MConcreteScene (LayeredModel cdata) localstorage scenemsg -> (Env () 
 genScene conscene initEnv initMsg = 
     abstract conscene initEnv initMsg
 
+{-| Remove common data from environment.
+
+Useful when sending message to a component.
+
+-}
+noCommonData : Env cdata localstorage -> Env () localstorage
+noCommonData env =
+    { globalData = env.globalData
+    , commonData = ()
+    }
+
+
+{-| Add the common data back.
+-}
+addCommonData : cdata -> Env () localstorage -> Env cdata localstorage 
+addCommonData commonData env =
+    { globalData = env.globalData
+    , commonData = commonData
+    }
+
 type SceneOutputMsg scenemsg
     = SOMChangeScene ( scenemsg, String, Maybe Transition )
     | SOMPlayAudio String String AudioOption -- audio name, audio url, audio option

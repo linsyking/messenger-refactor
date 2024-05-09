@@ -8,39 +8,10 @@ module Scenes.SceneSettings exposing (..)
 
 -}
 
-import Canvas exposing (empty)
-import Scenes.Home.Export as Home
+import Scenes.Home.SceneInit as HomeInit
 
 
 
---- Set Scenes
-
-
-{-| SceneDataTypes
-
-All the scene data types should be listed here.
-
--- -}
--- type SceneDataTypes
---     = HomeDataT Home.Data
---     | NullSceneData
-
-
-{-| SceneT
-
-SceneT is a Scene with datatypes.
-
--- -}
--- type alias SceneT =
---     Scene SceneDataTypes
-
-
-
--- {-| nullSceneT
--- -}
--- nullSceneT : SceneT
--- nullSceneT =
---     { init = \_ _ -> NullSceneData
---     , update = \env m -> ( m, [], env )
---     , view = \_ _ -> empty
---     }
+type SceneInitMsg
+    = HomeInit HomeInit.InitDataT
+    | OtherInitMsg

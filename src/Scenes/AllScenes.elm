@@ -9,18 +9,16 @@ This module records all the scenes.
 -}
 
 
-import Scenes.Home.SceneInit as HomeInit
-import Messenger.Scene.Loader exposing (SceneStorage)
-import Messenger.Scene.Loader exposing (sceneInit)
+import Scenes.Home.Model as Home
+import Messenger.Scene.Loader exposing (SceneStorage, sceneInit)
+import Scenes.SceneSettings exposing (SceneInitMsg)
 
 
 {-| allScenes
 Add all the scenes here
 -}
-allScenes : List ( String, SceneStorage )
+allScenes : List ( String, SceneStorage localstorage SceneInitMsg )
 allScenes =
-    [ ( "Home", sceneInit )
+    [ ( "Home", sceneInit Home.concreteScene)
     ]
 
-type SceneInitMsg
-    = HomeInit HomeInit.InitDataT

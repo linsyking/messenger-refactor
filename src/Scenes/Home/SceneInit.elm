@@ -8,20 +8,14 @@ module Scenes.Home.SceneInit exposing (..)
 
 -}
 
-import Messenger.Base exposing (Env)
-import Scenes.Home.LayerBase exposing (CommonData, nullCommonData)
-
-
-
-
-
--- {-| Null HomeInit data
--- -}
--- nullHomeInit : HomeInit
--- nullHomeInit =
---     {}
-
-
-{-| Initialize common data
+{-| Init Data
 -}
+type alias InitDataT =
+    {}
+
+{-| Null HomeInit data
+-}
+nullHomeInit : InitDataT
+nullHomeInit =
+    {}
 
