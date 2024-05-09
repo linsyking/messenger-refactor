@@ -35,31 +35,29 @@ If your object has many properties that are in common, you should create your ow
 Examples are [GameComponent](https://github.com/linsyking/Reweave/blob/master/src/Lib/CoreEngine/GameComponent/Base.elm) which has a lot of game related properties.
 
 -}
-type TargetBase othertar
-    = Parent
-    | Other othertar
+type Msg othertar msg
+    = Parent (MsgBase msg)
+    | Other othertar msg
 
 
 
--- type alias Component env event tar msg ren =
---     TComponent env event (TargetBase tar) msg ren
 
-
-type Component env event tar msg ren
+type Component env event tar msg ren cdata
     = Unroll
-        { update : env -> event -> ( Component env event tar msg ren, List ( tar, msg ), env )
-        , updaterec : env -> msg -> ( Component env event tar msg ren, List ( tar, msg ), env )
-        , view : env -> ren
-        , matcher : tar -> Bool
+        { update : env -> cdata -> event -> ( Component env event tar msg ren cdata, List (Msg tar msg), ( env, event ) )
+        , updaterec : env -> cdata -> msg -> ( Component env event tar msg ren cdata, List (Msg tar msg), env )
+        , view : env -> cdata -> ren
+        , matcher : cdata -> tar -> Bool
+        , baseData : cdata
         }
 
 
-type alias ConcreteComponent data env event tar msg ren =
-    { init : env -> msg -> data
-    , update : env -> event -> data -> ( data, List ( tar, msg ), env )
-    , updaterec : env -> msg -> data -> ( data, List ( tar, msg ), env )
-    , view : env -> data -> ren
-    , matcher : data -> tar -> Bool
+type alias ConcreteComponent data env event tar msg ren cdata =
+    { init : env -> msg -> ( data, cdata )
+    , update : env -> event -> data -> cdata -> ( ( data, cdata ), List (Msg tar msg), ( env, event ) )
+    , updaterec : env -> msg -> data -> cdata -> ( ( data, cdata ), List (Msg tar msg), env )
+    , view : env -> data -> cdata -> ren
+    , matcher : data -> cdata -> tar -> Bool
     }
 
 
@@ -76,16 +74,15 @@ type alias ConcreteComponent data env event tar msg ren =
 --     | ComponentComponentTargetMsg ComponentTarget
 --     | ComponentNamedMsg ComponentTarget ComponentMsg_
 --     | NullComponentMsg
--- TODO: Self
 
 
-genComp : ConcreteComponent data env event tar msg ren -> env -> msg -> Component env event tar msg ren
+genComp : ConcreteComponent data env event tar msg ren cdata -> env -> msg -> Component env event tar msg ren cdata
 genComp concomp initEnv initMsg =
     let
-        genCompRec : data -> Component env event tar msg ren
-        genCompRec data =
+        genCompRec : data -> cdata -> Component env event tar msg ren cdata
+        genCompRec data cdata =
             let
-                updates : env -> event -> ( Component env event tar msg ren, List ( tar, msg ), env )
+                updates : env -> event -> ( Component env event tar msg ren cdata, List ( tar, msg ), ( env, event ) )
                 updates env event =
                     let
                         ( new_d, new_m, new_e ) =
