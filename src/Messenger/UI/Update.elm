@@ -7,13 +7,20 @@ If you add some SceneOutputMsg, you have to add corresponding updating logic her
 -}
 
 import Audio exposing (AudioCmd, AudioData)
-import Messenger.Base exposing (WorldEvent(..))
-import Messenger.Model exposing (Model)
+import Dict
+import Messenger.Audio.Audio exposing (stopAudio)
+import Messenger.Base exposing (Env, WorldEvent(..))
+import Messenger.LocalStorage exposing (sendInfo)
+import Messenger.Model exposing (Model, resetSceneStartTime, updateSceneTime)
+import Messenger.Scene.Loader exposing (SceneStorage, loadSceneByName)
+import Messenger.Scene.Scene exposing (SceneOutputMsg(..), unroll)
+import Messenger.Tools.Browser exposing (alert, prompt)
+import Messenger.UserConfig exposing (UserConfig)
 
 
-gameUpdate : WorldEvent -> Model localstorage scenemsg -> ( Model localstorage scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
-gameUpdate evnt model =
-    if List.length (Dict.keys model.currentGlobalData.internalData.sprites) < List.length allTexture then
+gameUpdate : UserConfig localstorage scenemsg -> List ( String, SceneStorage localstorage scenemsg ) -> WorldEvent -> Model localstorage scenemsg -> ( Model localstorage scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
+gameUpdate config scenes evnt model =
+    if List.length (Dict.keys model.currentGlobalData.internalData.sprites) < List.length config.allTexture then
         -- Still loading assets
         ( model, Cmd.none, Audio.cmdNone )
 
@@ -23,30 +30,27 @@ gameUpdate evnt model =
                 model.currentGlobalData.localStorage
 
             ( sdt, som, newenv ) =
-                (getCurrentScene model).update { globalData = model.currentGlobalData, t = model.time, commonData = () } model.currentData
+                (unroll model.currentScene).update (Env model.currentGlobalData ()) evnt
 
-            newGD1 =
-                newenv.globalData
+            updatedModel1 =
+                { model | currentGlobalData = newenv.globalData, currentScene = sdt }
 
             timeUpdatedModel =
                 case evnt of
-                    Event.Tick _ ->
+                    Tick _ ->
                         -- Tick event needs to update time
-                        { model | time = model.time + 1, currentGlobalData = newGD1 }
+                        updateSceneTime updatedModel1
 
                     _ ->
-                        { model | currentGlobalData = newGD1 }
+                        updatedModel1
 
-            newModel =
-                updateSceneStartTime { timeUpdatedModel | currentData = sdt }
-
-            ( newmodel, cmds, audiocmds ) =
+            ( updatedModel2, cmds, audiocmds ) =
                 List.foldl
                     (\singleSOM ( lastModel, lastCmds, lastAudioCmds ) ->
                         case singleSOM of
-                            SOMChangeScene ( tm, s, Nothing ) ->
+                            SOMChangeScene ( tm, name, Nothing ) ->
                                 --- Load new scene
-                                ( loadSceneByName evnt lastModel s tm
+                                ( loadSceneByName name scenes tm lastModel
                                     |> resetSceneStartTime
                                 , lastCmds
                                 , lastAudioCmds
@@ -67,11 +71,8 @@ gameUpdate evnt model =
                                     oldgd =
                                         lastModel.currentGlobalData
 
-                                    oldLS =
-                                        oldgd.localStorage
-
                                     newgd2 =
-                                        { oldgd | localStorage = { oldLS | volume = s } }
+                                        { oldgd | volume = s }
                                 in
                                 ( { lastModel | currentGlobalData = newgd2 }, lastCmds, lastAudioCmds )
 
@@ -84,27 +85,27 @@ gameUpdate evnt model =
                             SOMPrompt name title ->
                                 ( lastModel, lastCmds ++ [ prompt { name = name, title = title } ], lastAudioCmds )
                     )
-                    ( newModel, [], [] )
+                    ( timeUpdatedModel, [], [] )
                     som
 
-            newmodel2 =
-                case newmodel.transition of
-                    Just ( trans, ( d, n ) ) ->
+            updatedModel3 =
+                case updatedModel2.transition of
+                    Just ( trans, ( name, tm ) ) ->
                         if trans.currentTransition == trans.outT then
-                            loadSceneByName evnt newmodel d n
+                            loadSceneByName name scenes tm updatedModel2
                                 |> resetSceneStartTime
 
                         else
-                            newmodel
+                            updatedModel2
 
                     Nothing ->
-                        newmodel
+                        updatedModel2
         in
-        ( newmodel2
+        ( updatedModel3
         , Cmd.batch <|
-            if newmodel2.currentGlobalData.localStorage /= oldLocalStorage then
+            if updatedModel3.currentGlobalData.localStorage /= oldLocalStorage then
                 -- Save local storage
-                sendInfo (encodeLSInfo newmodel2.currentGlobalData.localStorage) :: cmds
+                sendInfo (config.localStorageCodec.encode updatedModel3.currentGlobalData.localStorage) :: cmds
 
             else
                 cmds
@@ -112,15 +113,15 @@ gameUpdate evnt model =
         )
 
 
-update : AudioData -> WorldEvent -> Model localstorage scenemsg -> ( Model localstorage scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
-update _ msg model =
-    let
-        gd =
-            model.currentGlobalData
-    in
-    case msg of
-        TextureLoaded name Nothing ->
-            ( model, alert ("Failed to load sprite " ++ name), Audio.cmdNone )
+{-| update : AudioData -> WorldEvent -> Model localstorage scenemsg -> ( Model localstorage scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
+update \_ msg model =
+let
+gd =
+model.currentGlobalData
+in
+case msg of
+TextureLoaded name Nothing ->
+( model, alert ("Failed to load sprite " ++ name), Audio.cmdNone )
 
         TextureLoaded name (Just t) ->
             let
@@ -291,3 +292,5 @@ update _ msg model =
 
         _ ->
             gameUpdate msg model
+
+-}

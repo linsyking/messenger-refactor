@@ -15,12 +15,12 @@ TODO
 -}
 
 import Audio exposing (Audio, AudioData)
+import Browser.Events exposing (Visibility(..))
+import Messenger.Audio.Audio exposing (getAudio)
 import Messenger.Audio.Base exposing (AudioRepo)
 import Messenger.Base exposing (GlobalData)
 import Messenger.Scene.Scene exposing (MAbsScene)
 import Messenger.Scene.Transitions.Base exposing (Transition)
-import Browser.Events exposing (Visibility(..))
-import Messenger.Audio.Audio exposing (getAudio)
 
 
 type alias Model localstorage scenemsg =
@@ -31,19 +31,16 @@ type alias Model localstorage scenemsg =
     }
 
 
-{-| updateSceneStartTime
-
-Add one tick to the scene start time
-
+{-| updateSceneTime
 -}
-updateSceneStartTime : Model localstorage scenemsg -> Model localstorage scenemsg
-updateSceneStartTime m =
+updateSceneTime : Model localstorage scenemsg -> Model localstorage scenemsg
+updateSceneTime m =
     let
         ogd =
             m.currentGlobalData
 
         ngd =
-            { ogd | sceneStartTime = ogd.sceneStartTime + 1 }
+            { ogd | sceneStartTime = ogd.sceneStartTime + 1, globalTime = ogd.globalTime + 1 }
     in
     { m | currentGlobalData = ngd }
 
@@ -61,7 +58,6 @@ resetSceneStartTime m =
             { ogd | sceneStartTime = 0 }
     in
     { m | currentGlobalData = ngd }
-
 
 
 {-| audio
