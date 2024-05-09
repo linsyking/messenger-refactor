@@ -42,10 +42,14 @@ getScene i scenes =
 
 {-| loadScene
 -}
-loadScene : Maybe (SceneStorage localstorage scenemsg) -> Env () localstorage -> scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
-loadScene scenest env smsg model =
+loadScene : Maybe (SceneStorage localstorage scenemsg) -> scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
+loadScene scenest smsg model =
     case scenest of
         Just s ->
+            let
+                env =
+                    Env model.currentGlobalData ()
+            in
             { model | currentScene = s env smsg }
 
         Nothing ->
@@ -54,11 +58,11 @@ loadScene scenest env smsg model =
 
 {-| loadSceneByName
 -}
-loadSceneByName : String -> List ( String, (SceneStorage localstorage scenemsg) ) -> Env () localstorage -> scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
-loadSceneByName name scenes env smsg model =
+loadSceneByName : String -> List ( String, SceneStorage localstorage scenemsg ) -> scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
+loadSceneByName name scenes smsg model =
     let
         newModel =
-            loadScene (getScene name scenes) env smsg model
+            loadScene (getScene name scenes) smsg model
 
         gd =
             newModel.currentGlobalData
