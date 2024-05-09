@@ -34,6 +34,7 @@ type WorldEvent
     | MouseMove ( Float, Float )
     | MouseWheel Int
     | Prompt String String
+    | NullEvent
 
 
 {-| GlobalData
