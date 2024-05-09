@@ -1,4 +1,4 @@
-module Lib.Tools.KeyCode exposing (arrowUp, arrowDown, arrowLeft, arrowRight, space, escape, enter, backspace, tab, shift, ctrl, alt, capsLock)
+module Messenger.Tools.KeyCode exposing (arrowUp, arrowDown, arrowLeft, arrowRight, space, escape, enter, backspace, tab, shift, ctrl, alt, capsLock)
 
 {-| Common key codes
 

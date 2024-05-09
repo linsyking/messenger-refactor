@@ -3,17 +3,17 @@ module Messenger.UI.Subscription exposing (..)
 import Audio exposing (AudioData)
 import Browser.Events exposing (onKeyDown, onKeyUp, onMouseDown, onMouseMove, onMouseUp, onResize, onVisibilityChange)
 import Json.Decode as Decode
-import Lib.Tools.Browser exposing (promptReceiver)
-import MainConfig exposing (timeInterval)
+import Messenger.Tools.Browser exposing (promptReceiver)
 import Messenger.Base exposing (WorldEvent(..))
 import Messenger.Model exposing (Model)
 import Time
+import Messenger.UserConfig exposing (UserConfig)
 
 
-subscriptions : AudioData -> Model localstorage scenemsg -> Sub WorldEvent
-subscriptions _ _ =
+subscriptions : UserConfig localstorage scenemsg -> AudioData -> Model localstorage scenemsg -> Sub WorldEvent
+subscriptions config _ _ =
     Sub.batch
-        [ Time.every timeInterval Tick --- Slow down the fps
+        [ Time.every config.timeInterval Tick --- Slow down the fps
         , onKeyDown
             (Decode.map2
                 (\x rep ->

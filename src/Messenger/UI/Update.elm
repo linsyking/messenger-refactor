@@ -5,11 +5,13 @@ module Messenger.UI.Update exposing (..)
 If you add some SceneOutputMsg, you have to add corresponding updating logic here.
 
 -}
+
+import Audio exposing (AudioCmd, AudioData)
 import Messenger.Base exposing (WorldEvent(..))
-import Audio
+import Messenger.Model exposing (Model)
 
 
-gameUpdate : Event -> Model -> ( Model, Cmd Msg, AudioCmd Msg )
+gameUpdate : WorldEvent -> Model localstorage scenemsg -> ( Model localstorage scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
 gameUpdate evnt model =
     if List.length (Dict.keys model.currentGlobalData.internalData.sprites) < List.length allTexture then
         -- Still loading assets
@@ -110,12 +112,7 @@ gameUpdate evnt model =
         )
 
 
-{-| update
-DO NOT EDIT THIS UNLESS YOU KNOW WHAT YOU ARE DOING.
-This is the update function of the whole game.
-You may want to change `gameUpdate` rather than this function.
--}
-update : AudioData -> Msg -> Model -> ( Model, Cmd Msg, AudioCmd Msg )
+update : AudioData -> WorldEvent -> Model localstorage scenemsg -> ( Model localstorage scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
 update _ msg model =
     let
         gd =
@@ -224,7 +221,7 @@ update _ msg model =
                 ( model, prompt { name = "load", title = "Enter the scene you want to load" }, Audio.cmdNone )
 
             else
-                gameUpdate (Event.event msg) model
+                gameUpdate msg model
 
         KeyDown 113 ->
             if debug then
@@ -232,7 +229,7 @@ update _ msg model =
                 ( model, prompt { name = "setVolume", title = "Set volume (0-1)" }, Audio.cmdNone )
 
             else
-                gameUpdate (Event.event msg) model
+                gameUpdate msg model
 
         Prompt "load" result ->
             if existScene result then
@@ -287,10 +284,10 @@ update _ msg model =
                         Nothing ->
                             trans
             in
-            gameUpdate (Event.event msg) { model | currentGlobalData = newGD, transition = newTrans }
+            gameUpdate msg { model | currentGlobalData = newGD, transition = newTrans }
 
         NullEvent ->
             ( model, Cmd.none, Audio.cmdNone )
 
         _ ->
-            gameUpdate (Event.event msg) model
+            gameUpdate msg model

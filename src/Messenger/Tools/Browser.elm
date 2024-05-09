@@ -1,4 +1,4 @@
-port module Lib.Tools.Browser exposing (alert, prompt, promptReceiver)
+port module Messenger.Tools.Browser exposing (alert, prompt, promptReceiver)
 
 {-| This module contains functions for working with the browser.
 

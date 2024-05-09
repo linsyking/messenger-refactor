@@ -17,9 +17,9 @@ import Canvas exposing (Renderable, empty, texture)
 import Canvas.Settings exposing (Setting)
 import Canvas.Settings.Advanced exposing (scale, transform, translate)
 import Canvas.Texture exposing (Texture, dimensions, sprite)
-import Lib.Resources.Base exposing (igetSprite)
 import Messenger.Base exposing (GlobalData)
 import Messenger.Coordinate.Coordinates exposing (lengthToReal, posToReal)
+import Messenger.Resources.Base exposing (igetSprite)
 
 
 {-| Render a single sprite.

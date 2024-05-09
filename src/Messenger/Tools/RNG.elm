@@ -1,4 +1,4 @@
-module Lib.Tools.RNG exposing (genRandomInt, genRandomListInt)
+module Messenger.Tools.RNG exposing (genRandomInt, genRandomListInt)
 
 {-|
 
