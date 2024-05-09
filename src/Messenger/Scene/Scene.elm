@@ -23,7 +23,7 @@ type AbsScene env event ren scenemsg ls
     = Roll (UnrolledAbsScene env event ren scenemsg ls)
 
 
-type alias MConcreteScene data localstorage scenemsg=
+type alias MConcreteScene data localstorage scenemsg =
     ConcreteScene data (Env () localstorage) WorldEvent Renderable scenemsg localstorage
 
 
@@ -90,7 +90,3 @@ type SceneOutputMsg scenemsg ls
     | SOMSetVolume Float
     | SOMPrompt String String -- name, title
 
-
-type MsgBase othermsg scenemsg ls
-    = SOMMsg (SceneOutputMsg scenemsg ls)
-    | OtherMsg othermsg

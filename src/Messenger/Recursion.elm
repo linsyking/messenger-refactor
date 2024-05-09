@@ -16,13 +16,12 @@ List implementation for the recursion algorithm
 
 -}
 
-import Messenger.GeneralModel exposing (AbsGeneralModel, Msg(..), unroll)
-import Messenger.Scene.Scene exposing (MsgBase)
+import Messenger.GeneralModel exposing (AbsGeneralModel, Msg(..), MsgBase, unroll)
 
 
 {-| Recursively update all the objects in the List
 -}
-updateObjects : env -> event -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> ( List (AbsGeneralModel env event tar msg ren bdata scenemsg), List (MsgBase msg scenemsg), ( env, Bool ) )
+updateObjects : env -> event -> List (AbsGeneralModel env event tar msg ren bdata sommsg) -> ( List (AbsGeneralModel env event tar msg ren bdata sommsg), List (MsgBase msg sommsg), ( env, Bool ) )
 updateObjects env evt objs =
     let
         ( newObjs, ( newMsgUnfinished, newMsgFinished ), ( newEnv, newBlock ) ) =
@@ -36,7 +35,7 @@ updateObjects env evt objs =
 
 {-| Recursively update all the objects in the List, but also uses target
 -}
-updateObjectsWithTarget : env -> List (Msg tar msg scenemsg) -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> ( List (AbsGeneralModel env event tar msg ren bdata scenemsg), List (MsgBase msg scenemsg), env )
+updateObjectsWithTarget : env -> List (Msg tar msg sommsg) -> List (AbsGeneralModel env event tar msg ren bdata sommsg) -> ( List (AbsGeneralModel env event tar msg ren bdata sommsg), List (MsgBase msg sommsg), env )
 updateObjectsWithTarget env msgs objs =
     updateRemain env ( msgs, [] ) objs
 
@@ -45,7 +44,7 @@ updateObjectsWithTarget env msgs objs =
 -- Below are some helper functions
 
 
-updateOne : env -> event -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> List (Msg tar msg scenemsg) -> List (MsgBase msg scenemsg) -> ( List (AbsGeneralModel env event tar msg ren bdata scenemsg), ( List (Msg tar msg scenemsg), List (MsgBase msg scenemsg) ), ( env, Bool ) )
+updateOne : env -> event -> List (AbsGeneralModel env event tar msg ren bdata sommsg) -> List (AbsGeneralModel env event tar msg ren bdata sommsg) -> List (Msg tar msg sommsg) -> List (MsgBase msg sommsg) -> ( List (AbsGeneralModel env event tar msg ren bdata sommsg), ( List (Msg tar msg sommsg), List (MsgBase msg sommsg) ), ( env, Bool ) )
 updateOne lastEnv evt objs lastObjs lastMsgUnfinished lastMsgFinished =
     case objs of
         ele :: restObjs ->
@@ -78,7 +77,7 @@ updateOne lastEnv evt objs lastObjs lastMsgUnfinished lastMsgFinished =
                         newMsg
             in
             if block then
-                ( lastObjs ++ [ newObj ] ++ restObjs, ( lastMsgUnfinished ++ unfinishedMsg, lastMsgFinished ++ finishedMsg ), ( lastEnv, block ) )
+                ( lastObjs ++ newObj :: restObjs, ( lastMsgUnfinished ++ unfinishedMsg, lastMsgFinished ++ finishedMsg ), ( lastEnv, block ) )
 
             else
                 updateOne newEnv evt restObjs (lastObjs ++ [ newObj ]) (lastMsgUnfinished ++ unfinishedMsg) (lastMsgFinished ++ finishedMsg)
@@ -87,14 +86,14 @@ updateOne lastEnv evt objs lastObjs lastMsgUnfinished lastMsgFinished =
             ( lastObjs, ( lastMsgUnfinished, lastMsgFinished ), ( lastEnv, True ) )
 
 
-updateOnce : env -> event -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> ( List (AbsGeneralModel env event tar msg ren bdata scenemsg), ( List (Msg tar msg scenemsg), List (MsgBase msg scenemsg) ), ( env, Bool ) )
+updateOnce : env -> event -> List (AbsGeneralModel env event tar msg ren bdata sommsg) -> ( List (AbsGeneralModel env event tar msg ren bdata sommsg), ( List (Msg tar msg sommsg), List (MsgBase msg sommsg) ), ( env, Bool ) )
 updateOnce env evt objs =
     updateOne env evt objs [] [] []
 
 
 {-| Recursively update remaining objects
 -}
-updateRemain : env -> ( List (Msg tar msg scenemsg), List (MsgBase msg scenemsg) ) -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> ( List (AbsGeneralModel env event tar msg ren bdata scenemsg), List (MsgBase msg scenemsg), env )
+updateRemain : env -> ( List (Msg tar msg sommsg), List (MsgBase msg sommsg) ) -> List (AbsGeneralModel env event tar msg ren bdata sommsg) -> ( List (AbsGeneralModel env event tar msg ren bdata sommsg), List (MsgBase msg sommsg), env )
 updateRemain env ( unfinishedMsg, finishedMsg ) objs =
     if List.isEmpty unfinishedMsg then
         ( objs, finishedMsg, env )

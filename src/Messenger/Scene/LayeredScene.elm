@@ -3,9 +3,9 @@ module Messenger.Scene.LayeredScene exposing (..)
 import Canvas exposing (Renderable, group)
 import Canvas.Settings exposing (Setting)
 import Messenger.Base exposing (Env, WorldEvent)
-import Messenger.GeneralModel exposing (MAbsGeneralModel, MConcreteGeneralModel, viewModelList)
+import Messenger.GeneralModel exposing (MAbsGeneralModel, MConcreteGeneralModel, MsgBase(..), viewModelList)
 import Messenger.Recursion exposing (updateObjects)
-import Messenger.Scene.Scene exposing (MConcreteScene, MsgBase(..), SceneOutputMsg, addCommonData, noCommonData)
+import Messenger.Scene.Scene exposing (MConcreteScene, SceneOutputMsg, addCommonData, noCommonData)
 
 
 type alias ConcreteLayer data common localstorage tar msg scenemsg =
