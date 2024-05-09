@@ -20,7 +20,7 @@ type alias UserConfig localstorage scenemsg =
     , background : GlobalData localstorage -> Renderable
     , initGlobalData : localstorage -> GlobalData localstorage
     , allTexture : List ( String, String )
-    , timeInterval: Int
+    , timeInterval: Float
     }
 
 
