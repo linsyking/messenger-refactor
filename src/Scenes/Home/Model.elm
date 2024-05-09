@@ -1,8 +1,4 @@
-module Scenes.Home.Model exposing
-    ( handleLayerMsg
-    , updateModel
-    , viewModel
-    )
+module Scenes.Home.Model exposing (..)
 
 {-| Scene update module
 
@@ -13,15 +9,53 @@ module Scenes.Home.Model exposing
 -}
 
 import Canvas exposing (Renderable)
-import Lib.Audio.Base exposing (AudioOption(..))
-import Lib.Env.Env exposing (Env, addCommonData, noCommonData)
-import Lib.Event.Event exposing (Event)
+import Messenger.Audio.Base exposing (AudioOption(..))
 import Lib.Layer.Base exposing (LayerMsg, LayerMsg_(..))
 import Lib.Layer.LayerHandler exposing (updateLayer, viewLayer)
-import Lib.Scene.Base exposing (MsgBase(..), SceneInitData(..), SceneOutputMsg(..))
 import Scenes.Home.Common exposing (Model)
 import Scenes.Home.LayerBase exposing (CommonData)
+import Messenger.Base exposing (Env)
+import Scenes.AllScenes exposing (SceneInitMsg)
+import Scenes.AllScenes exposing (SceneInitMsg(..))
+import Messenger.Scene.Scene exposing (LayeredModel)
 
+{-| Model
+-}
+type alias Data =
+    LayeredModel CommonData
+
+
+{-| Init Data
+-}
+type alias InitDataT =
+    {}
+
+{-| Null HomeInit data
+-}
+nullHomeInit : InitDataT
+nullHomeInit =
+    {}
+
+initCommonData : Env () localstorage -> InitDataT -> CommonData
+initCommonData _ _ =
+    nullCommonData
+
+{-| Initialize the model
+-}
+initModel : Env () localstorage -> SceneInitMsg -> Data
+initModel env init =
+    let
+        layerInitData =
+            case init of
+                HomeInit x ->
+                    x
+
+                _ ->
+                    nullHomeInit
+    in
+    { commonData = initCommonData env layerInitData
+    , layers = allLayers env layerInitData
+    }
 
 {-| handleLayerMsg
 

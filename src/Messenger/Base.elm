@@ -5,7 +5,7 @@ import Browser.Events exposing (Visibility)
 import Canvas.Texture exposing (Texture)
 import Dict exposing (Dict)
 import Html exposing (Html)
-import Lib.Audio.Base exposing (AudioOption)
+import Messenger.Audio.Base exposing (AudioOption)
 import Time
 
 
@@ -63,6 +63,7 @@ type alias GlobalData localstorage =
     , windowVisibility : Visibility
     , mousePos : ( Float, Float )
     , extraHTML : Maybe (Html WorldEvent)
+    , volume : Float
     , localStorage : localstorage
     , currentScene : String
     }

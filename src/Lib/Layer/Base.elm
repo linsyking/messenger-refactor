@@ -21,7 +21,7 @@ Using layers can help us deal with different things in different layers.
 
 import Base exposing (ObjectTarget)
 import Canvas exposing (Renderable)
-import Lib.Audio.Base exposing (AudioOption)
+import Messenger.Audio.Base exposing (AudioOption)
 import Lib.Env.Env exposing (Env)
 import Lib.Event.Event exposing (Event)
 import Lib.Scene.Base exposing (MsgBase)

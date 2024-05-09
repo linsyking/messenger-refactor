@@ -1,4 +1,4 @@
-port module Lib.Audio.Audio exposing
+port module Messenger.Audio.Audio exposing
     ( audioPortFromJS
     , audioPortToJS
     , loadAudio

@@ -22,7 +22,7 @@ You have to send data to next scene if you don't store the data in globaldata.
 -}
 
 import Canvas exposing (Renderable)
-import Lib.Audio.Base exposing (AudioOption)
+import Messenger.Audio.Base exposing (AudioOption)
 import Lib.Env.Env exposing (Env)
 import Lib.Event.Event exposing (Event)
 import Messenger.Scene.Transitions.Base exposing (Transition)

@@ -15,10 +15,12 @@ TODO
 -}
 
 import Audio exposing (Audio, AudioData)
-import Lib.Audio.Base exposing (AudioRepo)
+import Messenger.Audio.Base exposing (AudioRepo)
 import Messenger.Base exposing (GlobalData)
 import Messenger.Scene.Scene exposing (MAbsScene)
 import Messenger.Scene.Transitions.Base exposing (Transition)
+import Browser.Events exposing (Visibility(..))
+import Messenger.Audio.Audio exposing (getAudio)
 
 
 type alias Model localstorage scenemsg =
@@ -61,32 +63,6 @@ resetSceneStartTime m =
     { m | currentGlobalData = ngd }
 
 
-{-| initGlobalData
-
-Default settings for globaldata
-
-You may add your own global data.
-
--}
-initGlobalData : GlobalData localstorage
-initGlobalData =
-    { internalData =
-        { browserViewPort = ( 1920, 1080 )
-        , realHeight = 1080
-        , realWidth = 1920
-        , startLeft = 0
-        , startTop = 0
-        , sprites = Dict.empty
-        }
-    , currentTimeStamp = Time.millisToPosix 0
-    , sceneStartTime = 0
-    , windowVisibility = Visible
-    , mousePos = ( 0, 0 )
-    , extraHTML = Nothing
-    , localStorage = decodeLSInfo ""
-    , currentScene = initScene
-    }
-
 
 {-| audio
 
@@ -96,4 +72,4 @@ The audio argument needed in the main model.
 audio : AudioData -> Model localstorage scenemsg -> Audio
 audio ad model =
     Audio.group (getAudio ad model.audiorepo)
-        |> Audio.scaleVolume model.currentGlobalData.localStorage.volume
+        |> Audio.scaleVolume model.currentGlobalData.volume

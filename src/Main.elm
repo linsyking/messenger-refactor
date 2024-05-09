@@ -17,7 +17,7 @@ import Html exposing (Html)
 import Html.Attributes exposing (style)
 import Html.Events exposing (on)
 import Json.Decode as Decode
-import Lib.Audio.Audio exposing (audioPortFromJS, audioPortToJS, loadAudio, stopAudio)
+import Messenger.Audio.Audio exposing (audioPortFromJS, audioPortToJS, loadAudio, stopAudio)
 import Lib.Coordinate.Coordinates exposing (fromMouseToVirtual, getStartPoint, maxHandW)
 import Lib.Event.Event as Event exposing (Event)
 import Lib.LocalStorage.LocalStorage exposing (decodeLSInfo, encodeLSInfo, sendInfo)

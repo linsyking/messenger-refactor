@@ -16,34 +16,4 @@ import Scenes.Home.LayerSettings exposing (LayerT)
 import Scenes.Home.SceneInit exposing (initCommonData, nullHomeInit)
 
 
-{-| Model
--}
-type alias Model =
-    LayerPacker CommonData LayerT
 
-
-{-| nullModel
--}
-nullModel : Model
-nullModel =
-    { commonData = nullCommonData
-    , layers = []
-    }
-
-
-{-| Initialize the model
--}
-initModel : Env () -> SceneInitData -> Model
-initModel env init =
-    let
-        layerInitData =
-            case init of
-                HomeInitData x ->
-                    x
-
-                _ ->
-                    nullHomeInit
-    in
-    { commonData = initCommonData env layerInitData
-    , layers = allLayers env layerInitData
-    }

@@ -1,4 +1,4 @@
-module Lib.Audio.Base exposing
+module Messenger.Audio.Base exposing
     ( AudioOption(..)
     , AudioRepo
     )

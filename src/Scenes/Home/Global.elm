@@ -1,4 +1,4 @@
-module Scenes.Home.Global exposing (sceneToST)
+module Scenes.Home.Global exposing (..)
 
 {-| Global module
 
@@ -10,52 +10,4 @@ Don't modify this file.
 
 -}
 
-import Canvas exposing (Renderable)
-import Lib.Env.Env exposing (Env)
-import Lib.Event.Event exposing (Event)
-import Lib.Scene.Base exposing (Scene, SceneInitData, SceneOutputMsg)
-import Scenes.Home.Common exposing (nullModel)
-import Scenes.Home.Export exposing (Data)
-import Scenes.SceneSettings exposing (SceneDataTypes(..), SceneT)
 
-
-dataToSDT : Data -> SceneDataTypes
-dataToSDT d =
-    HomeDataT d
-
-
-sdtToData : SceneDataTypes -> Data
-sdtToData dt =
-    case dt of
-        HomeDataT x ->
-            x
-
-        _ ->
-            nullModel
-
-
-{-| sceneToST
--}
-sceneToST : Scene Data -> SceneT
-sceneToST sd =
-    let
-        init : Env () -> SceneInitData -> SceneDataTypes
-        init t tm =
-            dataToSDT (sd.init t tm)
-
-        update : Env () -> Event -> SceneDataTypes -> ( SceneDataTypes, List SceneOutputMsg, Env () )
-        update env evt sdt =
-            let
-                ( newm, som, newgd ) =
-                    sd.update env evt (sdtToData sdt)
-            in
-            ( dataToSDT newm, som, newgd )
-
-        view : Env () -> SceneDataTypes -> Renderable
-        view env sdt =
-            sd.view env (sdtToData sdt)
-    in
-    { init = init
-    , update = update
-    , view = view
-    }

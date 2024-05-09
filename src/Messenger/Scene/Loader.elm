@@ -8,16 +8,16 @@ import Messenger.Model exposing (Model)
 import Messenger.Scene.Scene exposing (MAbsScene, MConcreteScene, abstract)
 
 
-type alias SceneStorage =
+type alias SceneStorage localstorage scenemsg =
     Env () localstorage -> scenemsg -> MAbsScene localstorage scenemsg
 
 
-sceneInit : MConcreteScene data localstorage scenemsg -> SceneStorage
+sceneInit : MConcreteScene data localstorage scenemsg -> SceneStorage localstorage scenemsg
 sceneInit conscene =
     abstract conscene
 
 
-existScene : String -> List ( String, SceneStorage ) -> Bool
+existScene : String -> List ( String, SceneStorage localstorage scenemsg ) -> Bool
 existScene i scenes =
     let
         tests =
@@ -33,7 +33,7 @@ existScene i scenes =
 
 {-| getScene
 -}
-getScene : String -> List ( String, SceneStorage ) -> Maybe SceneStorage
+getScene : String -> List ( String, SceneStorage localstorage scenemsg ) -> Maybe (SceneStorage localstorage scenemsg)
 getScene i scenes =
     List.head <|
         List.map (\( _, s ) -> s) <|
@@ -42,7 +42,7 @@ getScene i scenes =
 
 {-| loadScene
 -}
-loadScene : Maybe SceneStorage -> Env () localstorage -> scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
+loadScene : Maybe (SceneStorage localstorage scenemsg) -> Env () localstorage -> scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
 loadScene scenest env smsg model =
     case scenest of
         Just s ->
@@ -54,7 +54,7 @@ loadScene scenest env smsg model =
 
 {-| loadSceneByName
 -}
-loadSceneByName : String -> List ( String, SceneStorage ) -> Env () localstorage -> scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
+loadSceneByName : String -> List ( String, (SceneStorage localstorage scenemsg) ) -> Env () localstorage -> scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
 loadSceneByName name scenes env smsg model =
     let
         newModel =

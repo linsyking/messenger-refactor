@@ -1,7 +1,7 @@
 module Messenger.Scene.Scene exposing (..)
 
 import Canvas exposing (Renderable)
-import Lib.Audio.Base exposing (AudioOption)
+import Messenger.Audio.Base exposing (AudioOption)
 import Messenger.Base exposing (Env, WorldEvent)
 import Messenger.Scene.Transitions.Base exposing (Transition)
 
@@ -60,6 +60,18 @@ abstract conmodel initEnv initMsg =
     in
     abstractRec (conmodel.init initEnv initMsg)
 
+genRawScene : MConcreteScene data localstorage scenemsg -> (Env () localstorage) -> scenemsg -> MAbsScene localstorage scenemsg
+genRawScene conraw initEnv initMsg =
+    abstract conraw initEnv initMsg
+
+type alias LayeredModel cdata =
+    { commonData : cdata 
+    , layers : List MAbsLayer --TODO: Layer type
+    }
+
+genScene : MConcreteScene (LayeredModel cdata) localstorage scenemsg -> (Env () localstorage) -> scenemsg -> MAbsScene localstorage scenemsg
+genScene conscene initEnv initMsg = 
+    abstract conscene initEnv initMsg
 
 type SceneOutputMsg scenemsg
     = SOMChangeScene ( scenemsg, String, Maybe Transition )
