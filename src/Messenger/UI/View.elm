@@ -1,7 +1,6 @@
 module Messenger.UI.View exposing (..)
 
 {-| view
-DO NOT EDIT THIS UNLESS YOU KNOW WHAT YOU ARE DOING.
 
 Canvas viewer
 You can change the mouse style here.
@@ -13,8 +12,9 @@ import Canvas
 import Html exposing (Html)
 import Html.Attributes exposing (style)
 import Html.Events exposing (on)
+import Json.Decode as Decode
 import Lib.Resources.Base exposing (getTexture)
-import Messenger.Base exposing (WorldEvent)
+import Messenger.Base exposing (WorldEvent(..))
 import Messenger.Model exposing (Model)
 import Messenger.Scene.Scene exposing (unroll)
 import Messenger.Scene.Transition exposing (makeTransition)
@@ -31,7 +31,7 @@ view config _ model =
             Canvas.toHtmlWith
                 { width = floor model.currentGlobalData.internalData.realWidth
                 , height = floor model.currentGlobalData.internalData.realHeight
-                , textures = getTexture
+                , textures = getTexture config
                 }
                 [ style "left" (String.fromFloat model.currentGlobalData.internalData.startLeft)
                 , style "top" (String.fromFloat model.currentGlobalData.internalData.startTop)

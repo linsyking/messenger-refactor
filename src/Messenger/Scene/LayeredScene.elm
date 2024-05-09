@@ -27,7 +27,7 @@ type alias ConcreteLayeredScene cdata ls tar msg scenemsg =
     MConcreteScene (LayeredSceneData cdata ls tar msg scenemsg) ls scenemsg
 
 
-updateLayeredScene : (Env () ls -> WorldEvent -> LayeredSceneData cdata ls tar msg scenemsg -> List Setting) -> Env () ls -> WorldEvent -> LayeredSceneData cdata ls tar msg scenemsg -> ( LayeredSceneData cdata ls tar msg scenemsg, List (SceneOutputMsg scenemsg), Env () ls )
+updateLayeredScene : (Env () ls -> WorldEvent -> LayeredSceneData cdata ls tar msg scenemsg -> List Setting) -> Env () ls -> WorldEvent -> LayeredSceneData cdata ls tar msg scenemsg -> ( LayeredSceneData cdata ls tar msg scenemsg, List (SceneOutputMsg scenemsg ls), Env () ls )
 updateLayeredScene settingsFunc env evt lsd =
     let
         ( newLayers, newMsgs, ( newEnv, _ ) ) =

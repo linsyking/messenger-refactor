@@ -17,7 +17,7 @@ import Messenger.Scene.Transitions.Base exposing (SingleTrans)
 
 {-| Scroll Out
 -}
-scrollOut : Color -> SingleTrans a
+scrollOut : Color -> SingleTrans ls
 scrollOut col gd rd v =
     group []
         [ rd
@@ -47,7 +47,7 @@ scrollOut col gd rd v =
 
 {-| Scroll In
 -}
-scrollIn : Color -> SingleTrans a
+scrollIn : Color -> SingleTrans ls
 scrollIn col gd rd v =
     group []
         [ rd

@@ -1,4 +1,4 @@
-module Lib.Resources.Base exposing
+module Messenger.Resources.Base exposing
     ( saveSprite
     , getTexture
     , igetSprite
@@ -38,7 +38,7 @@ Return all the textures.
 -}
 getTexture : UserConfig localstorage scenemsg -> List (Texture.Source WorldEvent)
 getTexture config =
-    List.map (\( x, y ) -> Texture.loadFromImageUrl y (TextureLoaded x)) allTexture
+    List.map (\( x, y ) -> Texture.loadFromImageUrl y (TextureLoaded x)) config.allTexture
 
 
 {-| saveSprite

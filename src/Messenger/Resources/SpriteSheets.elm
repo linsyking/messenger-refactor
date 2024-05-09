@@ -1,4 +1,4 @@
-module Lib.Resources.SpriteSheets exposing (allSpriteSheets)
+module Messenger.Resources.SpriteSheets exposing (allSpriteSheets)
 
 {-|
 
@@ -10,7 +10,7 @@ module Lib.Resources.SpriteSheets exposing (allSpriteSheets)
 -}
 
 import Dict
-import Lib.Render.SpriteSheet exposing (SpriteSheet)
+import Messenger.Render.SpriteSheet exposing (SpriteSheet)
 
 
 {-| Add all your sprite sheets here.
