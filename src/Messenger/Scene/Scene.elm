@@ -1,9 +1,9 @@
-module Messenger.Scene exposing (..)
+module Messenger.Scene.Scene exposing (..)
 
 import Canvas exposing (Renderable)
 import Lib.Audio.Base exposing (AudioOption)
-import Lib.Scene.Transitions.Base exposing (Transition)
 import Messenger.Base exposing (Env, WorldEvent)
+import Messenger.Scene.Transitions.Base exposing (Transition)
 
 
 type alias ConcreteScene data env event ren scenemsg =
@@ -23,12 +23,12 @@ type AbsScene env event ren scenemsg
     = Roll (UnrolledAbsScene env event ren scenemsg)
 
 
-type alias MConcreteScene data common localstorage scenemsg =
-    ConcreteScene data (Env common localstorage) WorldEvent Renderable scenemsg
+type alias MConcreteScene data localstorage scenemsg =
+    ConcreteScene data (Env () localstorage) WorldEvent Renderable scenemsg
 
 
-type alias MAbsScene common localstorage scenemsg =
-    AbsScene (Env common localstorage) WorldEvent Renderable scenemsg
+type alias MAbsScene localstorage scenemsg =
+    AbsScene (Env () localstorage) WorldEvent Renderable scenemsg
 
 
 unroll : AbsScene env event ren scenemsg -> UnrolledAbsScene env event ren scenemsg
@@ -41,6 +41,7 @@ abstract conmodel initEnv initMsg =
     let
         abstractRec data =
             let
+                updates : env -> event -> ( AbsScene env event ren scenemsg, List (SceneOutputMsg scenemsg), env )
                 updates env event =
                     let
                         ( new_d, new_m, new_e ) =

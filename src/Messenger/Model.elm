@@ -14,15 +14,18 @@ TODO
 
 -}
 
+import Audio exposing (Audio, AudioData)
 import Lib.Audio.Base exposing (AudioRepo)
-import Lib.Scene.Transitions.Base exposing (Transition)
+import Messenger.Base exposing (GlobalData)
+import Messenger.Scene.Scene exposing (MAbsScene)
+import Messenger.Scene.Transitions.Base exposing (Transition)
 
 
-type alias Model =
-    { currentScene : SceneT
-    , currentGlobalData : GlobalData
+type alias Model localstorage scenemsg =
+    { currentScene : MAbsScene localstorage scenemsg
+    , currentGlobalData : GlobalData localstorage
     , audiorepo : AudioRepo
-    , transition : Maybe ( Transition, ( String, SceneInitData ) )
+    , transition : Maybe ( Transition, ( String, scenemsg ) )
     }
 
 
@@ -31,7 +34,7 @@ type alias Model =
 Add one tick to the scene start time
 
 -}
-updateSceneStartTime : Model -> Model
+updateSceneStartTime : Model localstorage scenemsg -> Model localstorage scenemsg
 updateSceneStartTime m =
     let
         ogd =
@@ -46,7 +49,7 @@ updateSceneStartTime m =
 {-| resetSceneStartTime
 Set the scene starttime to 0.
 -}
-resetSceneStartTime : Model -> Model
+resetSceneStartTime : Model localstorage scenemsg -> Model localstorage scenemsg
 resetSceneStartTime m =
     let
         ogd =
@@ -65,7 +68,7 @@ Default settings for globaldata
 You may add your own global data.
 
 -}
-initGlobalData : GlobalData
+initGlobalData : GlobalData localstorage
 initGlobalData =
     { internalData =
         { browserViewPort = ( 1920, 1080 )
@@ -90,7 +93,7 @@ initGlobalData =
 The audio argument needed in the main model.
 
 -}
-audio : AudioData -> Model -> Audio
+audio : AudioData -> Model localstorage scenemsg -> Audio
 audio ad model =
     Audio.group (getAudio ad model.audiorepo)
         |> Audio.scaleVolume model.currentGlobalData.localStorage.volume

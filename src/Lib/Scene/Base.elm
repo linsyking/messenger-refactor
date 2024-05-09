@@ -25,7 +25,7 @@ import Canvas exposing (Renderable)
 import Lib.Audio.Base exposing (AudioOption)
 import Lib.Env.Env exposing (Env)
 import Lib.Event.Event exposing (Event)
-import Lib.Scene.Transitions.Base exposing (Transition)
+import Messenger.Scene.Transitions.Base exposing (Transition)
 import Scenes.Home.SceneInit exposing (HomeInit)
 
 

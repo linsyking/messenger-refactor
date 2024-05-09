@@ -24,8 +24,8 @@ import Lib.Audio.Audio exposing (getAudio)
 import Lib.Audio.Base exposing (AudioRepo)
 import Lib.LocalStorage.LocalStorage exposing (decodeLSInfo)
 import Lib.Scene.Base exposing (SceneInitData)
-import Lib.Scene.Transitions.Base exposing (Transition)
 import MainConfig exposing (initScene)
+import Messenger.Scene.Transitions.Base exposing (Transition)
 import Scenes.SceneSettings exposing (SceneDataTypes, SceneT)
 import Time
 

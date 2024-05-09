@@ -1,5 +1,4 @@
-module Messenger.GeneralModel exposing
-    (..)
+module Messenger.GeneralModel exposing (..)
 
 {-|
 
@@ -15,7 +14,7 @@ General model is designed to be an abstract interface of layers, components, gam
 
 import Canvas exposing (Renderable)
 import Messenger.Base exposing (Env, WorldEvent)
-import Messenger.Scene exposing (MsgBase)
+import Messenger.Scene.Scene exposing (MsgBase)
 
 
 type Msg othertar msg scenemsg
@@ -38,10 +37,10 @@ type alias ConcreteGeneralModel data env event tar msg ren bdata scenemsg =
 
 
 type alias UnrolledAbsGeneralModel env event tar msg ren bdata scenemsg =
-    { update : env -> bdata -> event -> ( AbsGeneralModel env event tar msg ren bdata scenemsg, List (Msg tar msg scenemsg), ( env, Bool ) )
-    , updaterec : env -> bdata -> msg -> ( AbsGeneralModel env event tar msg ren bdata scenemsg, List (Msg tar msg scenemsg), env )
-    , view : env -> bdata -> ren
-    , matcher : bdata -> tar -> Bool
+    { update : env -> event -> ( AbsGeneralModel env event tar msg ren bdata scenemsg, List (Msg tar msg scenemsg), ( env, Bool ) )
+    , updaterec : env -> msg -> ( AbsGeneralModel env event tar msg ren bdata scenemsg, List (Msg tar msg scenemsg), env )
+    , view : env -> ren
+    , matcher : tar -> Bool
     , baseData : bdata
     }
 
@@ -59,35 +58,35 @@ abstract : ConcreteGeneralModel data env event tar msg ren bdata scenemsg -> env
 abstract conmodel initEnv initMsg =
     let
         abstractRec : data -> bdata -> AbsGeneralModel env event tar msg ren bdata scenemsg
-        abstractRec data baseInit =
+        abstractRec data base =
             let
-                updates : env -> bdata -> event -> ( AbsGeneralModel env event tar msg ren bdata scenemsg, List (Msg tar msg scenemsg), ( env, Bool ) )
-                updates env baseData event =
+                updates : env -> event -> ( AbsGeneralModel env event tar msg ren bdata scenemsg, List (Msg tar msg scenemsg), ( env, Bool ) )
+                updates env event =
                     let
                         ( ( new_d, new_bd ), new_m, new_e ) =
-                            conmodel.update env event data baseData
+                            conmodel.update env event data base
                     in
                     ( abstractRec new_d new_bd, new_m, new_e )
 
-                updaterecs : env -> bdata -> msg -> ( AbsGeneralModel env event tar msg ren bdata scenemsg, List (Msg tar msg scenemsg), env )
-                updaterecs env baseData msg =
+                updaterecs : env -> msg -> ( AbsGeneralModel env event tar msg ren bdata scenemsg, List (Msg tar msg scenemsg), env )
+                updaterecs env msg =
                     let
                         ( ( new_d, new_bd ), new_m, new_e ) =
-                            conmodel.updaterec env msg data baseData
+                            conmodel.updaterec env msg data base
                     in
                     ( abstractRec new_d new_bd, new_m, new_e )
 
-                views : env -> bdata -> ren
-                views env baseData =
-                    conmodel.view env data baseData
+                views : env -> ren
+                views env =
+                    conmodel.view env data base
 
-                matchers : bdata -> tar -> Bool
-                matchers baseData =
-                    conmodel.matcher data baseData
+                matchers : tar -> Bool
+                matchers =
+                    conmodel.matcher data base
 
                 baseDatas : bdata
                 baseDatas =
-                    baseInit
+                    base
             in
             Roll
                 { update = updates
@@ -112,8 +111,7 @@ type alias MAbsGeneralModel common localstorage tar msg bdata scenemsg =
 
 
 {-| View model list.
-TODO
 -}
 viewModelList : env -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> List ren
 viewModelList env models =
-    List.map (\model -> (unroll model).view env (unroll model).baseData) models
+    List.map (\model -> (unroll model).view env) models
