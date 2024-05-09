@@ -19,7 +19,7 @@ import Messenger.Coordinate.Coordinates exposing (fixedPosToReal, lengthToReal)
 
 {-| Generate HTML Attributes that has the correct position
 -}
-genAttribute : GlobalData Never -> ( Float, Float ) -> ( Float, Float ) -> List (Attribute msg)
+genAttribute : GlobalData a -> ( Float, Float ) -> ( Float, Float ) -> List (Attribute msg)
 genAttribute gd ( x, y ) ( w, h ) =
     let
         ( rx, ry ) =

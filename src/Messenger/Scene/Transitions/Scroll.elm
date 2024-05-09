@@ -10,7 +10,6 @@ import Canvas exposing (group, shapes)
 import Canvas.Settings exposing (fill)
 import Canvas.Settings.Advanced exposing (GlobalCompositeOperationMode(..), compositeOperationMode, fillLinear)
 import Color exposing (Color)
-import MainConfig exposing (plHeight, plWidth)
 import Messenger.Coordinate.Coordinates exposing (lengthToReal)
 import Messenger.Render.Shape exposing (rect)
 import Messenger.Scene.Transitions.Base exposing (SingleTrans)
@@ -18,12 +17,12 @@ import Messenger.Scene.Transitions.Base exposing (SingleTrans)
 
 {-| Scroll Out
 -}
-scrollOut : Color -> SingleTrans
+scrollOut : Color -> SingleTrans a
 scrollOut col gd rd v =
     group []
         [ rd
         , shapes
-            [ fillLinear { x0 = 0, y0 = 0, x1 = lengthToReal gd plWidth, y1 = 0 }
+            [ fillLinear { x0 = 0, y0 = 0, x1 = lengthToReal gd gd.internalData.virtualWidth, y1 = 0 }
                 [ ( 0, Color.rgba 0 0 0 0 )
                 , ( if 0.95 - v >= 0 then
                         0.95 - v
@@ -37,23 +36,23 @@ scrollOut col gd rd v =
                 ]
             , compositeOperationMode DestinationOut
             ]
-            [ rect gd ( 0, 0 ) ( plWidth, plHeight )
+            [ rect gd ( 0, 0 ) ( gd.internalData.virtualWidth, gd.internalData.virtualHeight )
             ]
         , shapes
             [ fill col, compositeOperationMode DestinationOver ]
-            [ rect gd ( 0, 0 ) ( plWidth, plHeight )
+            [ rect gd ( 0, 0 ) ( gd.internalData.virtualWidth, gd.internalData.virtualHeight )
             ]
         ]
 
 
 {-| Scroll In
 -}
-scrollIn : Color -> SingleTrans
+scrollIn : Color -> SingleTrans a
 scrollIn col gd rd v =
     group []
         [ rd
         , shapes
-            [ fillLinear { x0 = 0, y0 = 0, x1 = lengthToReal gd plWidth, y1 = 0 }
+            [ fillLinear { x0 = 0, y0 = 0, x1 = lengthToReal gd gd.internalData.virtualWidth, y1 = 0 }
                 [ ( 0, Color.rgba 0 0 0 1 )
                 , ( if v >= 0.95 then
                         0
@@ -67,10 +66,10 @@ scrollIn col gd rd v =
                 ]
             , compositeOperationMode DestinationOut
             ]
-            [ rect gd ( 0, 0 ) ( plWidth, plHeight )
+            [ rect gd ( 0, 0 ) ( gd.internalData.virtualWidth, gd.internalData.virtualHeight )
             ]
         , shapes
             [ fill col, compositeOperationMode DestinationOver ]
-            [ rect gd ( 0, 0 ) ( plWidth, plHeight )
+            [ rect gd ( 0, 0 ) ( gd.internalData.virtualWidth, gd.internalData.virtualHeight )
             ]
         ]

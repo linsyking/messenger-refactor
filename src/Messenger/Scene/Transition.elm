@@ -16,7 +16,7 @@ import Messenger.Scene.Transitions.Base exposing (Transition)
 
 {-| Generate transition from transition data
 -}
-makeTransition : GlobalData Never -> Maybe Transition -> Renderable -> Renderable
+makeTransition : GlobalData a -> Maybe (Transition a) -> Renderable -> Renderable
 makeTransition gd trans ren =
     case trans of
         Just data ->

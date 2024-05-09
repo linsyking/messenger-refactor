@@ -29,14 +29,14 @@ import Messenger.Coordinate.Coordinates exposing (lengthToReal, posToReal)
 
 {-| Render Text. Black color, left top align.
 -}
-renderText : GlobalData Never -> Float -> String -> String -> ( Float, Float ) -> Renderable
+renderText : GlobalData a -> Float -> String -> String -> ( Float, Float ) -> Renderable
 renderText gd size s ft pos =
     renderTextWithStyle gd size s ft "" pos
 
 
 {-| Render Text. Black color, left top align.
 -}
-renderTextWithStyle : GlobalData Never -> Float -> String -> String -> String -> ( Float, Float ) -> Renderable
+renderTextWithStyle : GlobalData a -> Float -> String -> String -> String -> ( Float, Float ) -> Renderable
 renderTextWithStyle gd size s ft style ( x, y ) =
     let
         rx =
@@ -58,7 +58,7 @@ renderTextWithStyle gd size s ft style ( x, y ) =
 {-| renderTextWithColor
 Render colorful texts.
 -}
-renderTextWithColor : GlobalData Never -> Float -> String -> String -> Color -> ( Float, Float ) -> Renderable
+renderTextWithColor : GlobalData a -> Float -> String -> String -> Color -> ( Float, Float ) -> Renderable
 renderTextWithColor gd size s ft col pos =
     renderTextWithColorStyle gd size s ft col "" pos
 
@@ -66,7 +66,7 @@ renderTextWithColor gd size s ft col pos =
 {-| renderTextWithColor
 Render colorful texts.
 -}
-renderTextWithColorStyle : GlobalData Never -> Float -> String -> String -> Color -> String -> ( Float, Float ) -> Renderable
+renderTextWithColorStyle : GlobalData a -> Float -> String -> String -> Color -> String -> ( Float, Float ) -> Renderable
 renderTextWithColorStyle gd size s ft col style ( x, y ) =
     let
         rx =
@@ -88,7 +88,7 @@ renderTextWithColorStyle gd size s ft col style ( x, y ) =
 {-| renderTextWithColorAlign
 Render texts with color and align.
 -}
-renderTextWithColorCenter : GlobalData Never -> Float -> String -> String -> Color -> ( Float, Float ) -> Renderable
+renderTextWithColorCenter : GlobalData a -> Float -> String -> String -> Color -> ( Float, Float ) -> Renderable
 renderTextWithColorCenter gd size s ft col pos =
     renderTextWithColorCenterStyle gd size s ft col "" pos
 
@@ -96,7 +96,7 @@ renderTextWithColorCenter gd size s ft col pos =
 {-| renderTextWithColorAlign
 Render texts with color and align.
 -}
-renderTextWithColorCenterStyle : GlobalData Never -> Float -> String -> String -> Color -> String -> ( Float, Float ) -> Renderable
+renderTextWithColorCenterStyle : GlobalData a -> Float -> String -> String -> Color -> String -> ( Float, Float ) -> Renderable
 renderTextWithColorCenterStyle gd size s ft col style ( x, y ) =
     let
         rx =
@@ -117,14 +117,14 @@ renderTextWithColorCenterStyle gd size s ft col style ( x, y ) =
 
 {-| Render texts with color, align and baseline.
 -}
-renderTextWithColorAlignBaseline : GlobalData Never -> Float -> String -> String -> Color -> TextAlign -> TextBaseLine -> ( Float, Float ) -> Renderable
+renderTextWithColorAlignBaseline : GlobalData a -> Float -> String -> String -> Color -> TextAlign -> TextBaseLine -> ( Float, Float ) -> Renderable
 renderTextWithColorAlignBaseline gd size s ft col al bl pos =
     renderTextWithColorAlignBaselineStyle gd size s ft col al bl "" pos
 
 
 {-| Render texts with color, align and baseline.
 -}
-renderTextWithColorAlignBaselineStyle : GlobalData Never -> Float -> String -> String -> Color -> TextAlign -> TextBaseLine -> String -> ( Float, Float ) -> Renderable
+renderTextWithColorAlignBaselineStyle : GlobalData a -> Float -> String -> String -> Color -> TextAlign -> TextBaseLine -> String -> ( Float, Float ) -> Renderable
 renderTextWithColorAlignBaselineStyle gd size s ft col al bl style ( x, y ) =
     let
         rx =
@@ -145,14 +145,14 @@ renderTextWithColorAlignBaselineStyle gd size s ft col al bl style ( x, y ) =
 
 {-| Use customized settings to render texts.
 -}
-renderTextWithSettings : GlobalData Never -> Float -> String -> String -> List Setting -> ( Float, Float ) -> Renderable
+renderTextWithSettings : GlobalData a -> Float -> String -> String -> List Setting -> ( Float, Float ) -> Renderable
 renderTextWithSettings gd size str ft settings pos =
     renderTextWithSettingsStyle gd size str ft settings "" pos
 
 
 {-| Use customized settings to render texts.
 -}
-renderTextWithSettingsStyle : GlobalData Never -> Float -> String -> String -> List Setting -> String -> ( Float, Float ) -> Renderable
+renderTextWithSettingsStyle : GlobalData a -> Float -> String -> String -> List Setting -> String -> ( Float, Float ) -> Renderable
 renderTextWithSettingsStyle gd size str ft settings style ( x, y ) =
     let
         rx =

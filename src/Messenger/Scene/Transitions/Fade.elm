@@ -16,52 +16,51 @@ import Canvas exposing (Renderable, group, shapes)
 import Canvas.Settings exposing (fill)
 import Canvas.Settings.Advanced exposing (alpha)
 import Color exposing (Color)
-import MainConfig exposing (plHeight, plWidth)
 import Messenger.Render.Shape exposing (rect)
 import Messenger.Scene.Transitions.Base exposing (SingleTrans)
 
 
 {-| Fade Out with Color
 -}
-fadeOut : Color -> SingleTrans
+fadeOut : Color -> SingleTrans a
 fadeOut color gd rd v =
     group []
         [ rd
         , shapes [ fill color, alpha v ]
-            [ rect gd ( 0, 0 ) ( plWidth, plHeight )
+            [ rect gd ( 0, 0 ) ( gd.internalData.virtualWidth, gd.internalData.virtualHeight )
             ]
         ]
 
 
 {-| Fade In with Color
 -}
-fadeIn : Color -> SingleTrans
+fadeIn : Color -> SingleTrans a
 fadeIn color gd rd v =
     group []
         [ rd
         , shapes [ fill color, alpha (1 - v) ]
-            [ rect gd ( 0, 0 ) ( plWidth, plHeight )
+            [ rect gd ( 0, 0 ) ( gd.internalData.virtualWidth, gd.internalData.virtualHeight )
             ]
         ]
 
 
 {-| Fade Out with Black
 -}
-fadeOutBlack : SingleTrans
+fadeOutBlack : SingleTrans a
 fadeOutBlack =
     fadeOut Color.black
 
 
 {-| Fade In with Black
 -}
-fadeInBlack : SingleTrans
+fadeInBlack : SingleTrans a
 fadeInBlack =
     fadeIn Color.black
 
 
 {-| Fade Out with Renderable
 -}
-fadeOutWithRenderable : Renderable -> SingleTrans
+fadeOutWithRenderable : Renderable -> SingleTrans a
 fadeOutWithRenderable renderable _ rd v =
     group []
         [ rd
@@ -73,7 +72,7 @@ fadeOutWithRenderable renderable _ rd v =
 
 {-| Fade In with Renderable
 -}
-fadeInWithRenderable : Renderable -> SingleTrans
+fadeInWithRenderable : Renderable -> SingleTrans a
 fadeInWithRenderable renderable _ rd v =
     group []
         [ rd

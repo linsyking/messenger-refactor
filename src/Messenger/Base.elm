@@ -82,6 +82,8 @@ type alias InternalData =
     , startLeft : Float
     , startTop : Float
     , sprites : Dict String Texture
+    , virtualWidth : Float
+    , virtualHeight : Float
     }
 
 

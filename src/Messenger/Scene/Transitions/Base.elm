@@ -19,13 +19,13 @@ import Messenger.Base exposing (GlobalData)
 
 {-| Single Transition
 -}
-type alias SingleTrans =
-    GlobalData Never -> Renderable -> Float -> Renderable
+type alias SingleTrans a =
+    GlobalData a -> Renderable -> Float -> Renderable
 
 
 {-| Null Transition
 -}
-nullTransition : SingleTrans
+nullTransition : SingleTrans a
 nullTransition _ r _ =
     r
 
@@ -37,18 +37,18 @@ nullTransition _ r _ =
 3.  From the transition scene to the new scene
 
 -}
-type alias Transition =
+type alias Transition a =
     { currentTransition : Int
     , outT : Int
     , inT : Int
-    , fadeout : SingleTrans
-    , fadein : SingleTrans
+    , fadeout : SingleTrans a
+    , fadein : SingleTrans a
     }
 
 
 {-| Generate new transition
 -}
-genTransition : Int -> Int -> SingleTrans -> SingleTrans -> Transition
+genTransition : Int -> Int -> SingleTrans a -> SingleTrans a -> Transition a
 genTransition outT inT fadeout fadein =
     { currentTransition = 0
     , outT = outT

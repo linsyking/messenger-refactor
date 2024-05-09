@@ -18,6 +18,7 @@ type alias UserConfig localstorage scenemsg =
     , debug : Bool
     , background : GlobalData localstorage -> Renderable
     , initGlobalData : localstorage -> GlobalData localstorage
+    , allTexture : List ( String, String )
     }
 
 

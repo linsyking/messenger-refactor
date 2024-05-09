@@ -45,25 +45,13 @@ updateObjectsWithTarget env msgs objs =
 -- Below are some helper functions
 
 
-updateOnce : env -> event -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> ( List (AbsGeneralModel env event tar msg ren bdata scenemsg), ( List (Msg tar msg scenemsg), List (MsgBase msg scenemsg) ), ( env, Bool ) )
-updateOnce env evt objs =
-    --TODO:
-    List.foldr
-        (\ele ( lastObjs, ( lastMsgUnfinished, lastMsgFinished ), ( lastEnv, lastBlock ) ) ->
+updateOne : env -> event -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> List (Msg tar msg scenemsg) -> List (MsgBase msg scenemsg) -> ( List (AbsGeneralModel env event tar msg ren bdata scenemsg), ( List (Msg tar msg scenemsg), List (MsgBase msg scenemsg) ), ( env, Bool ) )
+updateOne lastEnv evt objs lastObjs lastMsgUnfinished lastMsgFinished =
+    case objs of
+        ele :: restObjs ->
             let
                 ( newObj, newMsg, ( newEnv, block ) ) =
-                    if lastBlock then
-                        (unroll ele).update lastEnv evt
-
-                    else
-                        (unroll ele).update lastEnv evt
-
-                newBlock =
-                    if not block && lastBlock then
-                        False
-
-                    else
-                        lastBlock
+                    (unroll ele).update lastEnv evt
 
                 finishedMsg =
                     List.filterMap
@@ -89,10 +77,19 @@ updateOnce env evt objs =
                         )
                         newMsg
             in
-            ( newObj :: lastObjs, ( lastMsgUnfinished ++ unfinishedMsg, lastMsgFinished ++ finishedMsg ), ( newEnv, newBlock ) )
-        )
-        ( [], ( [], [] ), env )
-        objs
+            if block then
+                ( lastObjs ++ [ newObj ] ++ restObjs, ( lastMsgUnfinished ++ unfinishedMsg, lastMsgFinished ++ finishedMsg ), ( lastEnv, block ) )
+
+            else
+                updateOne newEnv evt restObjs (lastObjs ++ [ newObj ]) (lastMsgUnfinished ++ unfinishedMsg) (lastMsgFinished ++ finishedMsg)
+
+        [] ->
+            ( lastObjs, ( lastMsgUnfinished, lastMsgFinished ), ( lastEnv, True ) )
+
+
+updateOnce : env -> event -> List (AbsGeneralModel env event tar msg ren bdata scenemsg) -> ( List (AbsGeneralModel env event tar msg ren bdata scenemsg), ( List (Msg tar msg scenemsg), List (MsgBase msg scenemsg) ), ( env, Bool ) )
+updateOnce env evt objs =
+    updateOne env evt objs [] [] []
 
 
 {-| Recursively update remaining objects

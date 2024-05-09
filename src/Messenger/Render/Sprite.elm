@@ -24,7 +24,7 @@ import Messenger.Coordinate.Coordinates exposing (lengthToReal, posToReal)
 
 {-| Render a single sprite.
 -}
-renderSprite : GlobalData Never -> List Setting -> ( Float, Float ) -> ( Float, Float ) -> String -> Renderable
+renderSprite : GlobalData a -> List Setting -> ( Float, Float ) -> ( Float, Float ) -> String -> Renderable
 renderSprite gd ls p size name =
     let
         dst =
@@ -40,7 +40,7 @@ renderSprite gd ls p size name =
 
 {-| Render a single sprite with crop.
 -}
-renderSpriteCropped : GlobalData Never -> List Setting -> ( Float, Float ) -> ( Float, Float ) -> { x : Float, y : Float, width : Float, height : Float } -> String -> Renderable
+renderSpriteCropped : GlobalData a -> List Setting -> ( Float, Float ) -> ( Float, Float ) -> { x : Float, y : Float, width : Float, height : Float } -> String -> Renderable
 renderSpriteCropped gd ls p size spconf name =
     let
         dst =
@@ -54,7 +54,7 @@ renderSpriteCropped gd ls p size spconf name =
             empty
 
 
-renderSprite_ : GlobalData Never -> List Setting -> ( Float, Float ) -> ( Float, Float ) -> Texture -> Renderable
+renderSprite_ : GlobalData a -> List Setting -> ( Float, Float ) -> ( Float, Float ) -> Texture -> Renderable
 renderSprite_ gd ls p ( w, h ) t =
     let
         text_dim =
@@ -129,7 +129,7 @@ Render a single sprite with (possible) reverse.
 The first argument is the reverse flag. Sent true to make the sprite being rendered in reverse.
 
 -}
-renderSpriteWithRev : Bool -> GlobalData Never -> List Setting -> ( Float, Float ) -> ( Float, Float ) -> String -> Renderable
+renderSpriteWithRev : Bool -> GlobalData a -> List Setting -> ( Float, Float ) -> ( Float, Float ) -> String -> Renderable
 renderSpriteWithRev rev gd ls p size name =
     if not rev then
         renderSprite gd ls p size name
@@ -143,7 +143,7 @@ renderSpriteWithRev rev gd ls p size name =
                 empty
 
 
-renderSpriteWithRev_ : GlobalData Never -> List Setting -> ( Float, Float ) -> ( Float, Float ) -> Texture -> Renderable
+renderSpriteWithRev_ : GlobalData a -> List Setting -> ( Float, Float ) -> ( Float, Float ) -> Texture -> Renderable
 renderSpriteWithRev_ gd ls p ( w, h ) t =
     let
         text_dim =

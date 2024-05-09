@@ -16,6 +16,7 @@ import Html.Events exposing (on)
 import Lib.Resources.Base exposing (getTexture)
 import Messenger.Base exposing (WorldEvent)
 import Messenger.Model exposing (Model)
+import Messenger.Scene.Scene exposing (unroll)
 import Messenger.Scene.Transition exposing (makeTransition)
 import Messenger.UserConfig exposing (UserConfig)
 
@@ -37,7 +38,7 @@ view config _ model =
                 , style "position" "fixed"
                 ]
                 [ config.background model.currentGlobalData
-                , makeTransition model.currentGlobalData transitiondata <| (getCurrentScene model).view { t = model.time, globalData = model.currentGlobalData, commonData = () } model.currentData
+                , makeTransition model.currentGlobalData transitiondata <| (unroll model.currentScene).view { globalData = model.currentGlobalData, commonData = () }
                 ]
     in
     Html.div [ on "wheel" (Decode.map MouseWheel (Decode.field "deltaY" Decode.int)) ]

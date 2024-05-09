@@ -29,7 +29,6 @@ This module is very important because it can calculate the correct position of t
 
 -}
 
-import MainConfig exposing (plHeight, plWidth)
 import Messenger.Base exposing (GlobalData)
 
 
@@ -37,9 +36,9 @@ import Messenger.Base exposing (GlobalData)
 {- The scale is by default 16:9 -}
 
 
-plScale : Float
-plScale =
-    plWidth / plHeight
+plScale : GlobalData a -> Float
+plScale gd =
+    gd.internalData.virtualWidth / gd.internalData.virtualHeight
 
 
 
@@ -56,7 +55,7 @@ floatpairadd ( x, y ) ( z, w ) =
 Same as posToReal, but add the initial position of canvas.
 
 -}
-fixedPosToReal : GlobalData Never -> ( Float, Float ) -> ( Float, Float )
+fixedPosToReal : GlobalData a -> ( Float, Float ) -> ( Float, Float )
 fixedPosToReal gd ( x, y ) =
     floatpairadd (posToReal gd ( x, y )) ( gd.internalData.startLeft, gd.internalData.startTop )
 
@@ -66,7 +65,7 @@ fixedPosToReal gd ( x, y ) =
 Transform from the virtual coordinate system to the real pixel system.
 
 -}
-posToReal : GlobalData Never -> ( Float, Float ) -> ( Float, Float )
+posToReal : GlobalData a -> ( Float, Float ) -> ( Float, Float )
 posToReal gd ( x, y ) =
     let
         realWidth =
@@ -75,12 +74,12 @@ posToReal gd ( x, y ) =
         realHeight =
             gd.internalData.realHeight
     in
-    ( realWidth * (x / plWidth), realHeight * (y / plHeight) )
+    ( realWidth * (x / gd.internalData.virtualWidth), realHeight * (y / gd.internalData.virtualHeight) )
 
 
 {-| Inverse of posToReal.
 -}
-posToVirtual : GlobalData Never -> ( Float, Float ) -> ( Float, Float )
+posToVirtual : GlobalData a -> ( Float, Float ) -> ( Float, Float )
 posToVirtual gd ( x, y ) =
     let
         realWidth =
@@ -89,55 +88,49 @@ posToVirtual gd ( x, y ) =
         realHeight =
             gd.internalData.realHeight
     in
-    ( plWidth * (x / realWidth), plHeight * (y / realHeight) )
+    ( gd.internalData.virtualWidth * (x / realWidth), gd.internalData.virtualHeight * (y / realHeight) )
 
 
 {-| widthToReal
+
 Use this if you want to draw something based on the length.
+
 -}
-lengthToReal : GlobalData Never -> Float -> Float
+lengthToReal : GlobalData a -> Float -> Float
 lengthToReal gd x =
-    let
-        realWidth =
-            gd.internalData.realWidth
-    in
-    realWidth * (x / plWidth)
+    gd.internalData.realWidth * (x / gd.internalData.virtualWidth)
 
 
 {-| The inverse function of widthToReal.
 -}
-fromRealLength : GlobalData Never -> Float -> Float
+fromRealLength : GlobalData a -> Float -> Float
 fromRealLength gd x =
-    let
-        realWidth =
-            gd.internalData.realWidth
-    in
-    plWidth * (x / realWidth)
+    gd.internalData.virtualWidth * (x / gd.internalData.realWidth)
 
 
 {-| maxHandW
 -}
-maxHandW : ( Float, Float ) -> ( Float, Float )
-maxHandW ( w, h ) =
-    if w / h > plScale then
-        ( h * plScale, h )
+maxHandW : GlobalData a -> ( Float, Float ) -> ( Float, Float )
+maxHandW gd ( w, h ) =
+    if w / h > plScale gd then
+        ( h * plScale gd, h )
 
     else
-        ( w, w / plScale )
+        ( w, w / plScale gd )
 
 
 {-| getStartPoint
 -}
-getStartPoint : ( Float, Float ) -> ( Float, Float )
-getStartPoint ( w, h ) =
+getStartPoint : GlobalData a -> ( Float, Float ) -> ( Float, Float )
+getStartPoint gd ( w, h ) =
     let
         fw =
-            h * plScale
+            h * plScale gd
 
         fh =
-            w / plScale
+            w / plScale gd
     in
-    if w / h > plScale then
+    if w / h > plScale gd then
         ( (w - fw) / 2, 0 )
 
     else
@@ -158,6 +151,6 @@ judgeMouseRect ( mx, my ) ( x, y ) ( w, h ) =
 
 {-| fromMouseToVirtual
 -}
-fromMouseToVirtual : GlobalData Never -> ( Float, Float ) -> ( Float, Float )
+fromMouseToVirtual : GlobalData a -> ( Float, Float ) -> ( Float, Float )
 fromMouseToVirtual gd ( px, py ) =
     posToVirtual gd ( px - gd.internalData.startLeft, py - gd.internalData.startTop )
