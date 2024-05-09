@@ -2,12 +2,13 @@ module Messenger.UserConfig exposing (..)
 
 import Canvas exposing (Renderable)
 import Messenger.Base exposing (GlobalData)
+import Browser.Events exposing (Visibility(..))
 
 
 type alias UserConfig localstorage scenemsg =
     { initScene : String
     , initSceneMsg : scenemsg
-    , localStorageEndec :
+    , localStorageCodec :
         { encode : localstorage -> String
         , decode : String -> localstorage
         }
@@ -26,4 +27,5 @@ type alias UserConfig localstorage scenemsg =
 -}
 initGlobalData : UserConfig localstorage scenemsg -> String -> GlobalData localstorage
 initGlobalData config lsencoded =
-    config.initGlobalData (config.localStorageEndec.decode lsencoded)
+    config.initGlobalData (config.localStorageCodec.decode lsencoded)
+

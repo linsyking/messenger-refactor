@@ -86,7 +86,6 @@ type alias InternalData =
     , virtualHeight : Float
     }
 
-
 {-| Flags
 
 The main flags.

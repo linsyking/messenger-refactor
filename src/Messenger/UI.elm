@@ -7,13 +7,13 @@ import Messenger.Scene.Loader exposing (SceneStorage)
 import Messenger.UserConfig exposing (UserConfig)
 
 
-type alias Scenes =
+type alias Scenes localstorage scenemsg=
     List ( String, SceneStorage localstorage scenemsg )
 
 
 type alias Input localstorage scenemsg =
     { config : UserConfig localstorage scenemsg
-    , allScenes : Scenes
+    , allScenes : Scenes localstorage scenemsg
     }
 
 
