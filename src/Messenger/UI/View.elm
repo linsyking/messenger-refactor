@@ -21,7 +21,7 @@ import Messenger.Scene.Transition exposing (makeTransition)
 import Messenger.UserConfig exposing (UserConfig)
 
 
-view : UserConfig localstorage scenemsg -> AudioData -> Model localstorage scenemsg -> Html WorldEvent
+view : UserConfig userdata scenemsg -> AudioData -> Model userdata scenemsg -> Html WorldEvent
 view config _ model =
     let
         transitiondata =

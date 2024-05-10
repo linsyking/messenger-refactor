@@ -24,7 +24,7 @@ import Task
 import Time
 
 
-gameUpdate : UserConfig localstorage scenemsg -> List ( String, SceneStorage localstorage scenemsg ) -> WorldEvent -> Model localstorage scenemsg -> ( Model localstorage scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
+gameUpdate : UserConfig userdata scenemsg -> List ( String, SceneStorage userdata scenemsg ) -> WorldEvent -> Model userdata scenemsg -> ( Model userdata scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
 gameUpdate config scenes evnt model =
     if List.length (Dict.keys model.currentGlobalData.internalData.sprites) < List.length config.allTexture then
         -- Still loading assets
@@ -117,7 +117,7 @@ gameUpdate config scenes evnt model =
         )
 
 
-update : UserConfig localstorage scenemsg -> List ( String, SceneStorage localstorage scenemsg ) -> AudioData -> WorldEvent -> Model localstorage scenemsg -> ( Model localstorage scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
+update : UserConfig userdata scenemsg -> List ( String, SceneStorage userdata scenemsg ) -> AudioData -> WorldEvent -> Model userdata scenemsg -> ( Model userdata scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
 update config scenes _ msg model =
     let
         gd =

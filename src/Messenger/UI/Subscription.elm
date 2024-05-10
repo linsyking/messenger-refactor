@@ -10,7 +10,7 @@ import Messenger.UserConfig exposing (UserConfig)
 import Time
 
 
-subscriptions : UserConfig localstorage scenemsg -> AudioData -> Model localstorage scenemsg -> Sub WorldEvent
+subscriptions : UserConfig userdata scenemsg -> AudioData -> Model userdata scenemsg -> Sub WorldEvent
 subscriptions config _ _ =
     Sub.batch
         [ Time.every config.timeInterval Tick --- Slow down the fps
