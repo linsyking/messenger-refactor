@@ -5,16 +5,11 @@ module Messenger.Scene.Loader exposing (..)
 
 import Messenger.Base exposing (Env)
 import Messenger.Model exposing (Model)
-import Messenger.Scene.Scene exposing (MAbstractScene, MConcreteScene, abstract)
+import Messenger.Scene.Scene exposing (MAbstractScene)
 
 
 type alias SceneStorage localstorage scenemsg =
     Env () localstorage -> Maybe scenemsg -> MAbstractScene localstorage scenemsg
-
-
-sceneInit : MConcreteScene data localstorage scenemsg -> SceneStorage localstorage scenemsg
-sceneInit conscene =
-    abstract conscene
 
 
 existScene : String -> List ( String, SceneStorage localstorage scenemsg ) -> Bool

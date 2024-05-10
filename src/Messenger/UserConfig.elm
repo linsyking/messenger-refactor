@@ -32,3 +32,8 @@ type alias UserConfig localstorage scenemsg =
 initGlobalData : UserConfig localstorage scenemsg -> String -> GlobalData localstorage
 initGlobalData config lsencoded =
     config.initGlobalData (config.localStorageCodec.decode lsencoded)
+
+
+transparentBackground : GlobalData localstorage -> Renderable
+transparentBackground gd =
+    Canvas.clear ( 0, 0 ) gd.internalData.realWidth gd.internalData.realHeight

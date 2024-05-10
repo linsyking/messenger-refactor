@@ -107,6 +107,6 @@ init config scenes flags =
             config.initGlobalData ls
 
         newgd =
-            { initGlobalData | currentTimeStamp = Time.millisToPosix flags.timeStamp, localStorage = ls, internalData = newIT }
+            { initGlobalData | currentTimeStamp = Time.millisToPosix flags.timeStamp, localStorage = ls, internalData = newIT, currentScene = config.initScene }
     in
     ( { ms | currentGlobalData = newgd }, Cmd.none, Audio.cmdNone )
