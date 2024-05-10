@@ -4,7 +4,7 @@ import Canvas exposing (Renderable, group)
 import Messenger.Base exposing (Env, WorldEvent)
 import Messenger.GeneralModel exposing (AbstractGeneralModel, ConcreteGeneralModel, Msg, MsgBase, abstract, unroll)
 import Messenger.Recursion exposing (updateObjects, updateObjectsWithTarget)
-import Messenger.Scene.Scene exposing (SceneOutputMsg)
+import Messenger.Scene.Scene exposing (SceneOutputMsg(..))
 
 
 type alias ConcreteUserComponent data cdata localstorage tar msg bdata scenemsg =
@@ -40,6 +40,31 @@ translatePortableComponent pcomp =
     , view = \env data () -> pcomp.view env data
     , matcher = \data () tar -> pcomp.matcher data tar
     }
+
+
+addSceneMsgtoSOM : SceneOutputMsg () localstorage -> Maybe (SceneOutputMsg scenemsg localstorage)
+addSceneMsgtoSOM sommsg =
+    case sommsg of
+        SOMChangeScene _ ->
+            Nothing
+
+        SOMPlayAudio n u o ->
+            Just (SOMPlayAudio n u o)
+
+        SOMAlert a ->
+            Just (SOMAlert a)
+
+        SOMStopAudio n ->
+            Just (SOMStopAudio n)
+
+        SOMSetVolume v ->
+            Just (SOMSetVolume v)
+
+        SOMPrompt n t ->
+            Just (SOMPrompt n t)
+
+        SOMSaveLocalStorage ->
+            Just SOMSaveLocalStorage
 
 
 type alias AbstractComponent cdata localstorage tar msg bdata scenemsg =

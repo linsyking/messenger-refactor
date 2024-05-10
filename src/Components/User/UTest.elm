@@ -42,6 +42,11 @@ updaterec env msg d bd =
 -}
 view : Env SceneCommonData LocalStorage -> Data -> BaseData -> ( Renderable, Int )
 view env d bd =
+    let
+        _ =
+            -- (hello, 1)
+            Debug.log "uTest" ( d, bd )
+    in
     ( empty, 0 )
 
 

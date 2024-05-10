@@ -10,12 +10,12 @@ import Scenes.Main.Layer1.Model exposing (layer1)
 import Scenes.Main.LayerBase exposing (..)
 
 
-commonDataInit : Env () LocalStorage -> SceneMsg -> SceneCommonData
+commonDataInit : Env () LocalStorage -> Maybe SceneMsg -> SceneCommonData
 commonDataInit _ _ =
     { key = "Main" }
 
 
-sceneInit : Env () LocalStorage -> SceneMsg -> LayeredSceneData SceneCommonData LocalStorage Target LayerMsg SceneMsg
+sceneInit : Env () LocalStorage -> Maybe SceneMsg -> LayeredSceneData SceneCommonData LocalStorage Target LayerMsg SceneMsg
 sceneInit env msg =
     let
         cd =

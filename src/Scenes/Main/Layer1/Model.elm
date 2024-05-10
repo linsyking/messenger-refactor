@@ -6,10 +6,10 @@ import Components.Portable.PTest as PTest
 import Components.User.Base as User
 import Components.User.UTest as UTest
 import Messenger.Base exposing (Env, WorldEvent)
-import Messenger.Component.Component exposing (AbstractComponent, AbstractPortableComponent, preViewComponents, viewComponents)
-import Messenger.GeneralModel exposing (Msg)
+import Messenger.Component.Component exposing (AbstractComponent, AbstractPortableComponent, addSceneMsgtoSOM, preViewComponents, viewComponents)
+import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
 import Messenger.Layer.Layer exposing (AbstractLayer, ConcreteLayer, genLayer)
-import Messenger.Scene.Scene exposing (SceneOutputMsg, noCommonData)
+import Messenger.Scene.Scene exposing (SceneOutputMsg(..), noCommonData)
 import Scenes.Main.LayerBase exposing (..)
 
 
@@ -29,6 +29,21 @@ init env initMsg =
 
         _ ->
             Data [] []
+
+
+handlePComponentMsg : Env SceneCommonData LocalStorage -> MsgBase PTest.ComponentMsg (SceneOutputMsg () LocalStorage) -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg LocalStorage)), Env SceneCommonData LocalStorage )
+handlePComponentMsg env pcompmsg data =
+    case pcompmsg of
+        SOMMsg som ->
+            case addSceneMsgtoSOM som of
+                Just othersom ->
+                    ( data, [ Parent <| SOMMsg othersom ], env )
+
+                Nothing ->
+                    ( data, [], env )
+
+        _ ->
+            ( data, [], env )
 
 
 update : Env SceneCommonData LocalStorage -> WorldEvent -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg LocalStorage)), ( Env SceneCommonData LocalStorage, Bool ) )

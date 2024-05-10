@@ -1,7 +1,7 @@
 module Components.Portable.PTest exposing (..)
 
 import Canvas exposing (Renderable, empty)
-import Messenger.Base exposing (Env, WorldEvent)
+import Messenger.Base exposing (Env, WorldEvent(..))
 import Messenger.Component.Component exposing (AbstractPortableComponent, ConcretePortableComponent, genComponent, translatePortableComponent)
 import Messenger.GeneralModel exposing (Msg)
 import Messenger.Scene.Scene exposing (SceneOutputMsg)
@@ -44,7 +44,12 @@ init env initMsg =
 -}
 update : Env () localstorage -> WorldEvent -> Data -> ( Data, List (Msg ComponentTarget ComponentMsg (SceneOutputMsg () localstorage)), ( Env () localstorage, Bool ) )
 update env evnt d =
-    ( d, [], ( env, False ) )
+    case evnt of
+        KeyDown key ->
+            ( key, [], ( env, False ) )
+
+        _ ->
+            ( d, [], ( env, False ) )
 
 
 updaterec : Env () localstorage -> ComponentMsg -> Data -> ( Data, List (Msg ComponentTarget ComponentMsg (SceneOutputMsg () localstorage)), Env () localstorage )
@@ -56,6 +61,11 @@ updaterec env msg d =
 -}
 view : Env () localstorage -> Data -> ( Renderable, Int )
 view env d =
+    let
+        _ =
+            -- 1
+            Debug.log "pTest" d
+    in
     ( empty, 0 )
 
 

@@ -48,7 +48,7 @@ viewLayeredScene env { renderSettings, commonData, layers } =
         |> group renderSettings
 
 
-genLayeredScene : (Env () localstorage -> scenemsg -> LayeredSceneData cdata localstorage tar msg scenemsg) -> (Env () localstorage -> WorldEvent -> LayeredSceneData cdata localstorage tar msg scenemsg -> List Setting) -> SceneStorage localstorage scenemsg
+genLayeredScene : (Env () localstorage -> Maybe scenemsg -> LayeredSceneData cdata localstorage tar msg scenemsg) -> (Env () localstorage -> WorldEvent -> LayeredSceneData cdata localstorage tar msg scenemsg -> List Setting) -> SceneStorage localstorage scenemsg
 genLayeredScene init settingsFunc =
     abstract
         { init = init
