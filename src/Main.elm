@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Base exposing (..)
 import Browser.Events exposing (Visibility(..))
+import Color
 import Dict
 import Messenger.Base exposing (GlobalData)
 import Messenger.UI exposing (Output, genMain)
@@ -61,7 +62,7 @@ userConfig =
     , initSceneMsg = Nothing
     , virtualSize = { width = 1920, height = 1080 }
     , debug = True
-    , background = Messenger.UserConfig.transparentBackground
+    , background = Messenger.UserConfig.coloredBackground Color.black
     , allTexture =
         [ ( "blobcat", "assets/blobcat.png" )
         ]
