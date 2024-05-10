@@ -3,4 +3,3 @@ elm-stuff/
 build/
 *.html
 !public/*
-assets/
