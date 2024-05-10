@@ -4,6 +4,6 @@ import Messenger.Scene.Loader exposing (SceneStorage)
 import Messenger.Scene.Scene exposing (MConcreteScene, abstract)
 
 
-genRawScene : MConcreteScene data ls scenemsg -> SceneStorage ls scenemsg
+genRawScene : MConcreteScene data localstorage scenemsg -> SceneStorage localstorage scenemsg
 genRawScene conscene =
     abstract conscene

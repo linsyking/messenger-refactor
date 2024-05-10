@@ -18,7 +18,7 @@ emptyScene =
     let
         abstractRec _ =
             let
-                updates : Env () localstorage -> WorldEvent -> ( MAbstractScene localstorage scenemsg, List (SceneOutputMsg scenemsg ls), Env () localstorage )
+                updates : Env () localstorage -> WorldEvent -> ( MAbstractScene localstorage scenemsg, List (SceneOutputMsg scenemsg localstorage), Env () localstorage )
                 updates env _ =
                     ( abstractRec (), [], env )
             in

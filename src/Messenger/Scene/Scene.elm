@@ -6,21 +6,21 @@ import Messenger.Base exposing (Env, WorldEvent)
 import Messenger.Scene.Transitions.Base exposing (Transition)
 
 
-type alias ConcreteScene data env event ren scenemsg ls =
+type alias ConcreteScene data env event ren scenemsg localstorage =
     { init : env -> Maybe scenemsg -> data
-    , update : env -> event -> data -> ( data, List (SceneOutputMsg scenemsg ls), env )
+    , update : env -> event -> data -> ( data, List (SceneOutputMsg scenemsg localstorage), env )
     , view : env -> data -> ren
     }
 
 
-type alias UnrolledAbstractScene env event ren scenemsg ls =
-    { update : env -> event -> ( AbstractScene env event ren scenemsg ls, List (SceneOutputMsg scenemsg ls), env )
+type alias UnrolledAbstractScene env event ren scenemsg localstorage =
+    { update : env -> event -> ( AbstractScene env event ren scenemsg localstorage, List (SceneOutputMsg scenemsg localstorage), env )
     , view : env -> ren
     }
 
 
-type AbstractScene env event ren scenemsg ls
-    = Roll (UnrolledAbstractScene env event ren scenemsg ls)
+type AbstractScene env event ren scenemsg localstorage
+    = Roll (UnrolledAbstractScene env event ren scenemsg localstorage)
 
 
 type alias MConcreteScene data localstorage scenemsg =
@@ -31,17 +31,17 @@ type alias MAbstractScene localstorage scenemsg =
     AbstractScene (Env () localstorage) WorldEvent Renderable scenemsg localstorage
 
 
-unroll : AbstractScene env event ren scenemsg ls -> UnrolledAbstractScene env event ren scenemsg ls
+unroll : AbstractScene env event ren scenemsg localstorage -> UnrolledAbstractScene env event ren scenemsg localstorage
 unroll (Roll un) =
     un
 
 
-abstract : ConcreteScene data env event ren scenemsg ls -> env -> Maybe scenemsg -> AbstractScene env event ren scenemsg ls
+abstract : ConcreteScene data env event ren scenemsg localstorage -> env -> Maybe scenemsg -> AbstractScene env event ren scenemsg localstorage
 abstract conmodel initEnv initMsg =
     let
         abstractRec data =
             let
-                updates : env -> event -> ( AbstractScene env event ren scenemsg ls, List (SceneOutputMsg scenemsg ls), env )
+                updates : env -> event -> ( AbstractScene env event ren scenemsg localstorage, List (SceneOutputMsg scenemsg localstorage), env )
                 updates env event =
                     let
                         ( new_d, new_m, new_e ) =
@@ -82,8 +82,8 @@ addCommonData commonData env =
     }
 
 
-type SceneOutputMsg scenemsg ls
-    = SOMChangeScene ( Maybe scenemsg, String, Maybe (Transition ls) )
+type SceneOutputMsg scenemsg localstorage
+    = SOMChangeScene ( Maybe scenemsg, String, Maybe (Transition localstorage) )
     | SOMPlayAudio String String AudioOption -- audio name, audio url, audio option
     | SOMAlert String
     | SOMStopAudio String
