@@ -3,11 +3,11 @@ module Messenger.UI.Subscription exposing (..)
 import Audio exposing (AudioData)
 import Browser.Events exposing (onKeyDown, onKeyUp, onMouseDown, onMouseMove, onMouseUp, onResize, onVisibilityChange)
 import Json.Decode as Decode
-import Messenger.Tools.Browser exposing (promptReceiver)
 import Messenger.Base exposing (WorldEvent(..))
 import Messenger.Model exposing (Model)
-import Time
+import Messenger.Tools.Browser exposing (promptReceiver)
 import Messenger.UserConfig exposing (UserConfig)
+import Time
 
 
 subscriptions : UserConfig localstorage scenemsg -> AudioData -> Model localstorage scenemsg -> Sub WorldEvent

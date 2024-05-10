@@ -83,11 +83,10 @@ addCommonData commonData env =
 
 
 type SceneOutputMsg scenemsg ls
-    = SOMChangeScene (Maybe scenemsg, String, Maybe (Transition ls) )
+    = SOMChangeScene ( Maybe scenemsg, String, Maybe (Transition ls) )
     | SOMPlayAudio String String AudioOption -- audio name, audio url, audio option
     | SOMAlert String
     | SOMStopAudio String
     | SOMSetVolume Float
     | SOMPrompt String String -- name, title
     | SOMSaveLocalStorage
-
