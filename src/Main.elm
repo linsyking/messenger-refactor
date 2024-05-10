@@ -16,6 +16,11 @@ import Time exposing (millisToPosix)
 -- Testing Messenger
 
 
+emptyKeycodeSet : Set.Set Int
+emptyKeycodeSet =
+    Set.empty
+
+
 initGlobalData : LocalStorage -> GlobalData LocalStorage
 initGlobalData storage =
     { internalData = emptyInternalData
@@ -24,6 +29,7 @@ initGlobalData storage =
     , globalTime = 0
     , volume = 0.5
     , windowVisibility = Visible
+    , pressedKeys = emptyKeycodeSet
     , mousePos = ( 0, 0 )
     , extraHTML = Nothing
     , localStorage = storage
@@ -43,7 +49,7 @@ userConfig =
     , virtualSize = { width = 1920, height = 1080 }
     , debug = False
     , background = Messenger.UserConfig.transparentBackground
-    , initGlobTruea = initGlobalData
+    , initGlobalData = initGlobalData
     , saveGlobalData = saveGlobalData
     , allTexture = []
     , allSpriteSheets = Dict.empty
