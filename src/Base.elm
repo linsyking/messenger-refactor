@@ -3,6 +3,7 @@ module Base exposing (..)
 import Json.Decode as Decode exposing (at, decodeString)
 import Json.Encode as Encode
 
+
 type alias LocalStorage =
     { volume : Float
     , number : Int

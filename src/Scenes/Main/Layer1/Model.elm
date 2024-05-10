@@ -5,13 +5,11 @@ import Canvas exposing (Renderable, empty, group)
 import Components.Portable.A as A
 import Components.Portable.B as B
 import Components.Portable.PTest as PTest
-import Components.User.Base as User
-import Components.User.UTest as UTest
 import Messenger.Base exposing (Env, WorldEvent)
-import Messenger.Component.Component exposing (AbstractComponent, AbstractPortableComponent, addSceneMsgtoSOM, preViewComponents, viewComponents)
+import Messenger.Component.Component exposing (AbstractPortableComponent, addSceneMsgtoSOM)
 import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
 import Messenger.Layer.Layer exposing (AbstractLayer, ConcreteLayer, genLayer)
-import Messenger.Recursion exposing (updateObjects, updateObjectsWithTarget)
+import Messenger.Recursion exposing (updateObjects)
 import Messenger.Render.Sprite exposing (renderSprite)
 import Messenger.Render.Text exposing (renderText)
 import Messenger.Scene.Scene exposing (SceneOutputMsg(..), addCommonData, noCommonData)
