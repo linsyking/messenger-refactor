@@ -7,6 +7,7 @@ import Messenger.Base exposing (Env, WorldEvent(..))
 import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
 import Messenger.Layer.Layer exposing (AbstractLayer, ConcreteLayer, genLayer)
 import Messenger.Render.Sprite exposing (renderSprite)
+import Messenger.Render.Text exposing (renderText)
 import Messenger.Scene.Scene exposing (SceneOutputMsg(..), addCommonData, noCommonData)
 import Messenger.Scene.Transitions.Base exposing (genTransition, nullTransition)
 import Messenger.Scene.Transitions.Fade exposing (fadeInWithRenderable)
@@ -57,6 +58,7 @@ view : Env SceneCommonData LocalStorage -> Data -> Renderable
 view env data =
     group []
         [ renderSprite env.globalData [] ( 0, 0 ) ( 1920, 0 ) "blobcat"
+        , renderText env.globalData 40 env.globalData.currentScene "Courier New" ( 600, 0 )
         ]
 
 

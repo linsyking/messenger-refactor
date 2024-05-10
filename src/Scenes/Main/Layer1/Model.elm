@@ -98,7 +98,7 @@ view env data =
     group []
         [ renderSprite env.globalData [] ( 0, 0 ) ( 1920, 1080 ) "blobcat"
         , renderSprite env.globalData [] ( 400, 400 ) ( 400, 0 ) "blobcat"
-        , renderText env.globalData 40 "Hello World" "Courier New" ( 600, 0 )
+        , renderText env.globalData 40 env.globalData.currentScene "Courier New" ( 600, 0 )
         ]
 
 
