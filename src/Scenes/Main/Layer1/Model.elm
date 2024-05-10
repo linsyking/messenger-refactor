@@ -85,7 +85,7 @@ update env evt data =
     --     in
     --     ( { components = newData3 }, newMsg2, ( newEnv2, newBlock2 ) )
     -- else
-    ( newData2, newMsg2, ( newEnv2, newBlock2 ) )
+    ( newData2, (Parent <| SOMMsg <| SOMSaveLocalStorage) :: newMsg2, ( newEnv2, newBlock2 ) )
 
 
 updaterec : Env SceneCommonData LocalStorage -> LayerMsg -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg LocalStorage)), Env SceneCommonData LocalStorage )

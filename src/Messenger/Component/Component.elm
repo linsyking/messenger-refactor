@@ -85,18 +85,17 @@ updateComponents env evt comps =
     updateObjects env evt comps
 
 
-updateComponentswithTarget : Env cdata localstorage -> List (Msg tar msg (SceneOutputMsg scenemsg localstorage)) -> List (AbstractComponent cdata localstorage tar msg bdata scenemsg) -> ( List (AbstractComponent cdata localstorage tar msg bdata scenemsg), List (MsgBase msg (SceneOutputMsg scenemsg localstorage)), Env cdata localstorage )
-updateComponentswithTarget env msgs comps =
+updateComponentsWithTarget : Env cdata localstorage -> List (Msg tar msg (SceneOutputMsg scenemsg localstorage)) -> List (AbstractComponent cdata localstorage tar msg bdata scenemsg) -> ( List (AbstractComponent cdata localstorage tar msg bdata scenemsg), List (MsgBase msg (SceneOutputMsg scenemsg localstorage)), Env cdata localstorage )
+updateComponentsWithTarget env msgs comps =
     updateObjectsWithTarget env msgs comps
 
 
-preViewComponents : Env cdata localstorage -> List (AbstractComponent cdata localstorage tar msg bdata scenemsg) -> List ( Renderable, Int )
-preViewComponents env compls =
-    List.map (\comp -> (unroll comp).view env) compls
-
-
-viewComponents : List ( Renderable, Int ) -> Renderable
-viewComponents previews =
+viewComponents : Env cdata localstorage -> List (AbstractComponent cdata localstorage tar msg bdata scenemsg) -> Renderable
+viewComponents env compls =
+    let
+        previews =
+            List.map (\comp -> (unroll comp).view env) compls
+    in
     group [] <|
         List.map (\( r, _ ) -> r) <|
             List.sortBy (\( _, n ) -> n) previews

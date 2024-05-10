@@ -27,7 +27,7 @@ initGlobalData storage =
     , currentTimeStamp = millisToPosix 0
     , sceneStartTime = 0
     , globalTime = 0
-    , volume = 0.5
+    , volume = storage.volume
     , windowVisibility = Visible
     , pressedKeys = emptyKeycodeSet
     , mousePos = ( 0, 0 )
@@ -39,7 +39,13 @@ initGlobalData storage =
 
 saveGlobalData : GlobalData LocalStorage -> LocalStorage
 saveGlobalData globalData =
-    globalData.localStorage
+    let
+        oldls =
+            globalData.localStorage
+    in
+    { oldls
+        | volume = globalData.volume
+    }
 
 
 userConfig : UserConfig LocalStorage SceneMsg
@@ -47,7 +53,7 @@ userConfig =
     { initScene = "Test_SOMMsg"
     , initSceneMsg = Nothing
     , virtualSize = { width = 1920, height = 1080 }
-    , debug = False
+    , debug = True
     , background = Messenger.UserConfig.transparentBackground
     , initGlobalData = initGlobalData
     , saveGlobalData = saveGlobalData
