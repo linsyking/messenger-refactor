@@ -10,8 +10,8 @@ import Messenger.Model exposing (Model)
 import Messenger.Scene.Loader exposing (SceneStorage, loadSceneByName)
 import Messenger.Scene.Scene exposing (AbstractScene(..), MAbstractScene, SceneOutputMsg)
 import Messenger.UserConfig exposing (UserConfig)
-import Time exposing (millisToPosix)
 import Set
+import Time exposing (millisToPosix)
 
 
 emptyScene : MAbstractScene localstorage scenemsg

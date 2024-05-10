@@ -8,8 +8,8 @@ import Messenger.UI exposing (Output, genMain)
 import Messenger.UI.Init exposing (emptyInternalData)
 import Messenger.UserConfig exposing (UserConfig)
 import Scenes.AllScenes exposing (allScenes)
-import Time exposing (millisToPosix)
 import Set
+import Time exposing (millisToPosix)
 
 
 
@@ -25,7 +25,6 @@ initGlobalData storage =
     , volume = 0.5
     , windowVisibility = Visible
     , mousePos = ( 0, 0 )
-    , pressedKeys = Set.empty
     , extraHTML = Nothing
     , localStorage = storage
     , currentScene = ""
@@ -41,10 +40,10 @@ userConfig : UserConfig LocalStorage SceneMsg
 userConfig =
     { initScene = "Main"
     , initSceneMsg = Nothing
-    , virtualSize = { width = 800, height = 600 }
+    , virtualSize = { width = 1920, height = 1080 }
     , debug = False
     , background = Messenger.UserConfig.transparentBackground
-    , initGlobalData = initGlobalData
+    , initGlobTruea = initGlobalData
     , saveGlobalData = saveGlobalData
     , allTexture = []
     , allSpriteSheets = Dict.empty

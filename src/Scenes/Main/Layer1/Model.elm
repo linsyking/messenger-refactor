@@ -9,10 +9,10 @@ import Components.User.Base as User
 import Components.User.UTest as UTest
 import Messenger.Base exposing (Env, WorldEvent)
 import Messenger.Component.Component exposing (AbstractComponent, AbstractPortableComponent, addSceneMsgtoSOM, preViewComponents, viewComponents)
-import Messenger.GeneralModel exposing (Msg(..), MsgBase(..), abstract)
+import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
 import Messenger.Layer.Layer exposing (AbstractLayer, ConcreteLayer, genLayer)
 import Messenger.Recursion exposing (updateObjects, updateObjectsWithTarget)
-import Messenger.Scene.Scene exposing (SceneOutputMsg(..), noCommonData)
+import Messenger.Scene.Scene exposing (SceneOutputMsg(..), addCommonData, noCommonData)
 import Scenes.Main.LayerBase exposing (..)
 
 
@@ -63,6 +63,9 @@ update env evt data =
             data.components
                 |> updateObjects (noCommonData env) evt
 
+        newEnvC =
+            addCommonData env.commonData newEnv
+
         ( newData2, newMsg2, ( newEnv2, newBlock2 ) ) =
             List.foldl
                 (\cm ( d, m, ( e, b ) ) ->
@@ -72,18 +75,17 @@ update env evt data =
                     in
                     ( d2, m ++ m2, ( e2, b ) )
                 )
-                ( { components = newData }, [], ( env, newBlock ) )
+                ( { components = newData }, [], ( newEnvC, newBlock ) )
                 newMsg
     in
-    if env.globalData.globalTime == 0 then
-        let
-            ( newData3, _, _ ) =
-                updateObjectsWithTarget newEnv [ Other "B" (PTest.IntMsg 100) ] newData2.components
-        in
-        ( { components = newData3 }, newMsg2, ( newEnv2, newBlock2 ) )
-
-    else
-        ( newData2, newMsg2, ( newEnv2, newBlock2 ) )
+    -- if env.globalData.globalTime == 0 then
+    --     let
+    --         ( newData3, _, _ ) =
+    --             updateObjectsWithTarget newEnv [ Other "B" (PTest.IntMsg 100) ] newData2.components
+    --     in
+    --     ( { components = newData3 }, newMsg2, ( newEnv2, newBlock2 ) )
+    -- else
+    ( newData2, newMsg2, ( newEnv2, newBlock2 ) )
 
 
 updaterec : Env SceneCommonData LocalStorage -> LayerMsg -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg LocalStorage)), Env SceneCommonData LocalStorage )

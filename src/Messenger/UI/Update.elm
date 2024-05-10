@@ -19,9 +19,9 @@ import Messenger.Scene.Loader exposing (SceneStorage, existScene, loadSceneByNam
 import Messenger.Scene.Scene exposing (SceneOutputMsg(..), unroll)
 import Messenger.Tools.Browser exposing (alert, prompt)
 import Messenger.UserConfig exposing (UserConfig)
+import Set
 import Task
 import Time
-import Set
 
 
 gameUpdate : UserConfig localstorage scenemsg -> List ( String, SceneStorage localstorage scenemsg ) -> WorldEvent -> Model localstorage scenemsg -> ( Model localstorage scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
@@ -250,14 +250,14 @@ update config scenes _ msg model =
                 newPressedKeys =
                     Set.remove key gd.pressedKeys
             in
-            ({model | currentGlobalData = {gd | pressedKeys = newPressedKeys}}, Cmd.none, Audio.cmdNone)
+            ( { model | currentGlobalData = { gd | pressedKeys = newPressedKeys } }, Cmd.none, Audio.cmdNone )
 
         KeyDown key ->
             let
                 newPressedKeys =
                     Set.insert key gd.pressedKeys
             in
-            ({model | currentGlobalData = {gd | pressedKeys = newPressedKeys}}, Cmd.none, Audio.cmdNone)
+            ( { model | currentGlobalData = { gd | pressedKeys = newPressedKeys } }, Cmd.none, Audio.cmdNone )
 
         Prompt "load" result ->
             if existScene result scenes then

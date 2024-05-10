@@ -6,8 +6,8 @@ import Canvas.Texture exposing (Texture)
 import Dict exposing (Dict)
 import Html exposing (Html)
 import Messenger.Audio.Base exposing (AudioOption)
-import Time
 import Set exposing (Set)
+import Time
 
 
 {-| Msg

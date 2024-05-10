@@ -1,13 +1,11 @@
 module Components.Portable.A exposing (..)
 
 import Canvas exposing (Renderable, empty)
+import Components.Portable.PTest exposing (..)
 import Messenger.Base exposing (Env, WorldEvent(..))
 import Messenger.Component.Component exposing (AbstractPortableComponent, ConcretePortableComponent, genComponent, translatePortableComponent)
-import Messenger.GeneralModel exposing (Msg)
+import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
 import Messenger.Scene.Scene exposing (SceneOutputMsg)
-import Messenger.GeneralModel exposing (Msg(..))
-import Messenger.GeneralModel exposing (MsgBase(..))
-import Components.Portable.PTest exposing (..)
 
 
 {-| Initializer
@@ -26,13 +24,13 @@ update env evnt d =
 
 updaterec : Env () localstorage -> ComponentMsg -> Data -> ( Data, List (Msg ComponentTarget ComponentMsg (SceneOutputMsg () localstorage)), Env () localstorage )
 updaterec env msg d =
-     case msg of
+    case msg of
         IntMsg x ->
             let
                 test =
                     Debug.log "A" x
             in
-            ( d, [ Other "B" (IntMsg (x - 1)) , ( Parent <| OtherMsg <| IntMsg x) , ( Other "B" (IntMsg (x + 1) )) ], env )
+            ( d, [ Other "B" (IntMsg (x - 1)), Parent <| OtherMsg <| IntMsg x, Other "B" (IntMsg (x + 1)) ], env )
 
         _ ->
             ( d, [], env )
