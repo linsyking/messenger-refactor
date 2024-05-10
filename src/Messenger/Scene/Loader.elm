@@ -9,7 +9,7 @@ import Messenger.Scene.Scene exposing (MAbstractScene)
 
 
 type alias SceneStorage localstorage scenemsg =
-    Env () localstorage -> Maybe scenemsg -> MAbstractScene localstorage scenemsg
+    Env () localstorage -> scenemsg -> MAbstractScene localstorage scenemsg
 
 
 existScene : String -> List ( String, SceneStorage localstorage scenemsg ) -> Bool
@@ -37,7 +37,7 @@ getScene i scenes =
 
 {-| loadScene
 -}
-loadScene : Maybe (SceneStorage localstorage scenemsg) -> Maybe scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
+loadScene : Maybe (SceneStorage localstorage scenemsg) -> scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
 loadScene scenest smsg model =
     case scenest of
         Just s ->
@@ -55,11 +55,16 @@ loadScene scenest smsg model =
 -}
 loadSceneByName : String -> List ( String, SceneStorage localstorage scenemsg ) -> Maybe scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
 loadSceneByName name scenes smsg model =
-    let
-        newModel =
-            loadScene (getScene name scenes) smsg model
+    case smsg of
+        Just msg ->
+            let
+                newModel =
+                    loadScene (getScene name scenes) msg model
 
-        gd =
-            newModel.currentGlobalData
-    in
-    { newModel | currentGlobalData = { gd | currentScene = name } }
+                gd =
+                    newModel.currentGlobalData
+            in
+            { newModel | currentGlobalData = { gd | currentScene = name } }
+
+        Nothing ->
+            model

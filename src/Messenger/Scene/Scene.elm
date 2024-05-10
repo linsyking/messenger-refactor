@@ -7,7 +7,7 @@ import Messenger.Scene.Transitions.Base exposing (Transition)
 
 
 type alias ConcreteScene data env event ren scenemsg ls =
-    { init : env -> Maybe scenemsg -> data
+    { init : env -> scenemsg -> data
     , update : env -> event -> data -> ( data, List (SceneOutputMsg scenemsg ls), env )
     , view : env -> data -> ren
     }
@@ -36,7 +36,7 @@ unroll (Roll un) =
     un
 
 
-abstract : ConcreteScene data env event ren scenemsg ls -> env -> Maybe scenemsg -> AbstractScene env event ren scenemsg ls
+abstract : ConcreteScene data env event ren scenemsg ls -> env -> scenemsg -> AbstractScene env event ren scenemsg ls
 abstract conmodel initEnv initMsg =
     let
         abstractRec data =

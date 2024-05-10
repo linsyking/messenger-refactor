@@ -10,5 +10,10 @@ type alias SceneCommonData =
     }
 
 
-type alias LayerMsg =
-    Int
+type alias LayerInitData =
+    { initVal : Int }
+
+
+type LayerMsg
+    = Init LayerInitData
+    | Others

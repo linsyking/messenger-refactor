@@ -6,16 +6,20 @@ import Messenger.Base exposing (Env, WorldEvent)
 import Messenger.Scene.LayeredScene exposing (LayeredSceneData, genLayeredScene)
 import Messenger.Scene.Loader exposing (SceneStorage)
 import Messenger.Scene.Scene exposing (addCommonData)
-import Scenes.Main.LayerBase exposing (..)
 import Scenes.Main.Layer1.Model exposing (layer1)
+import Scenes.Main.LayerBase exposing (..)
 
 
-sceneInit : Env () LocalStorage -> Maybe SceneMsg -> LayeredSceneData SceneCommonData LocalStorage Target LayerMsg SceneMsg
-sceneInit env _ =
+commonDataInit : Env () LocalStorage -> SceneMsg -> SceneCommonData
+commonDataInit _ _ =
+    { key = "Main" }
+
+
+sceneInit : Env () LocalStorage -> SceneMsg -> LayeredSceneData SceneCommonData LocalStorage Target LayerMsg SceneMsg
+sceneInit env msg =
     let
         cd =
-            { key = "Main"
-            }
+            commonDataInit env msg
 
         envcd =
             addCommonData cd env
@@ -23,7 +27,7 @@ sceneInit env _ =
     { renderSettings = []
     , commonData = cd
     , layers =
-        [ layer1 envcd 0
+        [ layer1 envcd <| Init { initVal = 1 }
         ]
     }
 

@@ -4,7 +4,7 @@ import Audio exposing (AudioCmd)
 import Browser.Events exposing (Visibility(..))
 import Canvas
 import Dict
-import Messenger.Base exposing (Flags, GlobalData, InternalData, WorldEvent(..))
+import Messenger.Base exposing (Env, Flags, GlobalData, InternalData, WorldEvent(..))
 import Messenger.Coordinate.Coordinates exposing (getStartPoint, maxHandW)
 import Messenger.Model exposing (Model)
 import Messenger.Scene.Loader exposing (SceneStorage, loadSceneByName)
@@ -18,7 +18,7 @@ emptyScene =
     let
         abstractRec _ =
             let
-                updates : env -> event -> ( AbstractScene env event ren scenemsg ls, List (SceneOutputMsg scenemsg ls), env )
+                updates : Env () localstorage -> WorldEvent -> ( MAbstractScene localstorage scenemsg, List (SceneOutputMsg scenemsg ls), Env () localstorage )
                 updates env _ =
                     ( abstractRec (), [], env )
             in

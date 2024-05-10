@@ -26,8 +26,8 @@ type alias Output localstorage scenemsg =
     Program Flags (Audio.Model WorldEvent (Model localstorage scenemsg)) (Audio.Msg WorldEvent)
 
 
-main : Input localstorage scenemsg -> Output localstorage scenemsg
-main input =
+genMain : Input localstorage scenemsg -> Output localstorage scenemsg
+genMain input =
     Audio.elementWithAudio
         { init = init input.config input.allScenes
         , update = update input.config input.allScenes

@@ -1,12 +1,15 @@
 module Main exposing (..)
 
+import Base exposing (..)
 import Browser.Events exposing (Visibility(..))
 import Dict
 import Messenger.Base exposing (GlobalData)
+import Messenger.UI exposing (Output, genMain)
 import Messenger.UI.Init exposing (emptyInternalData)
 import Messenger.UserConfig exposing (UserConfig)
+import Scenes.AllScenes exposing (allScenes)
 import Time exposing (millisToPosix)
-import Base exposing (..)
+
 
 
 -- Testing Messenger
@@ -50,3 +53,7 @@ userConfig =
         }
     }
 
+
+main : Output LocalStorage SceneMsg
+main =
+    genMain { config = userConfig, allScenes = allScenes }

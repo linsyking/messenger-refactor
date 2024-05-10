@@ -115,6 +115,37 @@ type alias MAbstractGeneralModel common localstorage tar msg bdata scenemsg =
     AbstractGeneralModel (Env common localstorage) WorldEvent tar msg Renderable bdata (SceneOutputMsg scenemsg localstorage)
 
 
+type alias MConCreteGeneralModelwithoutBData data common localstorage tar msg scenemsg =
+    { init : Env common localstorage -> msg -> data
+    , update : Env common localstorage -> WorldEvent -> data -> ( data, List (Msg tar msg (SceneOutputMsg scenemsg localstorage)), ( Env common localstorage, Bool ) )
+    , updaterec : Env common localstorage -> msg -> data -> ( data, List (Msg tar msg (SceneOutputMsg scenemsg localstorage)), Env common localstorage )
+    , view : Env common localstorage -> data -> Renderable
+    , matcher : data -> tar -> Bool
+    }
+
+
+addEmptyBData : MConCreteGeneralModelwithoutBData data common localstorage tar msg scenemsg -> MConcreteGeneralModel data common localstorage tar msg () scenemsg
+addEmptyBData mconnoB =
+    { init = \env msg -> ( mconnoB.init env msg, () )
+    , update =
+        \env evt data () ->
+            let
+                ( resData, resMsg, resEnv ) =
+                    mconnoB.update env evt data
+            in
+            ( ( resData, () ), resMsg, resEnv )
+    , updaterec =
+        \env msg data () ->
+            let
+                ( resData, resMsg, resEnv ) =
+                    mconnoB.updaterec env msg data
+            in
+            ( ( resData, () ), resMsg, resEnv )
+    , view = \env data () -> mconnoB.view env data
+    , matcher = \data () tar -> mconnoB.matcher data tar
+    }
+
+
 {-| View model list.
 -}
 viewModelList : Env common localstorage -> List (MAbstractGeneralModel common localstorage tar msg bdata scenemsg) -> List Renderable
