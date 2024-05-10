@@ -52,8 +52,7 @@ userConfig =
     , initGlobalData = initGlobalData
     , saveGlobalData = saveGlobalData
     , allTexture =
-        [ ( "bg", "assets/bg.jpg" )
-        , ( "blobcat", "assets/blobcat.png" )
+        [ ( "blobcat", "assets/blobcat.png" )
         ]
     , allSpriteSheets = Dict.empty
     , timeInterval = 15
