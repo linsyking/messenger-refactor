@@ -2,20 +2,22 @@ module Scenes.Main.Layer1.Model exposing (..)
 
 import Base exposing (..)
 import Canvas exposing (Renderable, empty)
+import Components.Portable.A as A
+import Components.Portable.B as B
 import Components.Portable.PTest as PTest
 import Components.User.Base as User
 import Components.User.UTest as UTest
 import Messenger.Base exposing (Env, WorldEvent)
 import Messenger.Component.Component exposing (AbstractComponent, AbstractPortableComponent, addSceneMsgtoSOM, preViewComponents, viewComponents)
-import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
+import Messenger.GeneralModel exposing (Msg(..), MsgBase(..), abstract)
 import Messenger.Layer.Layer exposing (AbstractLayer, ConcreteLayer, genLayer)
+import Messenger.Recursion exposing (updateObjects, updateObjectsWithTarget)
 import Messenger.Scene.Scene exposing (SceneOutputMsg(..), noCommonData)
 import Scenes.Main.LayerBase exposing (..)
 
 
 type alias Data =
-    { pcomps : List (AbstractPortableComponent LocalStorage PTest.ComponentTarget PTest.ComponentMsg)
-    , ucomps : List (AbstractComponent SceneCommonData LocalStorage User.ComponentTarget User.ComponentMsg User.BaseData SceneMsg)
+    { components : List (AbstractPortableComponent LocalStorage PTest.ComponentTarget PTest.ComponentMsg)
     }
 
 
@@ -24,11 +26,12 @@ init env initMsg =
     case initMsg of
         Init v ->
             Data
-                [ PTest.pTest (noCommonData env) (PTest.Init { initVal = v.initVal }) ]
-                [ UTest.uTest env (User.Init { initVal = "hello", initBase = v.initVal }) ]
+                [ A.pTest (noCommonData env) (PTest.Init {})
+                , B.pTest (noCommonData env) (PTest.Init {})
+                ]
 
         _ ->
-            Data [] []
+            Data []
 
 
 handlePComponentMsg : Env SceneCommonData LocalStorage -> MsgBase PTest.ComponentMsg (SceneOutputMsg () LocalStorage) -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg LocalStorage)), Env SceneCommonData LocalStorage )
@@ -42,13 +45,45 @@ handlePComponentMsg env pcompmsg data =
                 Nothing ->
                     ( data, [], env )
 
+        OtherMsg (PTest.IntMsg x) ->
+            let
+                test =
+                    Debug.log "layer" x
+            in
+            ( data, [], env )
+
         _ ->
             ( data, [], env )
 
 
 update : Env SceneCommonData LocalStorage -> WorldEvent -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg LocalStorage)), ( Env SceneCommonData LocalStorage, Bool ) )
 update env evt data =
-    ( data, [], ( env, False ) )
+    let
+        ( newData, newMsg, ( newEnv, newBlock ) ) =
+            data.components
+                |> updateObjects (noCommonData env) evt
+
+        ( newData2, newMsg2, ( newEnv2, newBlock2 ) ) =
+            List.foldl
+                (\cm ( d, m, ( e, b ) ) ->
+                    let
+                        ( d2, m2, e2 ) =
+                            handlePComponentMsg e cm d
+                    in
+                    ( d2, m ++ m2, ( e2, b ) )
+                )
+                ( { components = newData }, [], ( env, newBlock ) )
+                newMsg
+    in
+    if env.globalData.globalTime == 0 then
+        let
+            ( newData3, _, _ ) =
+                updateObjectsWithTarget newEnv [ Other "B" (PTest.IntMsg 100) ] newData2.components
+        in
+        ( { components = newData3 }, newMsg2, ( newEnv2, newBlock2 ) )
+
+    else
+        ( newData2, newMsg2, ( newEnv2, newBlock2 ) )
 
 
 updaterec : Env SceneCommonData LocalStorage -> LayerMsg -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg LocalStorage)), Env SceneCommonData LocalStorage )
@@ -58,7 +93,7 @@ updaterec env msg data =
 
 view : Env SceneCommonData LocalStorage -> Data -> Renderable
 view env data =
-    viewComponents <| (preViewComponents (noCommonData env) data.pcomps ++ preViewComponents env data.ucomps)
+    empty
 
 
 matcher : Data -> Target -> Bool

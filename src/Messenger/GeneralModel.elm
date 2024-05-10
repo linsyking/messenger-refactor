@@ -54,6 +54,7 @@ type AbstractGeneralModel env event tar msg ren bdata sommsg
     = Roll (UnrolledAbstractGeneralModel env event tar msg ren bdata sommsg)
 
 
+
 unroll : AbstractGeneralModel env event tar msg ren bdata sommsg -> UnrolledAbstractGeneralModel env event tar msg ren bdata sommsg
 unroll (Roll un) =
     un
