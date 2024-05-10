@@ -13,35 +13,35 @@ type alias ConcreteScene data env event ren scenemsg ls =
     }
 
 
-type alias UnrolledAbsScene env event ren scenemsg ls =
-    { update : env -> event -> ( AbsScene env event ren scenemsg ls, List (SceneOutputMsg scenemsg ls), env )
+type alias UnrolledAbstractScene env event ren scenemsg ls =
+    { update : env -> event -> ( AbstractScene env event ren scenemsg ls, List (SceneOutputMsg scenemsg ls), env )
     , view : env -> ren
     }
 
 
-type AbsScene env event ren scenemsg ls
-    = Roll (UnrolledAbsScene env event ren scenemsg ls)
+type AbstractScene env event ren scenemsg ls
+    = Roll (UnrolledAbstractScene env event ren scenemsg ls)
 
 
 type alias MConcreteScene data localstorage scenemsg =
     ConcreteScene data (Env () localstorage) WorldEvent Renderable scenemsg localstorage
 
 
-type alias MAbsScene localstorage scenemsg =
-    AbsScene (Env () localstorage) WorldEvent Renderable scenemsg localstorage
+type alias MAbstractScene localstorage scenemsg =
+    AbstractScene (Env () localstorage) WorldEvent Renderable scenemsg localstorage
 
 
-unroll : AbsScene env event ren scenemsg ls -> UnrolledAbsScene env event ren scenemsg ls
+unroll : AbstractScene env event ren scenemsg ls -> UnrolledAbstractScene env event ren scenemsg ls
 unroll (Roll un) =
     un
 
 
-abstract : ConcreteScene data env event ren scenemsg ls -> env -> Maybe scenemsg -> AbsScene env event ren scenemsg ls
+abstract : ConcreteScene data env event ren scenemsg ls -> env -> Maybe scenemsg -> AbstractScene env event ren scenemsg ls
 abstract conmodel initEnv initMsg =
     let
         abstractRec data =
             let
-                updates : env -> event -> ( AbsScene env event ren scenemsg ls, List (SceneOutputMsg scenemsg ls), env )
+                updates : env -> event -> ( AbstractScene env event ren scenemsg ls, List (SceneOutputMsg scenemsg ls), env )
                 updates env event =
                     let
                         ( new_d, new_m, new_e ) =

@@ -19,12 +19,12 @@ import Browser.Events exposing (Visibility(..))
 import Messenger.Audio.Audio exposing (getAudio)
 import Messenger.Audio.Base exposing (AudioRepo)
 import Messenger.Base exposing (GlobalData)
-import Messenger.Scene.Scene exposing (MAbsScene)
+import Messenger.Scene.Scene exposing (MAbstractScene)
 import Messenger.Scene.Transitions.Base exposing (Transition)
 
 
 type alias Model localstorage scenemsg =
-    { currentScene : MAbsScene localstorage scenemsg
+    { currentScene : MAbstractScene localstorage scenemsg
     , currentGlobalData : GlobalData localstorage
     , audiorepo : AudioRepo
     , transition : Maybe ( Transition localstorage, ( String, Maybe scenemsg ) )

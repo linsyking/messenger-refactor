@@ -8,17 +8,17 @@ import Messenger.Base exposing (Flags, GlobalData, InternalData, WorldEvent(..))
 import Messenger.Coordinate.Coordinates exposing (getStartPoint, maxHandW)
 import Messenger.Model exposing (Model)
 import Messenger.Scene.Loader exposing (SceneStorage, loadSceneByName)
-import Messenger.Scene.Scene exposing (AbsScene(..), MAbsScene, SceneOutputMsg)
+import Messenger.Scene.Scene exposing (AbstractScene(..), MAbstractScene, SceneOutputMsg)
 import Messenger.UserConfig exposing (UserConfig)
 import Time exposing (millisToPosix)
 
 
-emptyScene : MAbsScene localstorage scenemsg
+emptyScene : MAbstractScene localstorage scenemsg
 emptyScene =
     let
         abstractRec _ =
             let
-                updates : env -> event -> ( AbsScene env event ren scenemsg ls, List (SceneOutputMsg scenemsg ls), env )
+                updates : env -> event -> ( AbstractScene env event ren scenemsg ls, List (SceneOutputMsg scenemsg ls), env )
                 updates env _ =
                     ( abstractRec (), [], env )
             in

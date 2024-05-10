@@ -3,9 +3,10 @@ module Messenger.Scene.LayeredScene exposing (..)
 import Canvas exposing (Renderable, group)
 import Canvas.Settings exposing (Setting)
 import Messenger.Base exposing (Env, WorldEvent)
-import Messenger.GeneralModel exposing (MAbsGeneralModel, MConcreteGeneralModel, MsgBase(..), viewModelList)
+import Messenger.GeneralModel exposing (MAbstractGeneralModel, MConcreteGeneralModel, MsgBase(..), viewModelList)
 import Messenger.Recursion exposing (updateObjects)
-import Messenger.Scene.Scene exposing (MConcreteScene, SceneOutputMsg, addCommonData, noCommonData)
+import Messenger.Scene.Loader exposing (SceneStorage)
+import Messenger.Scene.Scene exposing (MAbstractScene, MConcreteScene, SceneOutputMsg, abstract, addCommonData, noCommonData)
 
 
 type alias ConcreteLayer data common localstorage tar msg scenemsg =
@@ -13,7 +14,7 @@ type alias ConcreteLayer data common localstorage tar msg scenemsg =
 
 
 type alias AbsLayer common localstorage tar msg scenemsg =
-    MAbsGeneralModel common localstorage tar msg () scenemsg
+    MAbstractGeneralModel common localstorage tar msg () scenemsg
 
 
 type alias LayeredSceneData cdata ls tar msg scenemsg =
@@ -25,6 +26,10 @@ type alias LayeredSceneData cdata ls tar msg scenemsg =
 
 type alias ConcreteLayeredScene cdata ls tar msg scenemsg =
     MConcreteScene (LayeredSceneData cdata ls tar msg scenemsg) ls scenemsg
+
+
+type alias AbstractLayeredScene ls scenemsg =
+    MAbstractScene ls scenemsg
 
 
 updateLayeredScene : (Env () ls -> WorldEvent -> LayeredSceneData cdata ls tar msg scenemsg -> List Setting) -> Env () ls -> WorldEvent -> LayeredSceneData cdata ls tar msg scenemsg -> ( LayeredSceneData cdata ls tar msg scenemsg, List (SceneOutputMsg scenemsg ls), Env () ls )
@@ -54,9 +59,10 @@ viewLayeredScene env { renderSettings, commonData, layers } =
         |> group renderSettings
 
 
-genLayeredScene : (Env () ls -> Maybe scenemsg -> LayeredSceneData cdata ls tar msg scenemsg) -> (Env () ls -> WorldEvent -> LayeredSceneData cdata ls tar msg scenemsg -> List Setting) -> ConcreteLayeredScene cdata ls tar msg scenemsg
+genLayeredScene : (Env () ls -> Maybe scenemsg -> LayeredSceneData cdata ls tar msg scenemsg) -> (Env () ls -> WorldEvent -> LayeredSceneData cdata ls tar msg scenemsg -> List Setting) -> SceneStorage ls scenemsg
 genLayeredScene init settingsFunc =
-    { init = init
-    , update = updateLayeredScene settingsFunc
-    , view = viewLayeredScene
-    }
+    abstract
+        { init = init
+        , update = updateLayeredScene settingsFunc
+        , view = viewLayeredScene
+        }
