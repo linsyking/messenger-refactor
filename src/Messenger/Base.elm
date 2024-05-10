@@ -7,6 +7,7 @@ import Dict exposing (Dict)
 import Html exposing (Html)
 import Messenger.Audio.Base exposing (AudioOption)
 import Time
+import Set exposing (Set)
 
 
 {-| Msg
@@ -63,6 +64,7 @@ type alias GlobalData localstorage =
     , currentTimeStamp : Time.Posix
     , windowVisibility : Visibility
     , mousePos : ( Float, Float )
+    , pressedKeys : Set Int
     , extraHTML : Maybe (Html WorldEvent)
     , volume : Float
     , localStorage : localstorage

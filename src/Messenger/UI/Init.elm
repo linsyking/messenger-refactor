@@ -11,6 +11,7 @@ import Messenger.Scene.Loader exposing (SceneStorage, loadSceneByName)
 import Messenger.Scene.Scene exposing (AbstractScene(..), MAbstractScene, SceneOutputMsg)
 import Messenger.UserConfig exposing (UserConfig)
 import Time exposing (millisToPosix)
+import Set
 
 
 emptyScene : MAbstractScene localstorage scenemsg
@@ -52,6 +53,7 @@ emptyGlobalData config =
     , volume = 0.5
     , windowVisibility = Visible
     , mousePos = ( 0, 0 )
+    , pressedKeys = Set.empty
     , extraHTML = Nothing
     , localStorage = config.localStorageCodec.decode ""
     , currentScene = ""
