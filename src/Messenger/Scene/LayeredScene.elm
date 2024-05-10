@@ -3,33 +3,25 @@ module Messenger.Scene.LayeredScene exposing (..)
 import Canvas exposing (Renderable, group)
 import Canvas.Settings exposing (Setting)
 import Messenger.Base exposing (Env, WorldEvent)
-import Messenger.GeneralModel exposing (MAbstractGeneralModel, MConcreteGeneralModel, MsgBase(..), viewModelList)
+import Messenger.GeneralModel exposing (MAbstractGeneralModel, MsgBase(..), viewModelList)
 import Messenger.Recursion exposing (updateObjects)
 import Messenger.Scene.Loader exposing (SceneStorage)
-import Messenger.Scene.Scene exposing (MAbstractScene, MConcreteScene, SceneOutputMsg, abstract, addCommonData, noCommonData)
+import Messenger.Scene.Scene exposing (MConcreteScene, SceneOutputMsg, abstract, addCommonData, noCommonData)
 
 
-type alias ConcreteLayer data common localstorage tar msg scenemsg =
-    MConcreteGeneralModel data common localstorage tar msg () scenemsg
-
-
-type alias AbsLayer common localstorage tar msg scenemsg =
-    MAbstractGeneralModel common localstorage tar msg () scenemsg
+type alias AbstractLayer cdata localstorage tar msg scenemsg =
+    MAbstractGeneralModel cdata localstorage tar msg () scenemsg
 
 
 type alias LayeredSceneData cdata ls tar msg scenemsg =
     { renderSettings : List Setting
     , commonData : cdata
-    , layers : List (AbsLayer cdata ls tar msg scenemsg)
+    , layers : List (AbstractLayer cdata ls tar msg scenemsg)
     }
 
 
 type alias ConcreteLayeredScene cdata ls tar msg scenemsg =
     MConcreteScene (LayeredSceneData cdata ls tar msg scenemsg) ls scenemsg
-
-
-type alias AbstractLayeredScene ls scenemsg =
-    MAbstractScene ls scenemsg
 
 
 updateLayeredScene : (Env () ls -> WorldEvent -> LayeredSceneData cdata ls tar msg scenemsg -> List Setting) -> Env () ls -> WorldEvent -> LayeredSceneData cdata ls tar msg scenemsg -> ( LayeredSceneData cdata ls tar msg scenemsg, List (SceneOutputMsg scenemsg ls), Env () ls )

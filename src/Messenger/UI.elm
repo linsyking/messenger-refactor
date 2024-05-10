@@ -1,6 +1,7 @@
 module Messenger.UI exposing (..)
 
 import Audio
+import Messenger.Audio.Audio exposing (audioPortFromJS, audioPortToJS)
 import Messenger.Base exposing (Flags, WorldEvent)
 import Messenger.Model exposing (Model, audio)
 import Messenger.Scene.Loader exposing (SceneStorage)
