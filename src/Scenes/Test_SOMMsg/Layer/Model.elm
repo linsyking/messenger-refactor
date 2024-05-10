@@ -10,6 +10,11 @@ import Messenger.Layer.Layer exposing (AbstractLayer, ConcreteLayer, genLayer)
 import Messenger.Recursion exposing (updateObjects, updateObjectsWithTarget)
 import Messenger.Scene.Scene exposing (SceneOutputMsg(..), addCommonData, noCommonData)
 import Scenes.Test_SOMMsg.LayerBase exposing (..)
+import Canvas exposing (group)
+import Messenger.Render.Sprite exposing (renderSprite)
+import Messenger.Scene.Transitions.Base exposing (genTransition)
+import Messenger.Scene.Transitions.Base exposing (nullTransition)
+import Messenger.Scene.Transitions.Fade exposing (fadeInWithRenderable)
 
 
 type alias Data =
@@ -30,7 +35,9 @@ update : Env SceneCommonData LocalStorage -> WorldEvent -> Data -> ( Data, List 
 update env evt data =
     case evt of
         MouseDown _ _ ->
-            ( data, [ Parent <| SOMMsg <| SOMChangeScene ( Just Null, "Main", Nothing ), Parent <| SOMMsg <| SOMPlayAudio "biu" "assets/biu.ogg" ALoop ], ( env, False ) )
+            ( data, [ Parent <| SOMMsg <| SOMChangeScene ( Just Null, "Main", 
+            Just <| genTransition 0 30 nullTransition (fadeInWithRenderable <| view env data)
+             ), Parent <| SOMMsg <| SOMPlayAudio "biu" "assets/biu.ogg" ALoop ], ( env, False ) )
 
         _ ->
             ( data, [], ( env, False ) )
@@ -43,7 +50,9 @@ updaterec env msg data =
 
 view : Env SceneCommonData LocalStorage -> Data -> Renderable
 view env data =
-    empty
+    group []
+        [renderSprite env.globalData [] ( 0, 0 ) ( 1920, 0 ) "blobcat"
+        ]
 
 
 matcher : Data -> Target -> Bool
