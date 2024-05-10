@@ -9,6 +9,7 @@ import Messenger.UI.Init exposing (emptyInternalData)
 import Messenger.UserConfig exposing (UserConfig)
 import Scenes.AllScenes exposing (allScenes)
 import Time exposing (millisToPosix)
+import Set
 
 
 
@@ -24,6 +25,7 @@ initGlobalData storage =
     , volume = 0.5
     , windowVisibility = Visible
     , mousePos = ( 0, 0 )
+    , pressedKeys = Set.empty
     , extraHTML = Nothing
     , localStorage = storage
     , currentScene = ""
