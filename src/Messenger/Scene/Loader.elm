@@ -8,11 +8,11 @@ import Messenger.Model exposing (Model)
 import Messenger.Scene.Scene exposing (MAbstractScene)
 
 
-type alias SceneStorage localstorage scenemsg =
-    Env () localstorage -> Maybe scenemsg -> MAbstractScene localstorage scenemsg
+type alias SceneStorage userdata scenemsg =
+    Env () userdata -> Maybe scenemsg -> MAbstractScene userdata scenemsg
 
 
-existScene : String -> List ( String, SceneStorage localstorage scenemsg ) -> Bool
+existScene : String -> List ( String, SceneStorage userdata scenemsg ) -> Bool
 existScene i scenes =
     let
         tests =
@@ -28,7 +28,7 @@ existScene i scenes =
 
 {-| getScene
 -}
-getScene : String -> List ( String, SceneStorage localstorage scenemsg ) -> Maybe (SceneStorage localstorage scenemsg)
+getScene : String -> List ( String, SceneStorage userdata scenemsg ) -> Maybe (SceneStorage userdata scenemsg)
 getScene i scenes =
     List.head <|
         List.map (\( _, s ) -> s) <|
@@ -37,7 +37,7 @@ getScene i scenes =
 
 {-| loadScene
 -}
-loadScene : Maybe (SceneStorage localstorage scenemsg) -> Maybe scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
+loadScene : Maybe (SceneStorage userdata scenemsg) -> Maybe scenemsg -> Model userdata scenemsg -> Model userdata scenemsg
 loadScene scenest smsg model =
     case scenest of
         Just s ->
@@ -53,7 +53,7 @@ loadScene scenest smsg model =
 
 {-| loadSceneByName
 -}
-loadSceneByName : String -> List ( String, SceneStorage localstorage scenemsg ) -> Maybe scenemsg -> Model localstorage scenemsg -> Model localstorage scenemsg
+loadSceneByName : String -> List ( String, SceneStorage userdata scenemsg ) -> Maybe scenemsg -> Model userdata scenemsg -> Model userdata scenemsg
 loadSceneByName name scenes smsg model =
     let
         newModel =

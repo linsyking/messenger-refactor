@@ -57,7 +57,7 @@ It is mainly used for display and reading/writing some localstorage data.
 `windowVisibility` records whether users stay in this tab/window
 
 -}
-type alias GlobalData localstorage =
+type alias GlobalData userdata =
     { internalData : InternalData
     , sceneStartTime : Int
     , globalTime : Int
@@ -67,13 +67,13 @@ type alias GlobalData localstorage =
     , pressedKeys : Set Int
     , extraHTML : Maybe (Html WorldEvent)
     , volume : Float
-    , localStorage : localstorage
+    , userData : userdata
     , currentScene : String
     }
 
 
-type alias Env common localstorage =
-    { globalData : GlobalData localstorage
+type alias Env common userdata =
+    { globalData : GlobalData userdata
     , commonData : common
     }
 

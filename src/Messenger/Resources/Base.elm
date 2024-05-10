@@ -36,7 +36,7 @@ import Messenger.UserConfig exposing (UserConfig)
 Return all the textures.
 
 -}
-getTexture : UserConfig localstorage scenemsg -> List (Texture.Source WorldEvent)
+getTexture : UserConfig userdata scenemsg -> List (Texture.Source WorldEvent)
 getTexture config =
     List.map (\( x, y ) -> Texture.loadFromImageUrl y (TextureLoaded x)) config.allTexture
 

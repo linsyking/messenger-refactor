@@ -88,21 +88,12 @@ gameUpdate config scenes evnt model =
                             SOMPrompt name title ->
                                 ( lastModel, lastCmds ++ [ prompt { name = name, title = title } ], lastAudioCmds )
 
-                            SOMSaveLocalStorage ->
+                            SOMSaveUserData ->
                                 let
-                                    oldgd =
-                                        lastModel.currentGlobalData
-
-                                    newls =
-                                        config.saveGlobalData oldgd
-
-                                    newgd =
-                                        { oldgd | localStorage = newls }
-
-                                    encodedLS =
-                                        config.localStorageCodec.encode newls
+                                    encodedGD =
+                                        config.globalDataCodec.encode lastModel.currentGlobalData
                                 in
-                                ( { lastModel | currentGlobalData = newgd }, lastCmds ++ [ sendInfo encodedLS ], lastAudioCmds )
+                                ( lastModel, lastCmds ++ [ sendInfo encodedGD ], lastAudioCmds )
                     )
                     ( timeUpdatedModel, [], [] )
                     som

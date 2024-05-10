@@ -10,16 +10,15 @@ import Messenger.Model exposing (Model)
 import Messenger.Scene.Loader exposing (SceneStorage, loadSceneByName)
 import Messenger.Scene.Scene exposing (AbstractScene(..), MAbstractScene, SceneOutputMsg)
 import Messenger.UserConfig exposing (UserConfig)
-import Set
 import Time exposing (millisToPosix)
 
 
-emptyScene : MAbstractScene localstorage scenemsg
+emptyScene : MAbstractScene userdata scenemsg
 emptyScene =
     let
         abstractRec _ =
             let
-                updates : Env () localstorage -> WorldEvent -> ( MAbstractScene localstorage scenemsg, List (SceneOutputMsg scenemsg localstorage), Env () localstorage )
+                updates : Env () userdata -> WorldEvent -> ( MAbstractScene userdata scenemsg, List (SceneOutputMsg scenemsg userdata), Env () userdata )
                 updates env _ =
                     ( abstractRec (), [], env )
             in
@@ -44,23 +43,12 @@ emptyInternalData =
     }
 
 
-emptyGlobalData : UserConfig localstorage scenemsg -> GlobalData localstorage
+emptyGlobalData : UserConfig userdata scenemsg -> GlobalData userdata
 emptyGlobalData config =
-    { internalData = emptyInternalData
-    , currentTimeStamp = millisToPosix 0
-    , sceneStartTime = 0
-    , globalTime = 0
-    , volume = 0.5
-    , windowVisibility = Visible
-    , mousePos = ( 0, 0 )
-    , pressedKeys = Set.empty
-    , extraHTML = Nothing
-    , localStorage = config.localStorageCodec.decode ""
-    , currentScene = ""
-    }
+    config.globalDataCodec.decode ""
 
 
-initModel : UserConfig localstorage scenemsg -> Model localstorage scenemsg
+initModel : UserConfig userdata scenemsg -> Model userdata scenemsg
 initModel config =
     { currentScene = emptyScene
     , currentGlobalData = emptyGlobalData config
@@ -69,7 +57,7 @@ initModel config =
     }
 
 
-init : UserConfig localstorage scenemsg -> List ( String, SceneStorage localstorage scenemsg ) -> Flags -> ( Model localstorage scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
+init : UserConfig userdata scenemsg -> List ( String, SceneStorage userdata scenemsg ) -> Flags -> ( Model userdata scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
 init config scenes flags =
     let
         im =
@@ -83,9 +71,6 @@ init config scenes flags =
 
         ( fl, ft ) =
             getStartPoint oldgd ( flags.windowWidth, flags.windowHeight )
-
-        ls =
-            config.localStorageCodec.decode flags.info
 
         oldIT =
             { emptyInternalData
@@ -106,9 +91,9 @@ init config scenes flags =
             }
 
         initGlobalData =
-            config.initGlobalData ls
+            config.globalDataCodec.decode flags.info
 
         newgd =
-            { initGlobalData | currentTimeStamp = Time.millisToPosix flags.timeStamp, localStorage = ls, internalData = newIT, currentScene = config.initScene }
+            { initGlobalData | currentTimeStamp = millisToPosix flags.timeStamp, internalData = newIT, currentScene = config.initScene }
     in
     ( { ms | currentGlobalData = newgd }, Cmd.none, Audio.cmdNone )

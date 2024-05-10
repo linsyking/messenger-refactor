@@ -17,11 +17,11 @@ import Scenes.Main.LayerBase exposing (..)
 
 
 type alias Data =
-    { components : List (AbstractPortableComponent LocalStorage PTest.ComponentTarget PTest.ComponentMsg)
+    { components : List (AbstractPortableComponent UserData PTest.ComponentTarget PTest.ComponentMsg)
     }
 
 
-init : Env SceneCommonData LocalStorage -> LayerMsg -> Data
+init : Env SceneCommonData UserData -> LayerMsg -> Data
 init env initMsg =
     case initMsg of
         Init v ->
@@ -34,7 +34,7 @@ init env initMsg =
             Data []
 
 
-handlePComponentMsg : Env SceneCommonData LocalStorage -> MsgBase PTest.ComponentMsg (SceneOutputMsg () LocalStorage) -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg LocalStorage)), Env SceneCommonData LocalStorage )
+handlePComponentMsg : Env SceneCommonData UserData -> MsgBase PTest.ComponentMsg (SceneOutputMsg () UserData) -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg UserData)), Env SceneCommonData UserData )
 handlePComponentMsg env pcompmsg data =
     case pcompmsg of
         SOMMsg som ->
@@ -56,7 +56,7 @@ handlePComponentMsg env pcompmsg data =
             ( data, [], env )
 
 
-update : Env SceneCommonData LocalStorage -> WorldEvent -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg LocalStorage)), ( Env SceneCommonData LocalStorage, Bool ) )
+update : Env SceneCommonData UserData -> WorldEvent -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg UserData)), ( Env SceneCommonData UserData, Bool ) )
 update env evt data =
     let
         ( newData, newMsg, ( newEnv, newBlock ) ) =
@@ -85,15 +85,15 @@ update env evt data =
     --     in
     --     ( { components = newData3 }, newMsg2, ( newEnv2, newBlock2 ) )
     -- else
-    ( newData2, (Parent <| SOMMsg <| SOMSaveLocalStorage) :: newMsg2, ( newEnv2, newBlock2 ) )
+    ( newData2, (Parent <| SOMMsg <| SOMSaveUserData) :: newMsg2, ( newEnv2, newBlock2 ) )
 
 
-updaterec : Env SceneCommonData LocalStorage -> LayerMsg -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg LocalStorage)), Env SceneCommonData LocalStorage )
+updaterec : Env SceneCommonData UserData -> LayerMsg -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg UserData)), Env SceneCommonData UserData )
 updaterec env msg data =
     ( data, [], env )
 
 
-view : Env SceneCommonData LocalStorage -> Data -> Renderable
+view : Env SceneCommonData UserData -> Data -> Renderable
 view env data =
     group []
         [ renderSprite env.globalData [] ( 0, 0 ) ( 1920, 1080 ) "blobcat"
@@ -107,7 +107,7 @@ matcher data tar =
     tar == "layer1"
 
 
-layer1con : ConcreteLayer Data SceneCommonData LocalStorage Target LayerMsg SceneMsg
+layer1con : ConcreteLayer Data SceneCommonData UserData Target LayerMsg SceneMsg
 layer1con =
     { init = init
     , update = update
@@ -117,6 +117,6 @@ layer1con =
     }
 
 
-layer1 : Env SceneCommonData LocalStorage -> LayerMsg -> AbstractLayer SceneCommonData LocalStorage Target LayerMsg SceneMsg
+layer1 : Env SceneCommonData UserData -> LayerMsg -> AbstractLayer SceneCommonData UserData Target LayerMsg SceneMsg
 layer1 =
     genLayer layer1con

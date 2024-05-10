@@ -12,21 +12,21 @@ import Messenger.UI.View exposing (view)
 import Messenger.UserConfig exposing (UserConfig)
 
 
-type alias Scenes localstorage scenemsg =
-    List ( String, SceneStorage localstorage scenemsg )
+type alias Scenes userdata scenemsg =
+    List ( String, SceneStorage userdata scenemsg )
 
 
-type alias Input localstorage scenemsg =
-    { config : UserConfig localstorage scenemsg
-    , allScenes : Scenes localstorage scenemsg
+type alias Input userdata scenemsg =
+    { config : UserConfig userdata scenemsg
+    , allScenes : Scenes userdata scenemsg
     }
 
 
-type alias Output localstorage scenemsg =
-    Program Flags (Audio.Model WorldEvent (Model localstorage scenemsg)) (Audio.Msg WorldEvent)
+type alias Output userdata scenemsg =
+    Program Flags (Audio.Model WorldEvent (Model userdata scenemsg)) (Audio.Msg WorldEvent)
 
 
-genMain : Input localstorage scenemsg -> Output localstorage scenemsg
+genMain : Input userdata scenemsg -> Output userdata scenemsg
 genMain input =
     Audio.elementWithAudio
         { init = init input.config input.allScenes

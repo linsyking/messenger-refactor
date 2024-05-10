@@ -21,8 +21,12 @@ emptyKeycodeSet =
     Set.empty
 
 
-initGlobalData : LocalStorage -> GlobalData LocalStorage
-initGlobalData storage =
+initGlobalData : String -> GlobalData UserData
+initGlobalData data =
+    let
+        storage =
+            decodeUserData data
+    in
     { internalData = emptyInternalData
     , currentTimeStamp = millisToPosix 0
     , sceneStartTime = 0
@@ -32,43 +36,44 @@ initGlobalData storage =
     , pressedKeys = emptyKeycodeSet
     , mousePos = ( 0, 0 )
     , extraHTML = Nothing
-    , localStorage = storage
+    , userData = storage
     , currentScene = ""
     }
 
 
-saveGlobalData : GlobalData LocalStorage -> LocalStorage
+saveGlobalData : GlobalData UserData -> String
 saveGlobalData globalData =
     let
         oldls =
-            globalData.localStorage
+            globalData.userData
+
+        newls =
+            { oldls
+                | volume = globalData.volume
+            }
     in
-    { oldls
-        | volume = globalData.volume
-    }
+    encodeUserData newls
 
 
-userConfig : UserConfig LocalStorage SceneMsg
+userConfig : UserConfig UserData SceneMsg
 userConfig =
     { initScene = "Test_SOMMsg"
     , initSceneMsg = Nothing
     , virtualSize = { width = 1920, height = 1080 }
     , debug = True
     , background = Messenger.UserConfig.transparentBackground
-    , initGlobalData = initGlobalData
-    , saveGlobalData = saveGlobalData
     , allTexture =
         [ ( "blobcat", "assets/blobcat.png" )
         ]
     , allSpriteSheets = Dict.empty
     , timeInterval = 15
-    , localStorageCodec =
-        { encode = encodeLocalStorage
-        , decode = decodeLocalStorage
+    , globalDataCodec =
+        { encode = saveGlobalData
+        , decode = initGlobalData
         }
     }
 
 
-main : Output LocalStorage SceneMsg
+main : Output UserData SceneMsg
 main =
     genMain { config = userConfig, allScenes = allScenes }

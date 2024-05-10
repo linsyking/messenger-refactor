@@ -10,18 +10,18 @@ import Messenger.Scene.Loader exposing (SceneStorage)
 import Messenger.Scene.Scene exposing (MConcreteScene, SceneOutputMsg, abstract, addCommonData, noCommonData)
 
 
-type alias LayeredSceneData cdata localstorage tar msg scenemsg =
+type alias LayeredSceneData cdata userdata tar msg scenemsg =
     { renderSettings : List Setting
     , commonData : cdata
-    , layers : List (AbstractLayer cdata localstorage tar msg scenemsg)
+    , layers : List (AbstractLayer cdata userdata tar msg scenemsg)
     }
 
 
-type alias ConcreteLayeredScene cdata localstorage tar msg scenemsg =
-    MConcreteScene (LayeredSceneData cdata localstorage tar msg scenemsg) localstorage scenemsg
+type alias ConcreteLayeredScene cdata userdata tar msg scenemsg =
+    MConcreteScene (LayeredSceneData cdata userdata tar msg scenemsg) userdata scenemsg
 
 
-updateLayeredScene : (Env () localstorage -> WorldEvent -> LayeredSceneData cdata localstorage tar msg scenemsg -> List Setting) -> Env () localstorage -> WorldEvent -> LayeredSceneData cdata localstorage tar msg scenemsg -> ( LayeredSceneData cdata localstorage tar msg scenemsg, List (SceneOutputMsg scenemsg localstorage), Env () localstorage )
+updateLayeredScene : (Env () userdata -> WorldEvent -> LayeredSceneData cdata userdata tar msg scenemsg -> List Setting) -> Env () userdata -> WorldEvent -> LayeredSceneData cdata userdata tar msg scenemsg -> ( LayeredSceneData cdata userdata tar msg scenemsg, List (SceneOutputMsg scenemsg userdata), Env () userdata )
 updateLayeredScene settingsFunc env evt lsd =
     let
         ( newLayers, newMsgs, ( newEnv, _ ) ) =
@@ -42,13 +42,13 @@ updateLayeredScene settingsFunc env evt lsd =
     ( { renderSettings = settingsFunc env evt lsd, commonData = newEnv.commonData, layers = newLayers }, som, noCommonData newEnv )
 
 
-viewLayeredScene : Env () localstorage -> LayeredSceneData cdata localstorage tar msg scenemsg -> Renderable
+viewLayeredScene : Env () userdata -> LayeredSceneData cdata userdata tar msg scenemsg -> Renderable
 viewLayeredScene env { renderSettings, commonData, layers } =
     viewModelList (addCommonData commonData env) layers
         |> group renderSettings
 
 
-genLayeredScene : (Env () localstorage -> Maybe scenemsg -> LayeredSceneData cdata localstorage tar msg scenemsg) -> (Env () localstorage -> WorldEvent -> LayeredSceneData cdata localstorage tar msg scenemsg -> List Setting) -> SceneStorage localstorage scenemsg
+genLayeredScene : (Env () userdata -> Maybe scenemsg -> LayeredSceneData cdata userdata tar msg scenemsg) -> (Env () userdata -> WorldEvent -> LayeredSceneData cdata userdata tar msg scenemsg -> List Setting) -> SceneStorage userdata scenemsg
 genLayeredScene init settingsFunc =
     abstract
         { init = init

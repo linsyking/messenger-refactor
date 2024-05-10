@@ -6,25 +6,25 @@ import Messenger.GeneralModel exposing (MAbstractGeneralModel, MConcreteGeneralM
 import Messenger.Scene.Scene exposing (SceneOutputMsg)
 
 
-type alias ConcreteLayer data cdata localstorage tar msg scenemsg =
-    { init : Env cdata localstorage -> msg -> data
-    , update : Env cdata localstorage -> WorldEvent -> data -> ( data, List (Msg tar msg (SceneOutputMsg scenemsg localstorage)), ( Env cdata localstorage, Bool ) )
-    , updaterec : Env cdata localstorage -> msg -> data -> ( data, List (Msg tar msg (SceneOutputMsg scenemsg localstorage)), Env cdata localstorage )
-    , view : Env cdata localstorage -> data -> Renderable
+type alias ConcreteLayer data cdata userdata tar msg scenemsg =
+    { init : Env cdata userdata -> msg -> data
+    , update : Env cdata userdata -> WorldEvent -> data -> ( data, List (Msg tar msg (SceneOutputMsg scenemsg userdata)), ( Env cdata userdata, Bool ) )
+    , updaterec : Env cdata userdata -> msg -> data -> ( data, List (Msg tar msg (SceneOutputMsg scenemsg userdata)), Env cdata userdata )
+    , view : Env cdata userdata -> data -> Renderable
     , matcher : data -> tar -> Bool
     }
 
 
-type alias AbstractLayer cdata localstorage tar msg scenemsg =
-    MAbstractGeneralModel cdata localstorage tar msg () scenemsg
+type alias AbstractLayer cdata userdata tar msg scenemsg =
+    MAbstractGeneralModel cdata userdata tar msg () scenemsg
 
 
-genLayer : ConcreteLayer data cdata localstorage tar msg scenemsg -> Env cdata localstorage -> msg -> AbstractLayer cdata localstorage tar msg scenemsg
+genLayer : ConcreteLayer data cdata userdata tar msg scenemsg -> Env cdata userdata -> msg -> AbstractLayer cdata userdata tar msg scenemsg
 genLayer conlayer =
     abstract <| addEmptyBData conlayer
 
 
-addEmptyBData : ConcreteLayer data cdata localstorage tar msg scenemsg -> MConcreteGeneralModel data cdata localstorage tar msg () scenemsg
+addEmptyBData : ConcreteLayer data cdata userdata tar msg scenemsg -> MConcreteGeneralModel data cdata userdata tar msg () scenemsg
 addEmptyBData mconnoB =
     { init = \env msg -> ( mconnoB.init env msg, () )
     , update =

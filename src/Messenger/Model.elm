@@ -23,17 +23,17 @@ import Messenger.Scene.Scene exposing (MAbstractScene)
 import Messenger.Scene.Transitions.Base exposing (Transition)
 
 
-type alias Model localstorage scenemsg =
-    { currentScene : MAbstractScene localstorage scenemsg
-    , currentGlobalData : GlobalData localstorage
+type alias Model userdata scenemsg =
+    { currentScene : MAbstractScene userdata scenemsg
+    , currentGlobalData : GlobalData userdata
     , audiorepo : AudioRepo
-    , transition : Maybe ( Transition localstorage, ( String, Maybe scenemsg ) )
+    , transition : Maybe ( Transition userdata, ( String, Maybe scenemsg ) )
     }
 
 
 {-| updateSceneTime
 -}
-updateSceneTime : Model localstorage scenemsg -> Model localstorage scenemsg
+updateSceneTime : Model userdata scenemsg -> Model userdata scenemsg
 updateSceneTime m =
     let
         ogd =
@@ -48,7 +48,7 @@ updateSceneTime m =
 {-| resetSceneStartTime
 Set the scene starttime to 0.
 -}
-resetSceneStartTime : Model localstorage scenemsg -> Model localstorage scenemsg
+resetSceneStartTime : Model userdata scenemsg -> Model userdata scenemsg
 resetSceneStartTime m =
     let
         ogd =
@@ -65,7 +65,7 @@ resetSceneStartTime m =
 The audio argument needed in the main model.
 
 -}
-audio : AudioData -> Model localstorage scenemsg -> Audio
+audio : AudioData -> Model userdata scenemsg -> Audio
 audio ad model =
     Audio.group (getAudio ad model.audiorepo)
         |> Audio.scaleVolume model.currentGlobalData.volume

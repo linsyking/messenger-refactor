@@ -1,6 +1,6 @@
 module Components.User.UTest exposing (..)
 
-import Base exposing (LocalStorage, SceneMsg)
+import Base exposing (SceneMsg, UserData)
 import Canvas exposing (Renderable, empty)
 import Components.User.Base exposing (BaseData, ComponentMsg(..), ComponentTarget)
 import Messenger.Base exposing (Env, WorldEvent)
@@ -16,7 +16,7 @@ type alias Data =
 
 {-| Initializer
 -}
-init : Env SceneCommonData LocalStorage -> ComponentMsg -> ( Data, BaseData )
+init : Env SceneCommonData UserData -> ComponentMsg -> ( Data, BaseData )
 init env initMsg =
     case initMsg of
         Init v ->
@@ -28,19 +28,19 @@ init env initMsg =
 
 {-| Updater
 -}
-update : Env SceneCommonData LocalStorage -> WorldEvent -> Data -> BaseData -> ( ( Data, BaseData ), List (Msg ComponentTarget ComponentMsg (SceneOutputMsg SceneMsg LocalStorage)), ( Env SceneCommonData LocalStorage, Bool ) )
+update : Env SceneCommonData UserData -> WorldEvent -> Data -> BaseData -> ( ( Data, BaseData ), List (Msg ComponentTarget ComponentMsg (SceneOutputMsg SceneMsg UserData)), ( Env SceneCommonData UserData, Bool ) )
 update env evnt d bd =
     ( ( d, bd ), [], ( env, False ) )
 
 
-updaterec : Env SceneCommonData LocalStorage -> ComponentMsg -> Data -> BaseData -> ( ( Data, BaseData ), List (Msg ComponentTarget ComponentMsg (SceneOutputMsg SceneMsg LocalStorage)), Env SceneCommonData LocalStorage )
+updaterec : Env SceneCommonData UserData -> ComponentMsg -> Data -> BaseData -> ( ( Data, BaseData ), List (Msg ComponentTarget ComponentMsg (SceneOutputMsg SceneMsg UserData)), Env SceneCommonData UserData )
 updaterec env msg d bd =
     ( ( d, bd ), [], env )
 
 
 {-| Renderer
 -}
-view : Env SceneCommonData LocalStorage -> Data -> BaseData -> ( Renderable, Int )
+view : Env SceneCommonData UserData -> Data -> BaseData -> ( Renderable, Int )
 view env d bd =
     let
         _ =
@@ -55,7 +55,7 @@ matcher d bd tar =
     tar == "portable"
 
 
-uTestcon : ConcreteUserComponent Data SceneCommonData LocalStorage ComponentTarget ComponentMsg BaseData SceneMsg
+uTestcon : ConcreteUserComponent Data SceneCommonData UserData ComponentTarget ComponentMsg BaseData SceneMsg
 uTestcon =
     { init = init
     , update = update
@@ -67,6 +67,6 @@ uTestcon =
 
 {-| Exported component
 -}
-uTest : Env SceneCommonData LocalStorage -> ComponentMsg -> AbstractComponent SceneCommonData LocalStorage ComponentTarget ComponentMsg BaseData SceneMsg
+uTest : Env SceneCommonData UserData -> ComponentMsg -> AbstractComponent SceneCommonData UserData ComponentTarget ComponentMsg BaseData SceneMsg
 uTest =
     genComponent uTestcon

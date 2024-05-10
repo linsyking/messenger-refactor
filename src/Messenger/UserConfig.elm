@@ -6,34 +6,25 @@ import Messenger.Base exposing (GlobalData)
 import Messenger.Render.SpriteSheet exposing (SpriteSheet)
 
 
-type alias UserConfig localstorage scenemsg =
+type alias UserConfig userdata scenemsg =
     { initScene : String
     , initSceneMsg : Maybe scenemsg
-    , localStorageCodec :
-        { encode : localstorage -> String
-        , decode : String -> localstorage
+    , globalDataCodec :
+        { encode : GlobalData userdata -> String
+        , decode : String -> GlobalData userdata
         }
     , virtualSize :
         { width : Float
         , height : Float
         }
     , debug : Bool
-    , background : GlobalData localstorage -> Renderable
-    , initGlobalData : localstorage -> GlobalData localstorage
-    , saveGlobalData : GlobalData localstorage -> localstorage
+    , background : GlobalData userdata -> Renderable
     , allTexture : List ( String, String )
     , allSpriteSheets : SpriteSheet
     , timeInterval : Float
     }
 
 
-{-| initGlobalData
--}
-initGlobalData : UserConfig localstorage scenemsg -> String -> GlobalData localstorage
-initGlobalData config lsencoded =
-    config.initGlobalData (config.localStorageCodec.decode lsencoded)
-
-
-transparentBackground : GlobalData localstorage -> Renderable
+transparentBackground : GlobalData userdata -> Renderable
 transparentBackground gd =
     Canvas.clear ( 0, 0 ) gd.internalData.realWidth gd.internalData.realHeight

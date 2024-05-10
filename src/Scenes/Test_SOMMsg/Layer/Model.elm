@@ -18,7 +18,7 @@ type alias Data =
     {}
 
 
-init : Env SceneCommonData LocalStorage -> LayerMsg -> Data
+init : Env SceneCommonData UserData -> LayerMsg -> Data
 init env initMsg =
     case initMsg of
         Init v ->
@@ -28,7 +28,7 @@ init env initMsg =
             {}
 
 
-update : Env SceneCommonData LocalStorage -> WorldEvent -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg LocalStorage)), ( Env SceneCommonData LocalStorage, Bool ) )
+update : Env SceneCommonData UserData -> WorldEvent -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg UserData)), ( Env SceneCommonData UserData, Bool ) )
 update env evt data =
     case evt of
         MouseDown _ _ ->
@@ -49,12 +49,12 @@ update env evt data =
             ( data, [], ( env, False ) )
 
 
-updaterec : Env SceneCommonData LocalStorage -> LayerMsg -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg LocalStorage)), Env SceneCommonData LocalStorage )
+updaterec : Env SceneCommonData UserData -> LayerMsg -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg UserData)), Env SceneCommonData UserData )
 updaterec env msg data =
     ( data, [], env )
 
 
-view : Env SceneCommonData LocalStorage -> Data -> Renderable
+view : Env SceneCommonData UserData -> Data -> Renderable
 view env data =
     group []
         [ renderSprite env.globalData [] ( 0, 0 ) ( 1920, 0 ) "blobcat"
@@ -67,7 +67,7 @@ matcher data tar =
     tar == "layer"
 
 
-layercon : ConcreteLayer Data SceneCommonData LocalStorage Target LayerMsg SceneMsg
+layercon : ConcreteLayer Data SceneCommonData UserData Target LayerMsg SceneMsg
 layercon =
     { init = init
     , update = update
@@ -77,6 +77,6 @@ layercon =
     }
 
 
-layer : Env SceneCommonData LocalStorage -> LayerMsg -> AbstractLayer SceneCommonData LocalStorage Target LayerMsg SceneMsg
+layer : Env SceneCommonData UserData -> LayerMsg -> AbstractLayer SceneCommonData UserData Target LayerMsg SceneMsg
 layer =
     genLayer layercon

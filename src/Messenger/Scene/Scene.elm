@@ -6,42 +6,42 @@ import Messenger.Base exposing (Env, WorldEvent)
 import Messenger.Scene.Transitions.Base exposing (Transition)
 
 
-type alias ConcreteScene data env event ren scenemsg localstorage =
+type alias ConcreteScene data env event ren scenemsg userdata =
     { init : env -> Maybe scenemsg -> data
-    , update : env -> event -> data -> ( data, List (SceneOutputMsg scenemsg localstorage), env )
+    , update : env -> event -> data -> ( data, List (SceneOutputMsg scenemsg userdata), env )
     , view : env -> data -> ren
     }
 
 
-type alias UnrolledAbstractScene env event ren scenemsg localstorage =
-    { update : env -> event -> ( AbstractScene env event ren scenemsg localstorage, List (SceneOutputMsg scenemsg localstorage), env )
+type alias UnrolledAbstractScene env event ren scenemsg userdata =
+    { update : env -> event -> ( AbstractScene env event ren scenemsg userdata, List (SceneOutputMsg scenemsg userdata), env )
     , view : env -> ren
     }
 
 
-type AbstractScene env event ren scenemsg localstorage
-    = Roll (UnrolledAbstractScene env event ren scenemsg localstorage)
+type AbstractScene env event ren scenemsg userdata
+    = Roll (UnrolledAbstractScene env event ren scenemsg userdata)
 
 
-type alias MConcreteScene data localstorage scenemsg =
-    ConcreteScene data (Env () localstorage) WorldEvent Renderable scenemsg localstorage
+type alias MConcreteScene data userdata scenemsg =
+    ConcreteScene data (Env () userdata) WorldEvent Renderable scenemsg userdata
 
 
-type alias MAbstractScene localstorage scenemsg =
-    AbstractScene (Env () localstorage) WorldEvent Renderable scenemsg localstorage
+type alias MAbstractScene userdata scenemsg =
+    AbstractScene (Env () userdata) WorldEvent Renderable scenemsg userdata
 
 
-unroll : AbstractScene env event ren scenemsg localstorage -> UnrolledAbstractScene env event ren scenemsg localstorage
+unroll : AbstractScene env event ren scenemsg userdata -> UnrolledAbstractScene env event ren scenemsg userdata
 unroll (Roll un) =
     un
 
 
-abstract : ConcreteScene data env event ren scenemsg localstorage -> env -> Maybe scenemsg -> AbstractScene env event ren scenemsg localstorage
+abstract : ConcreteScene data env event ren scenemsg userdata -> env -> Maybe scenemsg -> AbstractScene env event ren scenemsg userdata
 abstract conmodel initEnv initMsg =
     let
         abstractRec data =
             let
-                updates : env -> event -> ( AbstractScene env event ren scenemsg localstorage, List (SceneOutputMsg scenemsg localstorage), env )
+                updates : env -> event -> ( AbstractScene env event ren scenemsg userdata, List (SceneOutputMsg scenemsg userdata), env )
                 updates env event =
                     let
                         ( new_d, new_m, new_e ) =
@@ -66,7 +66,7 @@ abstract conmodel initEnv initMsg =
 Useful when sending message to a component.
 
 -}
-noCommonData : Env cdata localstorage -> Env () localstorage
+noCommonData : Env cdata userdata -> Env () userdata
 noCommonData env =
     { globalData = env.globalData
     , commonData = ()
@@ -75,18 +75,18 @@ noCommonData env =
 
 {-| Add the common data back.
 -}
-addCommonData : cdata -> Env () localstorage -> Env cdata localstorage
+addCommonData : cdata -> Env () userdata -> Env cdata userdata
 addCommonData commonData env =
     { globalData = env.globalData
     , commonData = commonData
     }
 
 
-type SceneOutputMsg scenemsg localstorage
-    = SOMChangeScene ( Maybe scenemsg, String, Maybe (Transition localstorage) )
+type SceneOutputMsg scenemsg userdata
+    = SOMChangeScene ( Maybe scenemsg, String, Maybe (Transition userdata) )
     | SOMPlayAudio String String AudioOption -- audio name, audio url, audio option
     | SOMAlert String
     | SOMStopAudio String
     | SOMSetVolume Float
     | SOMPrompt String String -- name, title
-    | SOMSaveLocalStorage
+    | SOMSaveUserData

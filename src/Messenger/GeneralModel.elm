@@ -107,16 +107,16 @@ abstract conmodel initEnv initMsg =
     abstractRec init_d init_bd
 
 
-type alias MConcreteGeneralModel data common localstorage tar msg bdata scenemsg =
-    ConcreteGeneralModel data (Env common localstorage) WorldEvent tar msg Renderable bdata (SceneOutputMsg scenemsg localstorage)
+type alias MConcreteGeneralModel data common userdata tar msg bdata scenemsg =
+    ConcreteGeneralModel data (Env common userdata) WorldEvent tar msg Renderable bdata (SceneOutputMsg scenemsg userdata)
 
 
-type alias MAbstractGeneralModel common localstorage tar msg bdata scenemsg =
-    AbstractGeneralModel (Env common localstorage) WorldEvent tar msg Renderable bdata (SceneOutputMsg scenemsg localstorage)
+type alias MAbstractGeneralModel common userdata tar msg bdata scenemsg =
+    AbstractGeneralModel (Env common userdata) WorldEvent tar msg Renderable bdata (SceneOutputMsg scenemsg userdata)
 
 
 {-| View model list.
 -}
-viewModelList : Env common localstorage -> List (MAbstractGeneralModel common localstorage tar msg bdata scenemsg) -> List Renderable
+viewModelList : Env common userdata -> List (MAbstractGeneralModel common userdata tar msg bdata scenemsg) -> List Renderable
 viewModelList env models =
     List.reverse <| List.map (\model -> (unroll model).view env) models

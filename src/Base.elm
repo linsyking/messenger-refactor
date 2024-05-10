@@ -4,14 +4,14 @@ import Json.Decode as Decode exposing (at, decodeString)
 import Json.Encode as Encode
 
 
-type alias LocalStorage =
+type alias UserData =
     { volume : Float
     , number : Int
     }
 
 
-encodeLocalStorage : LocalStorage -> String
-encodeLocalStorage storage =
+encodeUserData : UserData -> String
+encodeUserData storage =
     Encode.encode 0
         (Encode.object
             [ ( "volume", Encode.float storage.volume )
@@ -20,8 +20,8 @@ encodeLocalStorage storage =
         )
 
 
-decodeLocalStorage : String -> LocalStorage
-decodeLocalStorage ls =
+decodeUserData : String -> UserData
+decodeUserData ls =
     let
         vol =
             Result.withDefault 0.5 (decodeString (at [ "volume" ] Decode.float) ls)
@@ -29,7 +29,7 @@ decodeLocalStorage ls =
         number =
             Result.withDefault 0 (decodeString (at [ "number" ] Decode.int) ls)
     in
-    LocalStorage vol number
+    UserData vol number
 
 
 type SceneMsg
