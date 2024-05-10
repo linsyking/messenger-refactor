@@ -44,14 +44,17 @@ saveGlobalData globalData =
 
 userConfig : UserConfig LocalStorage SceneMsg
 userConfig =
-    { initScene = "Main"
+    { initScene = "Test_SOMMsg"
     , initSceneMsg = Nothing
     , virtualSize = { width = 1920, height = 1080 }
     , debug = False
     , background = Messenger.UserConfig.transparentBackground
     , initGlobalData = initGlobalData
     , saveGlobalData = saveGlobalData
-    , allTexture = []
+    , allTexture =
+        [ ( "bg", "assets/bg.jpg" )
+        , ( "blobcat", "assets/blobcat.png" )
+        ]
     , allSpriteSheets = Dict.empty
     , timeInterval = 15
     , localStorageCodec =

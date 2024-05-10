@@ -1,7 +1,7 @@
 module Scenes.Main.Layer1.Model exposing (..)
 
 import Base exposing (..)
-import Canvas exposing (Renderable, empty)
+import Canvas exposing (Renderable, empty, group)
 import Components.Portable.A as A
 import Components.Portable.B as B
 import Components.Portable.PTest as PTest
@@ -12,6 +12,8 @@ import Messenger.Component.Component exposing (AbstractComponent, AbstractPortab
 import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
 import Messenger.Layer.Layer exposing (AbstractLayer, ConcreteLayer, genLayer)
 import Messenger.Recursion exposing (updateObjects, updateObjectsWithTarget)
+import Messenger.Render.Sprite exposing (renderSprite)
+import Messenger.Render.Text exposing (renderText)
 import Messenger.Scene.Scene exposing (SceneOutputMsg(..), addCommonData, noCommonData)
 import Scenes.Main.LayerBase exposing (..)
 
@@ -95,7 +97,11 @@ updaterec env msg data =
 
 view : Env SceneCommonData LocalStorage -> Data -> Renderable
 view env data =
-    empty
+    group []
+        [ renderSprite env.globalData [] ( 0, 0 ) ( 1920, 1080 ) "bg"
+        , renderSprite env.globalData [] ( 400, 400 ) ( 400, 0 ) "blobcat"
+        , renderText env.globalData 40 "Hello World" "Courier New" ( 600, 0 )
+        ]
 
 
 matcher : Data -> Target -> Bool
