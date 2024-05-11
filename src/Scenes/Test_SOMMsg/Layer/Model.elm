@@ -1,14 +1,14 @@
 module Scenes.Test_SOMMsg.Layer.Model exposing (..)
 
 import Base exposing (..)
-import Canvas exposing (Renderable, group)
+import Canvas exposing (group)
 import Messenger.Audio.Base exposing (AudioOption(..))
-import Messenger.Base exposing (Env, WorldEvent(..))
+import Messenger.Base exposing (WorldEvent(..))
 import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
-import Messenger.Layer.Layer exposing (AbstractLayer, ConcreteLayer, genLayer)
+import Messenger.Layer.Layer exposing (ConcreteLayer, LayerInit, LayerMatcher, LayerStorage, LayerUpdate, LayerUpdateRec, LayerView, genLayer)
 import Messenger.Render.Sprite exposing (renderSprite)
 import Messenger.Render.Text exposing (renderText)
-import Messenger.Scene.Scene exposing (SceneOutputMsg(..), addCommonData, noCommonData)
+import Messenger.Scene.Scene exposing (SceneOutputMsg(..))
 import Messenger.Scene.Transitions.Base exposing (genTransition, nullTransition)
 import Messenger.Scene.Transitions.Fade exposing (fadeInWithRenderable)
 import Scenes.Test_SOMMsg.LayerBase exposing (..)
@@ -18,7 +18,7 @@ type alias Data =
     {}
 
 
-init : Env SceneCommonData UserData -> LayerMsg -> Data
+init : LayerInit SceneCommonData UserData LayerMsg Data
 init env initMsg =
     case initMsg of
         Init v ->
@@ -28,7 +28,7 @@ init env initMsg =
             {}
 
 
-update : Env SceneCommonData UserData -> WorldEvent -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg UserData)), ( Env SceneCommonData UserData, Bool ) )
+update : LayerUpdate SceneCommonData UserData Target LayerMsg SceneMsg Data
 update env evt data =
     case evt of
         MouseDown _ _ ->
@@ -49,12 +49,12 @@ update env evt data =
             ( data, [], ( env, False ) )
 
 
-updaterec : Env SceneCommonData UserData -> LayerMsg -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg UserData)), Env SceneCommonData UserData )
+updaterec : LayerUpdateRec SceneCommonData UserData Target LayerMsg SceneMsg Data
 updaterec env msg data =
     ( data, [], env )
 
 
-view : Env SceneCommonData UserData -> Data -> Renderable
+view : LayerView SceneCommonData UserData Data
 view env data =
     group []
         [ renderSprite env.globalData [] ( 0, 0 ) ( 1920, 0 ) "blobcat"
@@ -62,7 +62,7 @@ view env data =
         ]
 
 
-matcher : Data -> Target -> Bool
+matcher : LayerMatcher Data Target
 matcher data tar =
     tar == "layer"
 
@@ -77,6 +77,6 @@ layercon =
     }
 
 
-layer : Env SceneCommonData UserData -> LayerMsg -> AbstractLayer SceneCommonData UserData Target LayerMsg SceneMsg
+layer : LayerStorage SceneCommonData UserData Target LayerMsg SceneMsg
 layer =
     genLayer layercon

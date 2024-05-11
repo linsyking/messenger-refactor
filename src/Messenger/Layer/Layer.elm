@@ -3,6 +3,8 @@ module Messenger.Layer.Layer exposing
     , genLayer
     , BasicUpdater, Distributor, Handler
     , handleComponentMsgs
+    , LayerInit, LayerUpdate, LayerUpdateRec, LayerView, LayerMatcher
+    , LayerStorage
     )
 
 {-|
@@ -24,6 +26,8 @@ Gerneral Model and Helper functions for Layers.
 
 @docs BasicUpdater, Distributor, Handler
 @docs handleComponentMsgs
+@docs LayerInit, LayerUpdate, LayerUpdateRec, LayerView, LayerMatcher
+@docs LayerStorage
 
 -}
 
@@ -33,17 +37,53 @@ import Messenger.GeneralModel exposing (MAbstractGeneralModel, MConcreteGeneralM
 import Messenger.Scene.Scene exposing (SceneOutputMsg)
 
 
+{-| init type sugar
+-}
+type alias LayerInit cdata userdata msg data =
+    Env cdata userdata -> msg -> data
+
+
+{-| update type sugar
+-}
+type alias LayerUpdate cdata userdata tar msg scenemsg data =
+    Env cdata userdata -> WorldEvent -> data -> ( data, List (Msg tar msg (SceneOutputMsg scenemsg userdata)), ( Env cdata userdata, Bool ) )
+
+
+{-| updaterec type sugar
+-}
+type alias LayerUpdateRec cdata userdata tar msg scenemsg data =
+    Env cdata userdata -> msg -> data -> ( data, List (Msg tar msg (SceneOutputMsg scenemsg userdata)), Env cdata userdata )
+
+
+{-| view type sugar
+-}
+type alias LayerView cdata userdata data =
+    Env cdata userdata -> data -> Renderable
+
+
+{-| matcher type sugar
+-}
+type alias LayerMatcher data tar =
+    data -> tar -> Bool
+
+
+{-| Layer Storage
+-}
+type alias LayerStorage cdata userdata tar msg scenemsg =
+    Env cdata userdata -> msg -> AbstractLayer cdata userdata tar msg scenemsg
+
+
 {-| Concrete Layer Model
 
 Users deal with the fields in concrete model.
 
 -}
 type alias ConcreteLayer data cdata userdata tar msg scenemsg =
-    { init : Env cdata userdata -> msg -> data
-    , update : Env cdata userdata -> WorldEvent -> data -> ( data, List (Msg tar msg (SceneOutputMsg scenemsg userdata)), ( Env cdata userdata, Bool ) )
-    , updaterec : Env cdata userdata -> msg -> data -> ( data, List (Msg tar msg (SceneOutputMsg scenemsg userdata)), Env cdata userdata )
-    , view : Env cdata userdata -> data -> Renderable
-    , matcher : data -> tar -> Bool
+    { init : LayerInit cdata userdata msg data
+    , update : LayerUpdate cdata userdata tar msg scenemsg data
+    , updaterec : LayerUpdateRec cdata userdata tar msg scenemsg data
+    , view : LayerView cdata userdata data
+    , matcher : LayerMatcher data tar
     }
 
 
@@ -62,7 +102,7 @@ type alias AbstractLayer cdata userdata tar msg scenemsg =
 Initialize it with env and msg.
 
 -}
-genLayer : ConcreteLayer data cdata userdata tar msg scenemsg -> Env cdata userdata -> msg -> AbstractLayer cdata userdata tar msg scenemsg
+genLayer : ConcreteLayer data cdata userdata tar msg scenemsg -> LayerStorage cdata userdata tar msg scenemsg
 genLayer conlayer =
     abstract <| addEmptyBData conlayer
 
@@ -80,7 +120,7 @@ type alias BasicUpdater data cdata userdata tar msg scenemsg =
 
 {-| Distributor Type
 
-A distributor is used to generate sveral list of Component Msgs for corresponding components list.
+A distributor is used to generate several list of Component Msgs for corresponding components list.
 
 The `cmsgpacker` is a custom type to store the component msgs and their targets.
 

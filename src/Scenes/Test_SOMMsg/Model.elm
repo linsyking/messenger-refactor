@@ -1,9 +1,8 @@
 module Scenes.Test_SOMMsg.Model exposing (..)
 
 import Base exposing (..)
-import Canvas.Settings exposing (Setting)
-import Messenger.Base exposing (Env, WorldEvent)
-import Messenger.Scene.LayeredScene exposing (LayeredSceneData, genLayeredScene)
+import Messenger.Base exposing (Env)
+import Messenger.Scene.LayeredScene exposing (LayeredSceneInit, LayeredSceneSettingsFunc, genLayeredScene)
 import Messenger.Scene.Loader exposing (SceneStorage)
 import Messenger.Scene.Scene exposing (addCommonData)
 import Scenes.Test_SOMMsg.Layer.Model exposing (layer)
@@ -15,7 +14,7 @@ commonDataInit _ _ =
     {}
 
 
-sceneInit : Env () UserData -> Maybe SceneMsg -> LayeredSceneData SceneCommonData UserData Target LayerMsg SceneMsg
+sceneInit : LayeredSceneInit SceneCommonData UserData Target LayerMsg SceneMsg
 sceneInit env msg =
     let
         cd =
@@ -32,7 +31,7 @@ sceneInit env msg =
     }
 
 
-settings : Env () UserData -> WorldEvent -> LayeredSceneData SceneCommonData UserData Target LayerMsg SceneMsg -> List Setting
+settings : LayeredSceneSettingsFunc SceneCommonData UserData Target LayerMsg SceneMsg
 settings _ _ _ =
     []
 

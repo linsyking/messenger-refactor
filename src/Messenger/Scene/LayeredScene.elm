@@ -1,6 +1,7 @@
 module Messenger.Scene.LayeredScene exposing
     ( LayeredSceneData
     , genLayeredScene
+    , LayeredSceneInit, LayeredSceneSettingsFunc
     )
 
 {-|
@@ -13,6 +14,7 @@ A layered scene can only handle a list of layers with fixed `cdata`, `userdata`,
 
 @docs LayeredSceneData
 @docs genLayeredScene
+@docs LayeredSceneInit, LayeredSceneSettingsFunc
 
 -}
 
@@ -67,6 +69,18 @@ viewLayeredScene env { renderSettings, commonData, layers } =
         |> group renderSettings
 
 
+{-| init type sugar
+-}
+type alias LayeredSceneInit cdata userdata tar msg scenemsg =
+    Env () userdata -> Maybe scenemsg -> LayeredSceneData cdata userdata tar msg scenemsg
+
+
+{-| settingsFunc type sugar
+-}
+type alias LayeredSceneSettingsFunc cdata userdata tar msg scenemsg =
+    Env () userdata -> WorldEvent -> LayeredSceneData cdata userdata tar msg scenemsg -> List Setting
+
+
 {-| genLayeredScene
 
 This creates a layered scene.
@@ -75,7 +89,7 @@ This creates a layered scene.
   - `settingsFunc` is a user provided function to modify `renderSettings` each time the scene updates. If you don't need `settingsFunc`, simply provide a `func _ _ _ = settings`
 
 -}
-genLayeredScene : (Env () userdata -> Maybe scenemsg -> LayeredSceneData cdata userdata tar msg scenemsg) -> (Env () userdata -> WorldEvent -> LayeredSceneData cdata userdata tar msg scenemsg -> List Setting) -> SceneStorage userdata scenemsg
+genLayeredScene : LayeredSceneInit cdata userdata tar msg scenemsg -> LayeredSceneSettingsFunc cdata userdata tar msg scenemsg -> SceneStorage userdata scenemsg
 genLayeredScene init settingsFunc =
     abstract
         { init = init
