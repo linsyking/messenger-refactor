@@ -24,8 +24,7 @@ import Messenger.Base exposing (Env, WorldEvent)
 import Messenger.GeneralModel exposing (MsgBase(..), viewModelList)
 import Messenger.Layer.Layer exposing (AbstractLayer)
 import Messenger.Recursion exposing (updateObjects)
-import Messenger.Scene.Loader exposing (SceneStorage)
-import Messenger.Scene.Scene exposing (SceneOutputMsg, abstract, addCommonData, noCommonData)
+import Messenger.Scene.Scene exposing (SceneOutputMsg, SceneStorage, abstract, addCommonData, noCommonData)
 
 
 {-| LayeredSceneData
