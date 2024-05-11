@@ -1,16 +1,104 @@
-module Messenger.Component.Component exposing (..)
+module Messenger.Component.Component exposing
+    ( AbstractPortableComponent
+    , ConcretePortableComponent
+    , PortableMsgCodec
+    , PortableTarCodec
+    , genPortableComponent
+    , updatePortableComponents
+    , updatePortableComponentsWithTarget
+    , translatePortableComponent
+    , AbstractComponent
+    , ConcreteUserComponent
+    , genComponent
+    , updateComponents
+    , updateComponentsWithTarget
+    , genComponentsRenderList, viewComponentsRenderList
+    , viewComponents
+    )
+
+{-|
+
+
+# Component
+
+A component is an object that you may put in your layers.
+
+There are two types of components:
+
+  - Portable components
+  - User components
+
+
+## Portable components
+
+These are components that might be provided by an elm package.
+
+There are some limitations for portable components:
+
+  - They don't have the base data
+  - They cannot get the common data
+  - They cannot change scene
+  - You need to set the msg and target type for every dependent portable component
+  - You need to provide a codec in the layer to translate the messages and targets
+
+@docs AbstractPortableComponent
+@docs ConcretePortableComponent
+@docs PortableMsgCodec
+@docs PortableTarCodec
+@docs genPortableComponent
+@docs updatePortableComponents
+@docs updatePortableComponentsWithTarget
+@docs translatePortableComponent
+
+
+## User components
+
+These are components that you users can create with custom **basedata**.
+
+Basedata is the data that components with the same type can share.
+
+For example, you may want a game component to have some common properties like position, velocity, etc.
+
+In this case, your basedata would be a record with these properties.
+
+@docs AbstractComponent
+@docs ConcreteUserComponent
+@docs genComponent
+@docs updateComponents
+@docs updateComponentsWithTarget
+
+
+## View components
+
+@docs genComponentsRenderList, viewComponentsRenderList
+@docs viewComponents
+
+-}
 
 import Canvas exposing (Renderable, group)
 import Messenger.Base exposing (Env, WorldEvent)
 import Messenger.GeneralModel exposing (AbstractGeneralModel, ConcreteGeneralModel, Msg(..), MsgBase(..), abstract, unroll)
+import Messenger.GeneralModel exposing (AbstractGeneralModel, ConcreteGeneralModel, Msg(..), MsgBase(..), abstract, unroll)
 import Messenger.Recursion exposing (updateObjects, updateObjectsWithTarget)
+import Messenger.Scene.Scene exposing (SceneOutputMsg(..), addCommonData, noCommonData)
 import Messenger.Scene.Scene exposing (SceneOutputMsg(..), addCommonData, noCommonData)
 
 
+{-| ConcreteUserComponent
+-}
 type alias ConcreteUserComponent data cdata userdata tar msg bdata scenemsg =
     ConcreteGeneralModel data (Env cdata userdata) WorldEvent tar msg ( Renderable, Int ) bdata (SceneOutputMsg scenemsg userdata)
 
 
+{-| ConcretePortableComponent
+
+Used when createing a portable component.
+
+Use `translatePortableComponent` to create a `ConcreteUserComponent` from a `ConcretePortableComponent`.
+
+The `scenemsg` type is replaced by `()` because you cannot send changescene message.
+
+-}
 type alias ConcretePortableComponent data userdata tar msg =
     { init : Env () userdata -> msg -> data
     , update : Env () userdata -> WorldEvent -> data -> ( data, List (Msg tar msg (SceneOutputMsg () userdata)), ( Env () userdata, Bool ) )
@@ -34,14 +122,19 @@ translatePortableComponent pcomp msgcodec tarcodec =
                     pcomp.update env evt data
             in
             ( ( resData, () ), List.map msgMDecoder resMsg, resEnv )
+            ( ( resData, () ), List.map msgMDecoder resMsg, resEnv )
     , updaterec =
+        \env gmsg data () ->
         \env gmsg data () ->
             let
                 ( resData, resMsg, resEnv ) =
                     pcomp.updaterec env (msgcodec.encode gmsg) data
+                    pcomp.updaterec env (msgcodec.encode gmsg) data
             in
             ( ( resData, () ), List.map msgMDecoder resMsg, resEnv )
+            ( ( resData, () ), List.map msgMDecoder resMsg, resEnv )
     , view = \env data () -> pcomp.view env data
+    , matcher = \data () gtar -> pcomp.matcher data <| tarcodec.encode gtar
     , matcher = \data () gtar -> pcomp.matcher data <| tarcodec.encode gtar
     }
 
@@ -87,16 +180,26 @@ addSceneMsgtoPortable msg =
 
                 SOMPlayAudio n u o ->
                     Just <| SOMMsg <| SOMPlayAudio n u o
+                SOMPlayAudio n u o ->
+                    Just <| SOMMsg <| SOMPlayAudio n u o
 
+                SOMAlert a ->
+                    Just <| SOMMsg <| SOMAlert a
                 SOMAlert a ->
                     Just <| SOMMsg <| SOMAlert a
 
                 SOMStopAudio n ->
                     Just <| SOMMsg <| SOMStopAudio n
+                SOMStopAudio n ->
+                    Just <| SOMMsg <| SOMStopAudio n
 
                 SOMSetVolume v ->
                     Just <| SOMMsg <| SOMSetVolume v
+                SOMSetVolume v ->
+                    Just <| SOMMsg <| SOMSetVolume v
 
+                SOMPrompt n t ->
+                    Just <| SOMMsg <| SOMPrompt n t
                 SOMPrompt n t ->
                     Just <| SOMMsg <| SOMPrompt n t
 
@@ -105,16 +208,35 @@ addSceneMsgtoPortable msg =
 
         OtherMsg othermsg ->
             Just <| OtherMsg othermsg
+                SOMSaveUserData ->
+                    Just <| SOMMsg <| SOMSaveUserData
+
+        OtherMsg othermsg ->
+            Just <| OtherMsg othermsg
 
 
+{-| AbstractComponent
+-}
 type alias AbstractComponent cdata userdata tar msg bdata scenemsg =
     AbstractGeneralModel (Env cdata userdata) WorldEvent tar msg ( Renderable, Int ) bdata (SceneOutputMsg scenemsg userdata)
 
 
+{-| AbstractPortableComponent
+
+Abstract component with common data, base data, and scene msg set to unit type.
+
+This means you cannot send scene msg from a portable component.
+
+-}
 type alias AbstractPortableComponent userdata tar msg =
     AbstractComponent () userdata tar msg () ()
 
 
+{-| genComponent
+
+Generate abstract user component from concrete component.
+
+-}
 genComponent : ConcreteUserComponent data cdata userdata tar msg bdata scenemsg -> Env cdata userdata -> msg -> AbstractComponent cdata userdata tar msg bdata scenemsg
 genComponent concomp =
     abstract concomp
@@ -174,3 +296,15 @@ viewComponents env compls =
     group [] <|
         List.map (\( r, _ ) -> r) <|
             List.sortBy (\( _, n ) -> n) previews
+
+
+{-| viewComponents
+
+View one list of abstract components.
+
+Used when there is only one list of components
+
+-}
+viewComponents : Env cdata userdata -> List (AbstractComponent cdata userdata tar msg bdata scenemsg) -> Renderable
+viewComponents env compls =
+    viewComponentsRenderList <| genComponentsRenderList env compls

@@ -1,4 +1,31 @@
-module Messenger.Layer.Layer exposing (..)
+module Messenger.Layer.Layer exposing
+    ( ConcreteLayer, AbstractLayer
+    , genLayer
+    , BasicUpdater, Distributor, Handler
+    , handleComponentMsgs
+    )
+
+{-|
+
+
+# Layer
+
+Gerneral Model and Helper functions for Layers.
+
+@docs ConcreteLayer, AbstractLayer
+
+
+## Generate
+
+@docs genLayer
+
+
+## Update
+
+@docs BasicUpdater, Distributor, Handler
+@docs handleComponentMsgs
+
+-}
 
 import Canvas exposing (Renderable)
 import Messenger.Base exposing (Env, WorldEvent)
@@ -6,6 +33,11 @@ import Messenger.GeneralModel exposing (MAbstractGeneralModel, MConcreteGeneralM
 import Messenger.Scene.Scene exposing (SceneOutputMsg)
 
 
+{-| Concrete Layer Model
+
+Users deal with the fields in concrete model.
+
+-}
 type alias ConcreteLayer data cdata userdata tar msg scenemsg =
     { init : Env cdata userdata -> msg -> data
     , update : Env cdata userdata -> WorldEvent -> data -> ( data, List (Msg tar msg (SceneOutputMsg scenemsg userdata)), ( Env cdata userdata, Bool ) )
@@ -15,10 +47,21 @@ type alias ConcreteLayer data cdata userdata tar msg scenemsg =
     }
 
 
+{-| Abstract Layer Model.
+
+Cannot be directedly modified.
+Used for storage.
+
+-}
 type alias AbstractLayer cdata userdata tar msg scenemsg =
     MAbstractGeneralModel cdata userdata tar msg () scenemsg
 
 
+{-| Generate abstract layer by a concrete layer.
+
+Initialize it with env and msg.
+
+-}
 genLayer : ConcreteLayer data cdata userdata tar msg scenemsg -> Env cdata userdata -> msg -> AbstractLayer cdata userdata tar msg scenemsg
 genLayer conlayer =
     abstract <| addEmptyBData conlayer

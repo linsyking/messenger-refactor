@@ -1,28 +1,36 @@
-module Messenger.Model exposing (..)
+module Messenger.Model exposing
+    ( Model
+    , updateSceneTime, resetSceneStartTime
+    , audio
+    )
 
-{-| Model
+{-|
+
+
+# Model
 
 This is the main model data.
-
-`currentData` and `currentGlobalData` is writable, `currentScene` is readonly, `time` is readonly.
 
 Those data is **not** exposed to the scene.
 
 We only use it in the main update.
 
-TODO
+@docs Model
+@docs updateSceneTime, resetSceneStartTime
+@docs audio
 
 -}
 
 import Audio exposing (Audio, AudioData)
 import Browser.Events exposing (Visibility(..))
-import Messenger.Audio.Audio exposing (getAudio)
-import Messenger.Audio.Base exposing (AudioRepo)
+import Messenger.Audio.Audio exposing (AudioRepo, getAudio)
 import Messenger.Base exposing (GlobalData)
 import Messenger.Scene.Scene exposing (MAbstractScene)
 import Messenger.Scene.Transitions.Base exposing (Transition)
 
 
+{-| The model for the game
+-}
 type alias Model userdata scenemsg =
     { currentScene : MAbstractScene userdata scenemsg
     , currentGlobalData : GlobalData userdata
@@ -31,7 +39,7 @@ type alias Model userdata scenemsg =
     }
 
 
-{-| updateSceneTime
+{-| update scene start time and global time
 -}
 updateSceneTime : Model userdata scenemsg -> Model userdata scenemsg
 updateSceneTime m =
@@ -45,8 +53,7 @@ updateSceneTime m =
     { m | currentGlobalData = ngd }
 
 
-{-| resetSceneStartTime
-Set the scene starttime to 0.
+{-| Reset the scene starttime to 0.
 -}
 resetSceneStartTime : Model userdata scenemsg -> Model userdata scenemsg
 resetSceneStartTime m =
@@ -60,7 +67,7 @@ resetSceneStartTime m =
     { m | currentGlobalData = ngd }
 
 
-{-| audio
+{-| Audio view function
 
 The audio argument needed in the main model.
 

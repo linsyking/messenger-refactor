@@ -1,8 +1,13 @@
-module Messenger.UI.Update exposing (..)
+module Messenger.UI.Update exposing (update)
 
-{-| This is the update function for updating the model.
+{-|
 
-If you add some SceneOutputMsg, you have to add corresponding updating logic here.
+
+# Game Update
+
+Update the game
+
+@docs update
 
 -}
 
@@ -12,18 +17,21 @@ import Dict
 import Messenger.Audio.Audio exposing (loadAudio, stopAudio)
 import Messenger.Base exposing (Env, WorldEvent(..))
 import Messenger.Coordinate.Coordinates exposing (fromMouseToVirtual, getStartPoint, maxHandW)
-import Messenger.LocalStorage exposing (sendInfo)
 import Messenger.Model exposing (Model, resetSceneStartTime, updateSceneTime)
 import Messenger.Resources.Base exposing (saveSprite)
 import Messenger.Scene.Loader exposing (SceneStorage, existScene, loadSceneByName)
 import Messenger.Scene.Scene exposing (SceneOutputMsg(..), unroll)
-import Messenger.Tools.Browser exposing (alert, prompt)
 import Messenger.UserConfig exposing (UserConfig)
 import Set
 import Task
 import Time
 
 
+{-| gameUpdate
+
+main logic for updating the game
+
+-}
 gameUpdate : UserConfig userdata scenemsg -> List ( String, SceneStorage userdata scenemsg ) -> WorldEvent -> Model userdata scenemsg -> ( Model userdata scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
 gameUpdate config scenes evnt model =
     if List.length (Dict.keys model.currentGlobalData.internalData.sprites) < List.length config.allTexture then
@@ -83,17 +91,17 @@ gameUpdate config scenes evnt model =
                                 ( { lastModel | audiorepo = stopAudio lastModel.audiorepo name }, lastCmds, lastAudioCmds )
 
                             SOMAlert text ->
-                                ( lastModel, lastCmds ++ [ alert text ], lastAudioCmds )
+                                ( lastModel, lastCmds ++ [ config.ports.alert text ], lastAudioCmds )
 
                             SOMPrompt name title ->
-                                ( lastModel, lastCmds ++ [ prompt { name = name, title = title } ], lastAudioCmds )
+                                ( lastModel, lastCmds ++ [ config.ports.prompt { name = name, title = title } ], lastAudioCmds )
 
                             SOMSaveUserData ->
                                 let
                                     encodedGD =
                                         config.globalDataCodec.encode lastModel.currentGlobalData
                                 in
-                                ( lastModel, lastCmds ++ [ sendInfo encodedGD ], lastAudioCmds )
+                                ( lastModel, lastCmds ++ [ config.ports.sendInfo encodedGD ], lastAudioCmds )
                     )
                     ( timeUpdatedModel, [], [] )
                     som
@@ -117,6 +125,11 @@ gameUpdate config scenes evnt model =
         )
 
 
+{-| Update
+
+update function for the game
+
+-}
 update : UserConfig userdata scenemsg -> List ( String, SceneStorage userdata scenemsg ) -> AudioData -> WorldEvent -> Model userdata scenemsg -> ( Model userdata scenemsg, Cmd WorldEvent, AudioCmd WorldEvent )
 update config scenes _ msg model =
     let
@@ -125,7 +138,7 @@ update config scenes _ msg model =
     in
     case msg of
         TextureLoaded name Nothing ->
-            ( model, alert ("Failed to load sprite " ++ name), Audio.cmdNone )
+            ( model, config.ports.alert ("Failed to load sprite " ++ name), Audio.cmdNone )
 
         TextureLoaded name (Just t) ->
             let
@@ -178,7 +191,7 @@ update config scenes _ msg model =
 
                 Err _ ->
                     ( model
-                    , alert ("Failed to load audio " ++ name)
+                    , config.ports.alert ("Failed to load audio " ++ name)
                     , Audio.cmdNone
                     )
 
@@ -215,7 +228,14 @@ update config scenes _ msg model =
             ( { model | currentGlobalData = { gd | mousePos = mp } }, Cmd.none, Audio.cmdNone )
 
         MouseDown e pos ->
-            gameUpdate config scenes (MouseDown e <| fromMouseToVirtual model.currentGlobalData pos) model
+            let
+                newPressedMouseButtons =
+                    Set.insert e gd.pressedMouseButtons
+
+                newModel =
+                    { model | currentGlobalData = { gd | pressedMouseButtons = newPressedMouseButtons } }
+            in
+            gameUpdate config scenes (MouseDown e <| fromMouseToVirtual newModel.currentGlobalData pos) newModel
 
         MouseUp e pos ->
             gameUpdate config scenes (MouseUp e <| fromMouseToVirtual model.currentGlobalData pos) model
@@ -223,7 +243,7 @@ update config scenes _ msg model =
         KeyDown 112 ->
             if config.debug then
                 -- F1
-                ( model, prompt { name = "load", title = "Enter the scene you want to load" }, Audio.cmdNone )
+                ( model, config.ports.prompt { name = "load", title = "Enter the scene you want to load" }, Audio.cmdNone )
 
             else
                 gameUpdate config scenes msg model
@@ -231,7 +251,7 @@ update config scenes _ msg model =
         KeyDown 113 ->
             if config.debug then
                 -- F2
-                ( model, prompt { name = "setVolume", title = "Set volume (0-1)" }, Audio.cmdNone )
+                ( model, config.ports.prompt { name = "setVolume", title = "Set volume (0-1)" }, Audio.cmdNone )
 
             else
                 gameUpdate config scenes msg model
@@ -259,7 +279,7 @@ update config scenes _ msg model =
                 )
 
             else
-                ( model, alert "Scene not found!", Audio.cmdNone )
+                ( model, config.ports.alert "Scene not found!", Audio.cmdNone )
 
         Prompt "setVolume" result ->
             let
@@ -275,7 +295,7 @@ update config scenes _ msg model =
                     ( { model | currentGlobalData = newGd }, Cmd.none, Audio.cmdNone )
 
                 Nothing ->
-                    ( model, alert "Not a number", Audio.cmdNone )
+                    ( model, config.ports.alert "Not a number", Audio.cmdNone )
 
         Tick x ->
             let
