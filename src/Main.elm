@@ -8,6 +8,7 @@ import Messenger.Base exposing (GlobalData)
 import Messenger.UI exposing (Output, genMain)
 import Messenger.UI.Init exposing (emptyInternalData)
 import Messenger.UserConfig exposing (UserConfig)
+import Ports exposing (..)
 import Scenes.AllScenes exposing (allScenes)
 import Set
 import Time exposing (millisToPosix)
@@ -17,8 +18,8 @@ import Time exposing (millisToPosix)
 -- Testing Messenger
 
 
-emptyKeycodeSet : Set.Set Int
-emptyKeycodeSet =
+emptySet : Set.Set Int
+emptySet =
     Set.empty
 
 
@@ -34,11 +35,13 @@ initGlobalData data =
     , globalTime = 0
     , volume = storage.volume
     , windowVisibility = Visible
-    , pressedKeys = emptyKeycodeSet
+    , pressedKeys = emptySet
     , mousePos = ( 0, 0 )
     , extraHTML = Nothing
     , userData = storage
     , currentScene = ""
+    , canvasAttributes = []
+    , pressedMouseButtons = emptySet
     }
 
 
@@ -71,6 +74,14 @@ userConfig =
     , globalDataCodec =
         { encode = saveGlobalData
         , decode = initGlobalData
+        }
+    , ports =
+        { sendInfo = sendInfo
+        , audioPortToJS = audioPortToJS
+        , audioPortFromJS = audioPortFromJS
+        , alert = alert
+        , prompt = prompt
+        , promptReceiver = promptReceiver
         }
     }
 
