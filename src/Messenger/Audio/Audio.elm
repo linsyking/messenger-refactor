@@ -1,8 +1,9 @@
-module Messenger.Audio.Audio exposing
-    ( loadAudio
+port module Messenger.Audio.Audio exposing
+    ( audioPortFromJS
+    , audioPortToJS
+    , loadAudio
     , stopAudio
     , getAudio
-    , AudioRepo
     )
 
 {-|
@@ -12,19 +13,30 @@ module Messenger.Audio.Audio exposing
 
 This module is used to manage audios.
 
-**Note. This module may only be used within Messenger core**
-
+@docs audioPortFromJS
+@docs audioPortToJS
 @docs loadAudio
 @docs stopAudio
 @docs getAudio
-@docs AudioRepo
 
 -}
 
 import Audio exposing (AudioData)
 import Duration
-import Messenger.Audio.Base exposing (AudioOption(..))
+import Json.Decode as Decode
+import Json.Encode as Encode
+import Messenger.Audio.Base exposing (AudioOption(..), AudioRepo)
 import Time
+
+
+{-| Send audio messages to JS
+-}
+port audioPortToJS : Encode.Value -> Cmd msg
+
+
+{-| Receive audio messages from JS
+-}
+port audioPortFromJS : (Decode.Value -> msg) -> Sub msg
 
 
 {-| loadAudio
@@ -70,12 +82,3 @@ getAudio ad repo =
                     Audio.audio sound s
         )
         repo
-
-
-{-| AudioRepo
-
-Audio repository that stores all the audios.
-
--}
-type alias AudioRepo =
-    List ( String, Audio.Source, ( AudioOption, Time.Posix ) )

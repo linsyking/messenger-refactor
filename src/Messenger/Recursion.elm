@@ -9,6 +9,11 @@ List implementation for the recursion algorithm
 
 @docs updateObjects, updateObjectsWithTarget
 
+
+## Tools
+
+@docs getObjectByIndex, getObjectIndices, getObjectIndex, getObjects, getObject
+
 -}
 
 import Messenger.GeneralModel exposing (AbstractGeneralModel, Msg(..), MsgBase, unroll)
