@@ -7,7 +7,7 @@ import Messenger.GeneralModel exposing (MsgBase(..), viewModelList)
 import Messenger.Layer.Layer exposing (AbstractLayer)
 import Messenger.Recursion exposing (updateObjects)
 import Messenger.Scene.Loader exposing (SceneStorage)
-import Messenger.Scene.Scene exposing (MConcreteScene, SceneOutputMsg, abstract, addCommonData, noCommonData)
+import Messenger.Scene.Scene exposing (SceneOutputMsg, abstract, addCommonData, noCommonData)
 
 
 type alias LayeredSceneData cdata userdata tar msg scenemsg =
@@ -15,10 +15,6 @@ type alias LayeredSceneData cdata userdata tar msg scenemsg =
     , commonData : cdata
     , layers : List (AbstractLayer cdata userdata tar msg scenemsg)
     }
-
-
-type alias ConcreteLayeredScene cdata userdata tar msg scenemsg =
-    MConcreteScene (LayeredSceneData cdata userdata tar msg scenemsg) userdata scenemsg
 
 
 updateLayeredScene : (Env () userdata -> WorldEvent -> LayeredSceneData cdata userdata tar msg scenemsg -> List Setting) -> Env () userdata -> WorldEvent -> LayeredSceneData cdata userdata tar msg scenemsg -> ( LayeredSceneData cdata userdata tar msg scenemsg, List (SceneOutputMsg scenemsg userdata), Env () userdata )

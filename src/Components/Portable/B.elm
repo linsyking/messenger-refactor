@@ -1,11 +1,32 @@
 module Components.Portable.B exposing (..)
 
 import Canvas exposing (Renderable, empty)
-import Components.Portable.PTest exposing (..)
 import Messenger.Base exposing (Env, WorldEvent(..))
-import Messenger.Component.Component exposing (AbstractPortableComponent, ConcretePortableComponent, genComponent, translatePortableComponent)
+import Messenger.Component.Component exposing (AbstractPortableComponent, ConcretePortableComponent, PortableMsgCodec, PortableTarCodec, genComponent, genPortableComponent, translatePortableComponent)
 import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
-import Messenger.Scene.Scene exposing (SceneOutputMsg)
+import Messenger.Scene.Scene exposing (SceneOutputMsg, noCommonData)
+
+
+type alias Data =
+    {}
+
+
+{-| Component specific initialization (constructor)
+-}
+type alias InitData =
+    {}
+
+
+{-| Component specific messages (interface)
+-}
+type ComponentMsg
+    = Null
+    | BInit InitData
+    | BIntMsg Int
+
+
+type alias ComponentTarget =
+    String
 
 
 {-| Initializer
@@ -20,7 +41,7 @@ init env initMsg =
 update : Env () localstorage -> WorldEvent -> Data -> ( Data, List (Msg ComponentTarget ComponentMsg (SceneOutputMsg () localstorage)), ( Env () localstorage, Bool ) )
 update env evnt d =
     if env.globalData.globalTime == 0 then
-        ( d, [ Parent <| OtherMsg <| IntMsg 100, Other "A" (IntMsg 3) ], ( env, False ) )
+        ( d, [ Parent <| OtherMsg <| BIntMsg 100, Other "A" (BIntMsg 3) ], ( env, False ) )
 
     else
         ( d, [], ( env, False ) )
@@ -29,13 +50,13 @@ update env evnt d =
 updaterec : Env () localstorage -> ComponentMsg -> Data -> ( Data, List (Msg ComponentTarget ComponentMsg (SceneOutputMsg () localstorage)), Env () localstorage )
 updaterec env msg d =
     case msg of
-        IntMsg x ->
+        BIntMsg x ->
             let
                 test =
                     Debug.log "B" x
             in
             if x > 0 && x < 10 then
-                ( d, [ Parent <| OtherMsg <| IntMsg -100 ], env )
+                ( d, [ Parent <| OtherMsg <| BIntMsg -100 ], env )
 
             else
                 ( d, [], env )
@@ -68,6 +89,6 @@ pTestcon =
 
 {-| Exported component
 -}
-pTest : Env () localstorage -> ComponentMsg -> AbstractPortableComponent localstorage ComponentTarget ComponentMsg
+pTest : PortableMsgCodec ComponentMsg generalmsg -> PortableTarCodec ComponentTarget generaltar -> Env cdata localstorage -> generalmsg -> AbstractPortableComponent localstorage generaltar generalmsg
 pTest =
-    genComponent <| translatePortableComponent pTestcon
+    genPortableComponent pTestcon

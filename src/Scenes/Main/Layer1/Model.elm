@@ -5,19 +5,23 @@ import Canvas exposing (Renderable, empty, group)
 import Components.Portable.A as A
 import Components.Portable.B as B
 import Components.Portable.PTest as PTest
-import Messenger.Base exposing (Env, WorldEvent)
-import Messenger.Component.Component exposing (AbstractPortableComponent, addSceneMsgtoSOM)
+import Messenger.Base exposing (Env, WorldEvent(..))
+import Messenger.Component.Component exposing (AbstractPortableComponent, updatePortableComponents, updatePortableComponentsWithTarget)
 import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
-import Messenger.Layer.Layer exposing (AbstractLayer, ConcreteLayer, genLayer)
-import Messenger.Recursion exposing (updateObjects)
+import Messenger.Layer.Layer exposing (AbstractLayer, BasicUpdater, ConcreteLayer, Distributor, Handler, genLayer, handleComponentsList)
 import Messenger.Render.Sprite exposing (renderSprite)
 import Messenger.Render.Text exposing (renderText)
-import Messenger.Scene.Scene exposing (SceneOutputMsg(..), addCommonData, noCommonData)
+import Messenger.Scene.Scene exposing (SceneOutputMsg(..))
 import Scenes.Main.LayerBase exposing (..)
 
 
 type alias Data =
-    { components : List (AbstractPortableComponent UserData PTest.ComponentTarget PTest.ComponentMsg)
+    { components : List (AbstractPortableComponent UserData PTest.GComponentTarget PTest.GComponentMsg)
+    }
+
+
+type alias ComponentMsgPack =
+    { components : List (Msg PTest.GComponentTarget PTest.GComponentMsg (SceneOutputMsg () UserData))
     }
 
 
@@ -26,24 +30,19 @@ init env initMsg =
     case initMsg of
         Init v ->
             Data
-                [ A.pTest (noCommonData env) (PTest.Init {})
-                , B.pTest (noCommonData env) (PTest.Init {})
+                [ A.pTest PTest.aMsgCodec PTest.aTarCodec env (PTest.Init {})
+                , B.pTest PTest.bMsgCodec PTest.bTarCodec env (PTest.Init {})
                 ]
 
         _ ->
             Data []
 
 
-handlePComponentMsg : Env SceneCommonData UserData -> MsgBase PTest.ComponentMsg (SceneOutputMsg () UserData) -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg UserData)), Env SceneCommonData UserData )
+handlePComponentMsg : Handler Data SceneCommonData UserData Target LayerMsg SceneMsg PTest.GComponentMsg
 handlePComponentMsg env pcompmsg data =
     case pcompmsg of
         SOMMsg som ->
-            case addSceneMsgtoSOM som of
-                Just othersom ->
-                    ( data, [ Parent <| SOMMsg othersom ], env )
-
-                Nothing ->
-                    ( data, [], env )
+            ( data, [ Parent <| SOMMsg som ], env )
 
         OtherMsg (PTest.IntMsg x) ->
             let
@@ -56,36 +55,44 @@ handlePComponentMsg env pcompmsg data =
             ( data, [], env )
 
 
+updateEvent : BasicUpdater Data SceneCommonData UserData Target LayerMsg SceneMsg
+updateEvent env evt data =
+    ( data, [], ( env, False ) )
+
+
+distributeComponentMsgs : Distributor Data SceneCommonData UserData Target LayerMsg SceneMsg ComponentMsgPack
+distributeComponentMsgs env evt data =
+    case evt of
+        MouseDown x _ ->
+            let
+                _ =
+                    Debug.log "mousedown" x
+            in
+            ( data, ( [], { components = [ Other "B" <| PTest.IntMsg 66 ] } ), env )
+
+        _ ->
+            ( data, ( [], { components = [] } ), env )
+
+
 update : Env SceneCommonData UserData -> WorldEvent -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg UserData)), ( Env SceneCommonData UserData, Bool ) )
 update env evt data =
     let
-        ( newData, newMsg, ( newEnv, newBlock ) ) =
-            data.components
-                |> updateObjects (noCommonData env) evt
+        ( nData, nlMsg, ( nEnv, nBlock ) ) =
+            updateEvent env evt data
 
-        newEnvC =
-            addCommonData env.commonData newEnv
+        ( newData, newcMsg, ( newEnv, newBlock ) ) =
+            updatePortableComponents nEnv evt nData.components
 
-        ( newData2, newMsg2, ( newEnv2, newBlock2 ) ) =
-            List.foldl
-                (\cm ( d, m, ( e, b ) ) ->
-                    let
-                        ( d2, m2, e2 ) =
-                            handlePComponentMsg e cm d
-                    in
-                    ( d2, m ++ m2, ( e2, b ) )
-                )
-                ( { components = newData }, [], ( newEnvC, newBlock ) )
-                newMsg
+        ( newData2, ( newlMsg, compMsgs ), newEnv2 ) =
+            distributeComponentMsgs newEnv evt { nData | components = newData }
+
+        ( newData3, newcMsg2, newEnv3 ) =
+            updatePortableComponentsWithTarget newEnv2 compMsgs.components newData2.components
+
+        ( newData4, newlMsg2, newEnv4 ) =
+            handleComponentsList newEnv3 (newcMsg2 ++ newcMsg) { newData2 | components = newData3 } [] handlePComponentMsg
     in
-    -- if env.globalData.globalTime == 0 then
-    --     let
-    --         ( newData3, _, _ ) =
-    --             updateObjectsWithTarget newEnv [ Other "B" (PTest.IntMsg 100) ] newData2.components
-    --     in
-    --     ( { components = newData3 }, newMsg2, ( newEnv2, newBlock2 ) )
-    -- else
-    ( newData2, (Parent <| SOMMsg <| SOMSaveUserData) :: newMsg2, ( newEnv2, newBlock2 ) )
+    ( newData4, (Parent <| SOMMsg <| SOMSaveUserData) :: newlMsg2 ++ newlMsg ++ nlMsg, ( newEnv4, newBlock || nBlock ) )
 
 
 updaterec : Env SceneCommonData UserData -> LayerMsg -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg UserData)), Env SceneCommonData UserData )

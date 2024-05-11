@@ -58,7 +58,7 @@ saveGlobalData globalData =
 
 userConfig : UserConfig UserData SceneMsg
 userConfig =
-    { initScene = "Test_SOMMsg"
+    { initScene = "Main"
     , initSceneMsg = Nothing
     , virtualSize = { width = 1920, height = 1080 }
     , debug = True
