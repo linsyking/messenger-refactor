@@ -1,4 +1,15 @@
-module Messenger.UI.Subscription exposing (..)
+module Messenger.UI.Subscription exposing (subscriptions)
+
+{-|
+
+
+# Game Subscriptions
+
+The subscriptions for the game
+
+@docs subscriptions
+
+-}
 
 import Audio exposing (AudioData)
 import Browser.Events exposing (onKeyDown, onKeyUp, onMouseDown, onMouseMove, onMouseUp, onResize, onVisibilityChange)
@@ -9,6 +20,11 @@ import Messenger.UserConfig exposing (UserConfig)
 import Time
 
 
+{-| Subscriptions
+
+The subscriptions for the game
+
+-}
 subscriptions : UserConfig userdata scenemsg -> AudioData -> Model userdata scenemsg -> Sub WorldEvent
 subscriptions config _ _ =
     Sub.batch
@@ -40,7 +56,7 @@ subscriptions config _ _ =
         , onResize (\w h -> NewWindowSize ( toFloat w, toFloat h ))
         , onVisibilityChange (\v -> WindowVisibility v)
         , onMouseDown (Decode.map3 (\b x y -> MouseDown b ( x, y )) (Decode.field "button" Decode.int) (Decode.field "clientX" Decode.float) (Decode.field "clientY" Decode.float))
-        , onMouseUp (Decode.map2 (\x y -> MouseUp ( x, y )) (Decode.field "clientX" Decode.float) (Decode.field "clientY" Decode.float))
+        , onMouseUp (Decode.map3 (\b x y -> MouseUp b ( x, y )) (Decode.field "button" Decode.int) (Decode.field "clientX" Decode.float) (Decode.field "clientY" Decode.float))
         , onMouseMove (Decode.map2 (\x y -> MouseMove ( x, y )) (Decode.field "clientX" Decode.float) (Decode.field "clientY" Decode.float))
         , config.ports.promptReceiver (\p -> Prompt p.name p.result)
         ]
