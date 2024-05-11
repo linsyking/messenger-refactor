@@ -1,9 +1,13 @@
-module Messenger.UI.View exposing (..)
+module Messenger.UI.View exposing (view)
 
-{-| view
+{-|
 
-Canvas viewer
-You can change the mouse style here.
+
+# Game Update
+
+View the game via Canvas
+
+@docs view
 
 -}
 
@@ -21,6 +25,11 @@ import Messenger.Scene.Transition exposing (makeTransition)
 import Messenger.UserConfig exposing (UserConfig)
 
 
+{-| view
+
+view function of the game
+
+-}
 view : UserConfig userdata scenemsg -> AudioData -> Model userdata scenemsg -> Html WorldEvent
 view config _ model =
     let
@@ -33,10 +42,12 @@ view config _ model =
                 , height = floor model.currentGlobalData.internalData.realHeight
                 , textures = getTexture config
                 }
-                [ style "left" (String.fromFloat model.currentGlobalData.internalData.startLeft)
-                , style "top" (String.fromFloat model.currentGlobalData.internalData.startTop)
-                , style "position" "fixed"
-                ]
+                ([ style "left" (String.fromFloat model.currentGlobalData.internalData.startLeft)
+                 , style "top" (String.fromFloat model.currentGlobalData.internalData.startTop)
+                 , style "position" "fixed"
+                 ]
+                    ++ model.currentGlobalData.canvasAttributes
+                )
                 [ config.background model.currentGlobalData
                 , makeTransition model.currentGlobalData transitiondata <| (unroll model.currentScene).view { globalData = model.currentGlobalData, commonData = () }
                 ]

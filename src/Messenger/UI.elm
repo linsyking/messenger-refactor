@@ -1,7 +1,21 @@
-module Messenger.UI exposing (..)
+module Messenger.UI exposing
+    ( Input, Output
+    , genMain
+    )
+
+{-|
+
+
+# User Interface
+
+Top-level user interface to the Messenger engine.
+
+@docs Input, Output
+@docs genMain
+
+-}
 
 import Audio
-import Messenger.Audio.Audio exposing (audioPortFromJS, audioPortToJS)
 import Messenger.Base exposing (Flags, WorldEvent)
 import Messenger.Model exposing (Model, audio)
 import Messenger.Scene.Loader exposing (SceneStorage)
@@ -12,20 +26,25 @@ import Messenger.UI.View exposing (view)
 import Messenger.UserConfig exposing (UserConfig)
 
 
-type alias Scenes userdata scenemsg =
-    List ( String, SceneStorage userdata scenemsg )
-
-
+{-| The input to the Messenger UI.
+-}
 type alias Input userdata scenemsg =
     { config : UserConfig userdata scenemsg
-    , allScenes : Scenes userdata scenemsg
+    , allScenes : List ( String, SceneStorage userdata scenemsg )
     }
 
 
+{-| The output of the Messenger UI.
+-}
 type alias Output userdata scenemsg =
     Program Flags (Audio.Model WorldEvent (Model userdata scenemsg)) (Audio.Msg WorldEvent)
 
 
+{-| Generate the main program (output) from input.
+
+**Use this for your main function**
+
+-}
 genMain : Input userdata scenemsg -> Output userdata scenemsg
 genMain input =
     Audio.elementWithAudio
@@ -34,5 +53,5 @@ genMain input =
         , subscriptions = subscriptions input.config
         , view = view input.config
         , audio = audio
-        , audioPort = { toJS = audioPortToJS, fromJS = audioPortFromJS }
+        , audioPort = { toJS = input.config.ports.audioPortToJS, fromJS = input.config.ports.audioPortFromJS }
         }

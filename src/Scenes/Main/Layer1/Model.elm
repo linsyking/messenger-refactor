@@ -8,7 +8,7 @@ import Components.Portable.PTest as PTest
 import Messenger.Base exposing (Env, WorldEvent(..))
 import Messenger.Component.Component exposing (AbstractPortableComponent, updatePortableComponents, updatePortableComponentsWithTarget)
 import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
-import Messenger.Layer.Layer exposing (AbstractLayer, BasicUpdater, ConcreteLayer, Distributor, Handler, genLayer, handleComponentsList)
+import Messenger.Layer.Layer exposing (AbstractLayer, BasicUpdater, ConcreteLayer, Distributor, Handler, genLayer, handleComponentMsgs)
 import Messenger.Render.Sprite exposing (renderSprite)
 import Messenger.Render.Text exposing (renderText)
 import Messenger.Scene.Scene exposing (SceneOutputMsg(..))
@@ -90,7 +90,7 @@ update env evt data =
             updatePortableComponentsWithTarget newEnv2 compMsgs.components newData2.components
 
         ( newData4, newlMsg2, newEnv4 ) =
-            handleComponentsList newEnv3 (newcMsg2 ++ newcMsg) { newData2 | components = newData3 } [] handlePComponentMsg
+            handleComponentMsgs newEnv3 (newcMsg2 ++ newcMsg) { newData2 | components = newData3 } [] handlePComponentMsg
     in
     ( newData4, (Parent <| SOMMsg <| SOMSaveUserData) :: newlMsg2 ++ newlMsg ++ nlMsg, ( newEnv4, newBlock || nBlock ) )
 
