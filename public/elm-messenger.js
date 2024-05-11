@@ -1,6 +1,15 @@
 
-function startmessenger(app) {
-
+function startmessenger(appname) {
+    const pathname = document.location.pathname + "info";
+    var app = Elm.Main.init({
+        node: document.getElementById(appname),
+        flags: {
+            windowWidth: window.innerWidth,
+            windowHeight: window.innerHeight,
+            timeStamp: Math.floor(Date.now()),
+            info: localStorage.getItem(pathname) ? localStorage.getItem(pathname) : ""
+        }
+    });
     app.ports.sendInfo.subscribe(function (m) {
         localStorage.setItem(pathname, m);
     });
