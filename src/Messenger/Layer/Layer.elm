@@ -3,7 +3,7 @@ module Messenger.Layer.Layer exposing
     , genLayer
     , BasicUpdater, Distributor, Handler
     , handleComponentMsgs
-    , LayerInit, LayerUpdate, LayerUpdateRec, LayerView, LayerMatcher
+    , LayerInit, LayerUpdate, LayerUpdateRec, LayerView
     , LayerStorage
     )
 
@@ -26,14 +26,14 @@ Gerneral Model and Helper functions for Layers.
 
 @docs BasicUpdater, Distributor, Handler
 @docs handleComponentMsgs
-@docs LayerInit, LayerUpdate, LayerUpdateRec, LayerView, LayerMatcher
+@docs LayerInit, LayerUpdate, LayerUpdateRec, LayerView
 @docs LayerStorage
 
 -}
 
 import Canvas exposing (Renderable)
 import Messenger.Base exposing (Env, WorldEvent)
-import Messenger.GeneralModel exposing (MAbstractGeneralModel, MConcreteGeneralModel, Msg, MsgBase, abstract)
+import Messenger.GeneralModel exposing (MAbstractGeneralModel, MConcreteGeneralModel, Matcher, Msg, MsgBase, abstract)
 import Messenger.Scene.Scene exposing (SceneOutputMsg)
 
 
@@ -61,12 +61,6 @@ type alias LayerView cdata userdata data =
     Env cdata userdata -> data -> Renderable
 
 
-{-| matcher type sugar
--}
-type alias LayerMatcher data tar =
-    data -> tar -> Bool
-
-
 {-| Layer Storage
 -}
 type alias LayerStorage cdata userdata tar msg scenemsg =
@@ -83,7 +77,7 @@ type alias ConcreteLayer data cdata userdata tar msg scenemsg =
     , update : LayerUpdate cdata userdata tar msg scenemsg data
     , updaterec : LayerUpdateRec cdata userdata tar msg scenemsg data
     , view : LayerView cdata userdata data
-    , matcher : LayerMatcher data tar
+    , matcher : Matcher data tar
     }
 
 

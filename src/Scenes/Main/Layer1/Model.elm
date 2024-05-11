@@ -7,11 +7,11 @@ import Components.Portable.B as B
 import Components.Portable.PTest as PTest
 import Messenger.Base exposing (Env, WorldEvent(..))
 import Messenger.Component.Component exposing (AbstractPortableComponent, updatePortableComponents, updatePortableComponentsWithTarget)
-import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
-import Messenger.Layer.Layer exposing (AbstractLayer, BasicUpdater, ConcreteLayer, Distributor, Handler, LayerInit, LayerMatcher, LayerStorage, LayerUpdate, LayerUpdateRec, LayerView, genLayer, handleComponentMsgs)
+import Messenger.GeneralModel exposing (Matcher, Msg(..), MsgBase(..))
+import Messenger.Layer.Layer exposing (AbstractLayer, BasicUpdater, ConcreteLayer, Distributor, Handler, LayerInit, LayerStorage, LayerUpdate, LayerUpdateRec, LayerView, genLayer, handleComponentMsgs)
 import Messenger.Render.Sprite exposing (renderSprite)
 import Messenger.Render.Text exposing (renderText)
-import Messenger.Scene.Scene exposing (SceneOutputMsg(..))
+import Messenger.Scene.Scene exposing (SceneOutputMsg(..), noCommonData)
 import Scenes.Main.LayerBase exposing (..)
 
 
@@ -30,8 +30,8 @@ init env initMsg =
     case initMsg of
         Init v ->
             Data
-                [ A.pTest PTest.aMsgCodec PTest.aTarCodec env (PTest.Init {})
-                , B.pTest PTest.bMsgCodec PTest.bTarCodec env (PTest.Init {})
+                [ A.pTest PTest.aMsgCodec PTest.aTarCodec (noCommonData env) (PTest.Init {})
+                , B.pTest PTest.bMsgCodec PTest.bTarCodec (noCommonData env) (PTest.Init {})
                 ]
 
         _ ->
@@ -109,7 +109,7 @@ view env data =
         ]
 
 
-matcher : LayerMatcher Data Target
+matcher : Matcher Data Target
 matcher data tar =
     tar == "layer1"
 

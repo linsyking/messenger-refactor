@@ -4,7 +4,7 @@ import Base exposing (..)
 import Canvas.Settings exposing (Setting)
 import Messenger.Base exposing (Env, WorldEvent)
 import Messenger.Scene.LayeredScene exposing (LayeredSceneData, genLayeredScene)
-import Messenger.Scene.Scene exposing (addCommonData, SceneStorage)
+import Messenger.Scene.Scene exposing (SceneStorage, addCommonData)
 import Scenes.Main.Layer1.Model exposing (layer1)
 import Scenes.Main.LayerBase exposing (..)
 

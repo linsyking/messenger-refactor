@@ -2,7 +2,7 @@ module Components.Portable.A exposing (..)
 
 import Canvas exposing (Renderable, empty)
 import Messenger.Base exposing (Env, WorldEvent(..))
-import Messenger.Component.Component exposing (AbstractPortableComponent, ConcretePortableComponent, PortableMsgCodec, PortableTarCodec, genComponent, genPortableComponent, translatePortableComponent)
+import Messenger.Component.Component exposing (AbstractPortableComponent, ConcretePortableComponent, PortableComponentInit, PortableMsgCodec, PortableTarCodec, genComponent, genPortableComponent, translatePortableComponent)
 import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
 import Messenger.Scene.Scene exposing (SceneOutputMsg, noCommonData)
 
@@ -31,7 +31,7 @@ type alias ComponentTarget =
 
 {-| Initializer
 -}
-init : Env () localstorage -> ComponentMsg -> Data
+init : PortableComponentInit userdata ComponentMsg Data
 init env initMsg =
     {}
 
@@ -81,6 +81,6 @@ pTestcon =
 
 {-| Exported component
 -}
-pTest : PortableMsgCodec ComponentMsg generalmsg -> PortableTarCodec ComponentTarget generaltar -> Env cdata localstorage -> generalmsg -> AbstractPortableComponent localstorage generaltar generalmsg
+pTest : PortableMsgCodec ComponentMsg generalmsg -> PortableTarCodec ComponentTarget generaltar -> Env () localstorage -> generalmsg -> AbstractPortableComponent localstorage generaltar generalmsg
 pTest =
     genPortableComponent pTestcon

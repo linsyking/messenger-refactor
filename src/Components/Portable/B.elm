@@ -89,6 +89,6 @@ pTestcon =
 
 {-| Exported component
 -}
-pTest : PortableMsgCodec ComponentMsg generalmsg -> PortableTarCodec ComponentTarget generaltar -> Env cdata localstorage -> generalmsg -> AbstractPortableComponent localstorage generaltar generalmsg
+pTest : PortableMsgCodec ComponentMsg generalmsg -> PortableTarCodec ComponentTarget generaltar -> Env () localstorage -> generalmsg -> AbstractPortableComponent localstorage generaltar generalmsg
 pTest =
     genPortableComponent pTestcon
