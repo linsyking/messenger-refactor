@@ -13,7 +13,6 @@ import Messenger.Component.Component exposing (AbstractComponent, updateComponen
 import Messenger.Component.PortableComponent exposing (AbstractGeneralPortableComponent, updatePortableComponents, updatePortableComponentsWithTarget)
 import Messenger.GeneralModel exposing (Matcher, Msg(..), MsgBase(..))
 import Messenger.Layer.Layer exposing (BasicUpdater, ConcreteLayer, Distributor, Handler, LayerInit, LayerStorage, LayerUpdate, LayerUpdateRec, LayerView, genLayer, handleComponentMsgs)
-import Messenger.Recursion exposing (updateObjectsWithTarget)
 import Messenger.Render.Sprite exposing (renderSprite)
 import Messenger.Render.Text exposing (renderText)
 import Messenger.Scene.Scene exposing (SceneOutputMsg(..))
@@ -45,7 +44,7 @@ init env initMsg =
                 [ A.pTestGeneral PBase.aTarCodec PBase.aMsgCodec env (PBase.Init { initVal = 1 })
                 , B.pTestGernel PBase.bTarCodec PBase.bMsgCodec env (PBase.Init { initVal = 1 })
                 ]
-                [ C.pTestSpecific UBase.cTarCodec UBase.cMsgCodec emptyBData Null env (UBase.Init { initVal = "", initBase = 0 })
+                [ C.pTestSpecific UBase.cTarCodec UBase.cMsgCodec emptyBData env (UBase.Init { initVal = "", initBase = 0 })
                 , uTest env (UBase.Init { initVal = "", initBase = 0 })
                 ]
 
