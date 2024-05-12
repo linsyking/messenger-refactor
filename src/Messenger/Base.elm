@@ -38,7 +38,8 @@ import Time exposing (millisToPosix)
 {-| World Event
 
 This is the World Event for the game.
-Users can get outside information throught the events.
+
+Users can get outside information through the events.
 
 `Tick` records the time.
 
