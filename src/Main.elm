@@ -1,9 +1,11 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Base exposing (..)
 import Browser.Events exposing (Visibility(..))
 import Color
 import Dict
+import Json.Decode as Decode
+import Json.Encode as Encode
 import Messenger.Base exposing (GlobalData)
 import Messenger.UI exposing (Output, genMain)
 import Messenger.UI.Init exposing (emptyInternalData)
@@ -14,13 +16,26 @@ import Set
 import Time exposing (millisToPosix)
 
 
+port sendInfo : String -> Cmd msg
+
+
+port audioPortToJS : Encode.Value -> Cmd msg
+
+
+port audioPortFromJS : (Decode.Value -> msg) -> Sub msg
+
+
+port alert : String -> Cmd msg
+
+
+port prompt : { name : String, title : String } -> Cmd msg
+
+
+port promptReceiver : ({ name : String, result : String } -> msg) -> Sub msg
+
+
 
 -- Testing Messenger
-
-
-emptySet : Set.Set Int
-emptySet =
-    Set.empty
 
 
 initGlobalData : String -> GlobalData UserData
@@ -35,13 +50,13 @@ initGlobalData data =
     , globalTime = 0
     , volume = storage.volume
     , windowVisibility = Visible
-    , pressedKeys = emptySet
+    , pressedKeys = Set.empty
+    , pressedMouseButtons = Set.empty
+    , canvasAttributes = []
     , mousePos = ( 0, 0 )
     , extraHTML = Nothing
     , userData = storage
     , currentScene = ""
-    , canvasAttributes = []
-    , pressedMouseButtons = emptySet
     }
 
 
@@ -61,7 +76,7 @@ saveGlobalData globalData =
 
 userConfig : UserConfig UserData SceneMsg
 userConfig =
-    { initScene = "Main"
+    { initScene = "Test_SOMMsg"
     , initSceneMsg = Nothing
     , virtualSize = { width = 1920, height = 1080 }
     , debug = True
