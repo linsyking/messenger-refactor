@@ -16,13 +16,10 @@ import Color
 import Dict
 import Lib.Base exposing (..)
 import Lib.Ports exposing (alert, audioPortFromJS, audioPortToJS, prompt, promptReceiver, sendInfo)
-import Messenger.Base exposing (GlobalData)
+import Messenger.Base exposing (UserViewGlobalData)
 import Messenger.UI exposing (Output, genMain)
-import Messenger.UI.Init exposing (emptyInternalData)
 import Messenger.UserConfig exposing (UserConfig)
 import Scenes.AllScenes exposing (allScenes)
-import Set
-import Time exposing (millisToPosix)
 
 
 
@@ -31,25 +28,18 @@ import Time exposing (millisToPosix)
 
 {-| Initial Globaldata
 -}
-initGlobalData : String -> GlobalData UserData
+initGlobalData : String -> UserViewGlobalData UserData
 initGlobalData data =
     let
         storage =
             decodeUserData data
     in
-    { internalData = emptyInternalData
-    , currentTimeStamp = millisToPosix 0
-    , sceneStartTime = 0
+    { sceneStartTime = 0
     , globalTime = 0
     , volume = storage.volume
-    , windowVisibility = Visible
-    , pressedKeys = Set.empty
-    , pressedMouseButtons = Set.empty
     , canvasAttributes = []
-    , mousePos = ( 0, 0 )
     , extraHTML = Nothing
     , userData = storage
-    , currentScene = ""
     }
 
 
@@ -58,7 +48,7 @@ initGlobalData data =
 save the user data to local storage.
 
 -}
-saveGlobalData : GlobalData UserData -> String
+saveGlobalData : UserViewGlobalData UserData -> String
 saveGlobalData globalData =
     let
         oldls =

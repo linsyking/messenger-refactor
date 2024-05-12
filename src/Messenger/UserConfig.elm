@@ -20,7 +20,7 @@ import Canvas.Settings
 import Color exposing (Color)
 import Json.Decode as Decode
 import Json.Encode as Encode
-import Messenger.Base exposing (GlobalData, WorldEvent)
+import Messenger.Base exposing (GlobalData, UserViewGlobalData, WorldEvent)
 import Messenger.Render.SpriteSheet exposing (SpriteSheet)
 
 
@@ -58,8 +58,8 @@ type alias UserConfig userdata scenemsg =
     { initScene : String
     , initSceneMsg : Maybe scenemsg
     , globalDataCodec :
-        { encode : GlobalData userdata -> String
-        , decode : String -> GlobalData userdata
+        { encode : UserViewGlobalData userdata -> String
+        , decode : String -> UserViewGlobalData userdata
         }
     , virtualSize :
         { width : Float
