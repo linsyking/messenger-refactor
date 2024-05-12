@@ -1,6 +1,6 @@
 module Components.User.UTest exposing (..)
 
-import Base exposing (SceneMsg, UserData)
+import Lib.Base exposing (SceneMsg, UserData)
 import Canvas exposing (Renderable, empty)
 import Components.User.Base exposing (BaseData, ComponentMsg(..), ComponentTarget)
 import Messenger.Base exposing (Env, WorldEvent)

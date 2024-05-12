@@ -1,6 +1,6 @@
 module Scenes.AllScenes exposing (..)
 
-import Base exposing (..)
+import Lib.Base exposing (..)
 import Messenger.Scene.Scene exposing (AllScenes)
 import Scenes.Main.Model as Main
 import Scenes.Test_SOMMsg.Model as Test_SOMMsg

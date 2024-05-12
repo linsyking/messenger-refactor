@@ -1,6 +1,6 @@
 module Scenes.Main.Layer1.Model exposing (..)
 
-import Base exposing (..)
+import Lib.Base exposing (..)
 import Canvas exposing (group)
 import Components.Portable.A as A
 import Components.Portable.B as B

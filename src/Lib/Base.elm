@@ -1,4 +1,4 @@
-module Base exposing (..)
+module Lib.Base exposing (..)
 
 import Json.Decode as Decode exposing (at, decodeString)
 import Json.Encode as Encode
