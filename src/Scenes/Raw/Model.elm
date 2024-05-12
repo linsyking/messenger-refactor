@@ -24,26 +24,26 @@ type alias Data =
 Add all the layers with their init msg here.
 
 -}
-sceneInit : RawSceneInit Data UserData SceneMsg
-sceneInit env msg =
+init : RawSceneInit Data UserData SceneMsg
+init env msg =
     {}
 
 
-sceneUpdate : RawSceneUpdate Data UserData SceneMsg
-sceneUpdate env msg data =
+update : RawSceneUpdate Data UserData SceneMsg
+update env msg data =
     ( data, [], env )
 
 
-sceneView : RawSceneView UserData Data
-sceneView env data =
+view : RawSceneView UserData Data
+view env data =
     Canvas.empty
 
 
 scenecon : MConcreteScene Data UserData SceneMsg
 scenecon =
-    { init = sceneInit
-    , update = sceneUpdate
-    , view = sceneView
+    { init = init
+    , update = update
+    , view = view
     }
 
 

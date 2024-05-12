@@ -26,8 +26,8 @@ commonDataInit _ _ =
 Add all the layers with their init msg here.
 
 -}
-sceneInit : LayeredSceneInit SceneCommonData UserData LayerTarget LayerMsg SceneMsg
-sceneInit env msg =
+init : LayeredSceneInit SceneCommonData UserData LayerTarget LayerMsg SceneMsg
+init env msg =
     let
         cd =
             commonDataInit env msg
@@ -53,4 +53,4 @@ settings _ _ _ =
 -}
 scene : SceneStorage UserData SceneMsg
 scene =
-    genLayeredScene sceneInit settings
+    genLayeredScene init settings
