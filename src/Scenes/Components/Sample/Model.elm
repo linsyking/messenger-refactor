@@ -1,5 +1,11 @@
 module Scenes.Components.Sample.Model exposing (component)
 
+{-| Component model
+
+@docs component
+
+-}
+
 import Canvas
 import Lib.Base exposing (SceneMsg)
 import Lib.UserData exposing (UserData)

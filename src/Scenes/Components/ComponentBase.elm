@@ -1,9 +1,11 @@
-module Scenes.Components.ComponentBase exposing (..)
+module Scenes.Components.ComponentBase exposing (ComponentMsg(..), ComponentTarget, BaseData)
 
 {-|
 
 
 # Component base
+
+@docs ComponentMsg, ComponentTarget, BaseData
 
 -}
 
@@ -14,9 +16,13 @@ type ComponentMsg
     = Null
 
 
+{-| Component target
+-}
 type alias ComponentTarget =
     String
 
 
+{-| Component base data
+-}
 type alias BaseData =
     ()
