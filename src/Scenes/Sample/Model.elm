@@ -1,46 +1,32 @@
-module Scenes.Sample.Model exposing
-    ( commonDataInit
-    , sceneInit
-    , settings
-    , mainScene
-    )
+module Scenes.Sample.Model exposing (scene)
 
 {-| Scene configuration module
 
-@docs commonDataInit
-@docs sceneInit
-@docs settings
-@docs mainScene
+@docs scene
 
 -}
 
-import Lib.Base exposing (..)
+import Lib.Base exposing (SceneMsg)
 import Lib.UserData exposing (UserData)
 import Messenger.Base exposing (Env, addCommonData)
 import Messenger.Scene.LayeredScene exposing (LayeredSceneInit, LayeredSceneSettingsFunc, genLayeredScene)
 import Messenger.Scene.Scene exposing (SceneStorage)
-import Scenes.Sample.Layer.Model exposing (layer)
 import Scenes.Sample.LayerBase exposing (..)
 
 
-{-| commonDataInit
-
-init the commondata used in the scene.
-
+{-| Initialize the commondata used in the scene.
 -}
 commonDataInit : Env () UserData -> Maybe SceneMsg -> SceneCommonData
 commonDataInit _ _ =
     {}
 
 
-{-| sceneInit
-
-init function for the scene.
+{-| Init function for the scene.
 
 Add all the layers with their init msg here.
 
 -}
-sceneInit : LayeredSceneInit SceneCommonData UserData Target LayerMsg SceneMsg
+sceneInit : LayeredSceneInit SceneCommonData UserData LayerTarget LayerMsg SceneMsg
 sceneInit env msg =
     let
         cd =
@@ -52,26 +38,19 @@ sceneInit env msg =
     { renderSettings = []
     , commonData = cd
     , layers =
-        [ layer envcd <| Init {}
-        ]
+        []
     }
 
 
-{-| settings
-
-update the render settings.
-
+{-| Render setting function
 -}
-settings : LayeredSceneSettingsFunc SceneCommonData UserData Target LayerMsg SceneMsg
+settings : LayeredSceneSettingsFunc SceneCommonData UserData LayerTarget LayerMsg SceneMsg
 settings _ _ _ =
     []
 
 
-{-| mainScene
-
-generate an abstract scnene.
-
+{-| Generate an abstract scnene storage
 -}
-mainScene : SceneStorage UserData SceneMsg
-mainScene =
+scene : SceneStorage UserData SceneMsg
+scene =
     genLayeredScene sceneInit settings

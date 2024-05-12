@@ -24,5 +24,5 @@ Store all the scenes with their name here.
 -}
 allScenes : AllScenes UserData SceneMsg
 allScenes =
-    [ ( "Sample", Sample.mainScene )
+    [ ( "Sample", Sample.scene )
     ]

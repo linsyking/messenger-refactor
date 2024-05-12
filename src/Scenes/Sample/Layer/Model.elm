@@ -20,77 +20,39 @@ Set the Data Type, Init logic, Update logic, View logic and Matcher logic here.
 
 -}
 
-import Canvas exposing (group)
-import Lib.Base exposing (..)
+import Canvas
+import Lib.Base exposing (SceneMsg)
 import Lib.UserData exposing (UserData)
 import Messenger.Audio.Base exposing (AudioOption(..))
 import Messenger.Base exposing (WorldEvent(..))
 import Messenger.GeneralModel exposing (Matcher, Msg(..), MsgBase(..))
 import Messenger.Layer.Layer exposing (ConcreteLayer, LayerInit, LayerStorage, LayerUpdate, LayerUpdateRec, LayerView, genLayer)
-import Messenger.Render.Sprite exposing (renderSprite)
-import Messenger.Render.Text exposing (renderText)
-import Messenger.Scene.Scene exposing (SceneOutputMsg(..))
-import Messenger.Scene.Transitions.Base exposing (genTransition, nullTransition)
-import Messenger.Scene.Transitions.Fade exposing (fadeInWithRenderable)
 import Scenes.Sample.LayerBase exposing (..)
 
 
-{-| Data
-
-Data type for layer **Layer** in **Test\_SOMMsg**
-
+{-| Data type for layer
 -}
 type alias Data =
     {}
 
 
-{-| init
-
-init function for layer **Layer** in **Test\_SOMMsg**
-
+{-| Init function for layer
 -}
 init : LayerInit SceneCommonData UserData LayerMsg Data
 init env initMsg =
-    case initMsg of
-        Init v ->
-            {}
-
-        _ ->
-            {}
+    {}
 
 
-{-| update
-
-update function for layer **Layer** in **Test\_SOMMsg**
-
+{-| Update function for layer
 -}
-update : LayerUpdate SceneCommonData UserData Target LayerMsg SceneMsg Data
+update : LayerUpdate SceneCommonData UserData LayerTarget LayerMsg SceneMsg Data
 update env evt data =
-    case evt of
-        MouseDown _ _ ->
-            ( data
-            , [ Parent <|
-                    SOMMsg <|
-                        SOMChangeScene
-                            ( Just Null
-                            , "Main"
-                            , Just <| genTransition 0 30 nullTransition (fadeInWithRenderable <| view env data)
-                            )
-              , Parent <| SOMMsg <| SOMPlayAudio "biu" "assets/biu.ogg" ALoop
-              ]
-            , ( env, False )
-            )
-
-        _ ->
-            ( data, [], ( env, False ) )
+    ( data, [], ( env, False ) )
 
 
-{-| updaterec
-
-recursively update function for layer **Layer** in **Test\_SOMMsg**
-
+{-| Recursively update function
 -}
-updaterec : LayerUpdateRec SceneCommonData UserData Target LayerMsg SceneMsg Data
+updaterec : LayerUpdateRec SceneCommonData UserData LayerTarget LayerMsg SceneMsg Data
 updaterec env msg data =
     ( data, [], env )
 
@@ -102,25 +64,19 @@ view function for layer **Layer** in **Test\_SOMMsg**
 -}
 view : LayerView SceneCommonData UserData Data
 view env data =
-    group []
-        [ renderSprite env.globalData [] ( 0, 0 ) ( 1920, 0 ) "blobcat"
-        , renderText env.globalData 40 env.globalData.currentScene "Courier New" ( 600, 0 )
-        ]
+    Canvas.empty
 
 
-{-| matcher
-
-matcher function for layer **Layer** in **Test\_SOMMsg**
-
+{-| Matcher function
 -}
-matcher : Matcher Data Target
+matcher : Matcher Data LayerTarget
 matcher data tar =
-    tar == "layer"
+    tar == "Layer"
 
 
-{-| concrete layer
+{-| Concrete layer
 -}
-layercon : ConcreteLayer Data SceneCommonData UserData Target LayerMsg SceneMsg
+layercon : ConcreteLayer Data SceneCommonData UserData LayerTarget LayerMsg SceneMsg
 layercon =
     { init = init
     , update = update
@@ -130,11 +86,8 @@ layercon =
     }
 
 
-{-| layer
-
-generator function to generate an abstract layer for layer **Layer** in **Test\_SOMMsg**
-
+{-| Generator function to generate an abstract layer storage
 -}
-layer : LayerStorage SceneCommonData UserData Target LayerMsg SceneMsg
+layer : LayerStorage SceneCommonData UserData LayerTarget LayerMsg SceneMsg
 layer =
     genLayer layercon

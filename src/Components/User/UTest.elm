@@ -8,7 +8,7 @@ import Messenger.Base exposing (Env, WorldEvent)
 import Messenger.Component.Component exposing (AbstractComponent, ConcreteUserComponent, genComponent)
 import Messenger.GeneralModel exposing (Msg)
 import Messenger.Scene.Scene exposing (SceneOutputMsg)
-import Scenes.Main.LayerBase exposing (SceneCommonData)
+import Scenes.Sample.LayerBase exposing (SceneCommonData)
 
 
 type alias Data =

@@ -1,7 +1,6 @@
 module Scenes.Sample.LayerBase exposing
-    ( Target
+    ( LayerTarget
     , SceneCommonData
-    , LayerInitData
     , LayerMsg(..)
     )
 
@@ -10,48 +9,31 @@ module Scenes.Sample.LayerBase exposing
 
 # LayerBase
 
-Basic data for the layers in **Test\_SOMMsg**.
+Basic data for the layers.
 
-@docs Target
+@docs LayerTarget
 @docs SceneCommonData
-@docs LayerInitData
 @docs LayerMsg
 
 -}
 
 
-{-| Target
-
-Gerneral Target Type for layers in **Test\_SOMMsg**.
-
+{-| Layer target type
 -}
-type alias Target =
+type alias LayerTarget =
     String
 
 
-{-| SceneCommonData
-
-Common data in **Test\_SOMMsg**.
-
+{-| Common data
 -}
 type alias SceneCommonData =
     {}
 
 
-{-| LayerInitData
+{-| Gerneral meassge for layers.
 
-Init data for layers in **Test\_SOMMsg**.
-
--}
-type alias LayerInitData =
-    {}
-
-
-{-| LayerMsg
-
-Gerneral meassge for layers in **Test\_SOMMsg**.
+Add layer specific messages here.
 
 -}
 type LayerMsg
-    = Init LayerInitData
-    | Others
+    = NullLayerMsg
