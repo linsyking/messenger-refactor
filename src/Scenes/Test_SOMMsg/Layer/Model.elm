@@ -4,7 +4,7 @@ import Base exposing (..)
 import Canvas exposing (group)
 import Messenger.Audio.Base exposing (AudioOption(..))
 import Messenger.Base exposing (WorldEvent(..))
-import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
+import Messenger.GeneralModel exposing (Matcher, Msg(..), MsgBase(..))
 import Messenger.Layer.Layer exposing (ConcreteLayer, LayerInit, LayerStorage, LayerUpdate, LayerUpdateRec, LayerView, genLayer)
 import Messenger.Render.Sprite exposing (renderSprite)
 import Messenger.Render.Text exposing (renderText)
@@ -12,7 +12,6 @@ import Messenger.Scene.Scene exposing (SceneOutputMsg(..))
 import Messenger.Scene.Transitions.Base exposing (genTransition, nullTransition)
 import Messenger.Scene.Transitions.Fade exposing (fadeInWithRenderable)
 import Scenes.Test_SOMMsg.LayerBase exposing (..)
-import Messenger.GeneralModel exposing (Matcher)
 
 
 type alias Data =

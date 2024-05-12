@@ -64,7 +64,7 @@ type alias PortableComponentUpdateRec cdata data userdata scenemsg tar msg =
 
 {-| Portable component view type sugar
 -}
-type alias PortableComponentView data =
+type alias PortableComponentView cdata userdata data =
     Env cdata userdata -> data -> ( Renderable, Int )
 
 
@@ -87,7 +87,7 @@ type alias ConcretePortableComponent data cdata userdata tar msg scenemsg =
     { init : PortableComponentInit cdata userdata msg data
     , update : PortableComponentUpdate cdata data userdata scenemsg tar msg
     , updaterec : PortableComponentUpdateRec cdata data userdata scenemsg tar msg
-    , view : PortableComponentView data
+    , view : PortableComponentView cdata userdata data
     , matcher : Matcher data tar
     }
 
