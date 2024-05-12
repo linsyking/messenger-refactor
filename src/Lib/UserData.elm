@@ -15,9 +15,7 @@ Users can **save their own global data** and **implement local storage** here.
 
 -}
 type alias UserData =
-    { volume : Float
-    , number : Int
-    }
+    {}
 
 
 {-| encodeUserData
@@ -29,8 +27,9 @@ encodeUserData : UserData -> String
 encodeUserData storage =
     Encode.encode 0
         (Encode.object
-            [ ( "volume", Encode.float storage.volume )
-            , ( "number", Encode.int storage.number )
+            [--Aadd your data here
+             -- Example:
+             -- ( "volume", Encode.float storage.volume )
             ]
         )
 
@@ -42,11 +41,9 @@ decoder for the Userdata to get data from the storage.
 -}
 decodeUserData : String -> UserData
 decodeUserData ls =
-    let
-        vol =
-            Result.withDefault 0.5 (decodeString (at [ "volume" ] Decode.float) ls)
-
-        number =
-            Result.withDefault 0 (decodeString (at [ "number" ] Decode.int) ls)
-    in
-    UserData vol number
+    -- Example:
+    -- let
+    --     vol =
+    --         Result.withDefault 0.5 (decodeString (at [ "volume" ] Decode.float) ls)
+    -- in
+    UserData

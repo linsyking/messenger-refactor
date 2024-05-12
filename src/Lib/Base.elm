@@ -7,8 +7,6 @@ module Lib.Base exposing (SceneMsg(..))
 
 Base module for the game. Set the UserData and SceneMsg here.
 
-@docs UserData
-@docs encodeUserData, decodeUserData
 @docs SceneMsg
 
 -}
