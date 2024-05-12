@@ -1,4 +1,4 @@
-module Scenes.Test_SOMMsg.Layer.Model exposing
+module Scenes.Sample.Layer.Model exposing
     ( Data
     , init
     , update, updaterec
@@ -32,7 +32,7 @@ import Messenger.Render.Text exposing (renderText)
 import Messenger.Scene.Scene exposing (SceneOutputMsg(..))
 import Messenger.Scene.Transitions.Base exposing (genTransition, nullTransition)
 import Messenger.Scene.Transitions.Fade exposing (fadeInWithRenderable)
-import Scenes.Test_SOMMsg.LayerBase exposing (..)
+import Scenes.Sample.LayerBase exposing (..)
 
 
 {-| Data

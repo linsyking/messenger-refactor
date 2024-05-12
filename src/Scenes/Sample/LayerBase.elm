@@ -1,4 +1,4 @@
-module Scenes.Test_SOMMsg.LayerBase exposing
+module Scenes.Sample.LayerBase exposing
     ( Target
     , SceneCommonData
     , LayerInitData

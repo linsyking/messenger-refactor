@@ -1,4 +1,4 @@
-module Scenes.Test_SOMMsg.Model exposing
+module Scenes.Sample.Model exposing
     ( commonDataInit
     , sceneInit
     , settings
@@ -19,8 +19,8 @@ import Lib.UserData exposing (UserData)
 import Messenger.Base exposing (Env, addCommonData)
 import Messenger.Scene.LayeredScene exposing (LayeredSceneInit, LayeredSceneSettingsFunc, genLayeredScene)
 import Messenger.Scene.Scene exposing (SceneStorage)
-import Scenes.Test_SOMMsg.Layer.Model exposing (layer)
-import Scenes.Test_SOMMsg.LayerBase exposing (..)
+import Scenes.Sample.Layer.Model exposing (layer)
+import Scenes.Sample.LayerBase exposing (..)
 
 
 {-| commonDataInit
