@@ -1,4 +1,24 @@
-module Scenes.Test_SOMMsg.Layer.Model exposing (..)
+module Scenes.Test_SOMMsg.Layer.Model exposing
+    ( Data
+    , init
+    , update, updaterec
+    , view
+    , matcher
+    , layer
+    )
+
+{-| Layer configuration module
+
+Set the Data Type, Init logic, Update logic, View logic and Matcher logic here.
+
+@docs Data
+@docs init
+@docs update, updaterec
+@docs view
+@docs matcher
+@docs layer
+
+-}
 
 import Canvas exposing (group)
 import Lib.Base exposing (..)
@@ -14,10 +34,20 @@ import Messenger.Scene.Transitions.Fade exposing (fadeInWithRenderable)
 import Scenes.Test_SOMMsg.LayerBase exposing (..)
 
 
+{-| Data
+
+Data type for layer **Layer** in **Test\_SOMMsg**
+
+-}
 type alias Data =
     {}
 
 
+{-| init
+
+init function for layer **Layer** in **Test\_SOMMsg**
+
+-}
 init : LayerInit SceneCommonData UserData LayerMsg Data
 init env initMsg =
     case initMsg of
@@ -28,6 +58,11 @@ init env initMsg =
             {}
 
 
+{-| update
+
+update function for layer **Layer** in **Test\_SOMMsg**
+
+-}
 update : LayerUpdate SceneCommonData UserData Target LayerMsg SceneMsg Data
 update env evt data =
     case evt of
@@ -49,11 +84,21 @@ update env evt data =
             ( data, [], ( env, False ) )
 
 
+{-| updaterec
+
+recursively update function for layer **Layer** in **Test\_SOMMsg**
+
+-}
 updaterec : LayerUpdateRec SceneCommonData UserData Target LayerMsg SceneMsg Data
 updaterec env msg data =
     ( data, [], env )
 
 
+{-| view
+
+view function for layer **Layer** in **Test\_SOMMsg**
+
+-}
 view : LayerView SceneCommonData UserData Data
 view env data =
     group []
@@ -62,11 +107,18 @@ view env data =
         ]
 
 
+{-| matcher
+
+matcher function for layer **Layer** in **Test\_SOMMsg**
+
+-}
 matcher : Matcher Data Target
 matcher data tar =
     tar == "layer"
 
 
+{-| concrete layer
+-}
 layercon : ConcreteLayer Data SceneCommonData UserData Target LayerMsg SceneMsg
 layercon =
     { init = init
@@ -77,6 +129,11 @@ layercon =
     }
 
 
+{-| layer
+
+generator function to generate an abstract layer for layer **Layer** in **Test\_SOMMsg**
+
+-}
 layer : LayerStorage SceneCommonData UserData Target LayerMsg SceneMsg
 layer =
     genLayer layercon

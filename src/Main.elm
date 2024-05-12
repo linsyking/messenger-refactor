@@ -1,4 +1,15 @@
-module Main exposing (..)
+module Main exposing (main)
+
+{-|
+
+
+# Main
+
+Main module for the whole game.
+
+@docs main
+
+-}
 
 import Browser.Events exposing (Visibility(..))
 import Color
