@@ -69,7 +69,7 @@ gameUpdate config scenes evnt model =
                                     )
 
                                 else
-                                    ( model, config.ports.alert "Scene not found!" :: lastCmds, lastAudioCmds )
+                                    ( model, config.ports.alert ("Scene" ++ name ++ "not found!") :: lastCmds, lastAudioCmds )
 
                             SOMChangeScene ( tm, name, Just trans ) ->
                                 --- Delayed Loading
@@ -80,7 +80,7 @@ gameUpdate config scenes evnt model =
                                     )
 
                                 else
-                                    ( model, config.ports.alert "Scene not found!" :: lastCmds, lastAudioCmds )
+                                    ( model, config.ports.alert ("Scene" ++ name ++ "not found!") :: lastCmds, lastAudioCmds )
 
                             SOMPlayAudio name path opt ->
                                 ( lastModel, lastCmds, lastAudioCmds ++ [ Audio.loadAudio (SoundLoaded name opt) path ] )
