@@ -22,6 +22,7 @@ Set the Data Type, Init logic, Update logic, View logic and Matcher logic here.
 
 import Canvas exposing (group)
 import Lib.Base exposing (..)
+import Lib.UserData exposing (UserData)
 import Messenger.Audio.Base exposing (AudioOption(..))
 import Messenger.Base exposing (WorldEvent(..))
 import Messenger.GeneralModel exposing (Matcher, Msg(..), MsgBase(..))

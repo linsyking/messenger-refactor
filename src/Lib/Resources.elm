@@ -29,7 +29,8 @@ Examples:
 -}
 allTexture : List ( String, String )
 allTexture =
-    []
+    [ ( "blobcat", "assets/blobcat.png" )
+    ]
 
 
 {-| Add all your sprite sheets here.

@@ -11,7 +11,8 @@ Record all the scenes here
 
 -}
 
-import Lib.Base exposing (..)
+import Lib.Base exposing (SceneMsg)
+import Lib.UserData exposing (UserData)
 import Messenger.Scene.Scene exposing (AllScenes)
 import Scenes.Main.Model as Main
 import Scenes.Test_SOMMsg.Model as Test_SOMMsg

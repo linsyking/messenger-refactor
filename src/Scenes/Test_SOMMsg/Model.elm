@@ -15,6 +15,7 @@ module Scenes.Test_SOMMsg.Model exposing
 -}
 
 import Lib.Base exposing (..)
+import Lib.UserData exposing (UserData)
 import Messenger.Base exposing (Env, addCommonData)
 import Messenger.Scene.LayeredScene exposing (LayeredSceneInit, LayeredSceneSettingsFunc, genLayeredScene)
 import Messenger.Scene.Scene exposing (SceneStorage)

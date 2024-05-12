@@ -36,7 +36,7 @@ import Messenger.UserConfig exposing (transparentBackground)
 -}
 initScene : String
 initScene =
-    "Main"
+    "Test_SOMMsg"
 
 
 {-| Initial scene message

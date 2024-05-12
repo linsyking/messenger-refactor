@@ -8,6 +8,7 @@ import Components.User.Base as UBase exposing (BaseData)
 import Components.User.C as C
 import Components.User.UTest exposing (uTest)
 import Lib.Base exposing (..)
+import Lib.UserData exposing (UserData)
 import Messenger.Base exposing (WorldEvent(..))
 import Messenger.Component.Component exposing (AbstractComponent, updateComponents, updateComponentsWithTarget)
 import Messenger.Component.PortableComponent exposing (AbstractGeneralPortableComponent, updatePortableComponents, updatePortableComponentsWithTarget)
