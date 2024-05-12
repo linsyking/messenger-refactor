@@ -24,7 +24,7 @@ import Messenger.Base exposing (Env, WorldEvent)
 import Messenger.GeneralModel exposing (MsgBase(..), viewModelList)
 import Messenger.Layer.Layer exposing (AbstractLayer)
 import Messenger.Recursion exposing (updateObjects)
-import Messenger.Scene.Scene exposing (SceneOutputMsg, SceneStorage, abstract, addCommonData, noCommonData)
+import Messenger.Scene.Scene exposing (SceneOutputMsg, SceneStorage, abstract, addCommonData, removeCommonData)
 
 
 {-| LayeredSceneData
@@ -59,7 +59,7 @@ updateLayeredScene settingsFunc env evt lsd =
                 )
                 newMsgs
     in
-    ( { renderSettings = settingsFunc env evt lsd, commonData = newEnv.commonData, layers = newLayers }, som, noCommonData newEnv )
+    ( { renderSettings = settingsFunc env evt lsd, commonData = newEnv.commonData, layers = newLayers }, som, removeCommonData newEnv )
 
 
 viewLayeredScene : Env () userdata -> LayeredSceneData cdata userdata tar msg scenemsg -> Renderable
