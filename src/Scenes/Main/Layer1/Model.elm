@@ -1,18 +1,18 @@
 module Scenes.Main.Layer1.Model exposing (..)
 
 import Base exposing (..)
-import Canvas exposing (Renderable, empty, group)
+import Canvas exposing (group)
 import Components.Portable.A as A
 import Components.Portable.B as B
 import Components.Portable.PTest as PTest
 import Components.User.Base as Base exposing (BaseData, ComponentMsg, ComponentTarget)
-import Messenger.Base exposing (Env, WorldEvent(..))
+import Messenger.Base exposing (WorldEvent(..))
 import Messenger.Component.Component exposing (AbstractComponent, updateComponents, updateComponentsWithTarget)
 import Messenger.GeneralModel exposing (Matcher, Msg(..), MsgBase(..))
 import Messenger.Layer.Layer exposing (BasicUpdater, ConcreteLayer, Distributor, Handler, LayerInit, LayerStorage, LayerUpdate, LayerUpdateRec, LayerView, genLayer, handleComponentMsgs)
 import Messenger.Render.Sprite exposing (renderSprite)
 import Messenger.Render.Text exposing (renderText)
-import Messenger.Scene.Scene exposing (SceneOutputMsg(..), noCommonData)
+import Messenger.Scene.Scene exposing (SceneOutputMsg(..))
 import Scenes.Main.LayerBase exposing (..)
 
 
