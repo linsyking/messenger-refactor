@@ -11,74 +11,28 @@ Main module for the whole game.
 
 -}
 
-import Browser.Events exposing (Visibility(..))
-import Color
-import Dict
-import Lib.Base exposing (..)
+import Lib.Base exposing (SceneMsg)
 import Lib.Ports exposing (alert, audioPortFromJS, audioPortToJS, prompt, promptReceiver, sendInfo)
-import Messenger.Base exposing (UserViewGlobalData)
+import Lib.Resources exposing (allSpriteSheets, allTexture)
+import Lib.UserData exposing (UserData)
+import MainConfig exposing (background, debug, initGlobalData, initScene, initSceneMsg, saveGlobalData, timeInterval, virtualSize)
 import Messenger.UI exposing (Output, genMain)
 import Messenger.UserConfig exposing (UserConfig)
 import Scenes.AllScenes exposing (allScenes)
 
 
-
--- Testing Messenger
-
-
-{-| Initial Globaldata
--}
-initGlobalData : String -> UserViewGlobalData UserData
-initGlobalData data =
-    let
-        storage =
-            decodeUserData data
-    in
-    { sceneStartTime = 0
-    , globalTime = 0
-    , volume = storage.volume
-    , canvasAttributes = []
-    , extraHTML = Nothing
-    , userData = storage
-    }
-
-
-{-| Save Globaldata
-
-save the user data to local storage.
-
--}
-saveGlobalData : UserViewGlobalData UserData -> String
-saveGlobalData globalData =
-    let
-        oldls =
-            globalData.userData
-
-        newls =
-            { oldls
-                | volume = globalData.volume
-            }
-    in
-    encodeUserData newls
-
-
 {-| User Configuration
-
-Edit user configurations here.
-
 -}
 userConfig : UserConfig UserData SceneMsg
 userConfig =
-    { initScene = "Test_SOMMsg"
-    , initSceneMsg = Nothing
-    , virtualSize = { width = 1920, height = 1080 }
-    , debug = True
-    , background = Messenger.UserConfig.coloredBackground Color.black
-    , allTexture =
-        [ ( "blobcat", "assets/blobcat.png" )
-        ]
-    , allSpriteSheets = Dict.empty
-    , timeInterval = 15
+    { initScene = initScene
+    , initSceneMsg = initSceneMsg
+    , virtualSize = virtualSize
+    , debug = debug
+    , background = background
+    , allTexture = allTexture
+    , allSpriteSheets = allSpriteSheets
+    , timeInterval = timeInterval
     , globalDataCodec =
         { encode = saveGlobalData
         , decode = initGlobalData
