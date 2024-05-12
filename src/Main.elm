@@ -18,6 +18,8 @@ import Time exposing (millisToPosix)
 -- Testing Messenger
 
 
+{-| Initial Globaldata
+-}
 initGlobalData : String -> GlobalData UserData
 initGlobalData data =
     let
@@ -40,6 +42,11 @@ initGlobalData data =
     }
 
 
+{-| Save Globaldata
+
+save the user data to local storage.
+
+-}
 saveGlobalData : GlobalData UserData -> String
 saveGlobalData globalData =
     let
@@ -54,6 +61,11 @@ saveGlobalData globalData =
     encodeUserData newls
 
 
+{-| User Configuration
+
+Edit user configurations here.
+
+-}
 userConfig : UserConfig UserData SceneMsg
 userConfig =
     { initScene = "Test_SOMMsg"
@@ -81,6 +93,8 @@ userConfig =
     }
 
 
+{-| Main
+-}
 main : Output UserData SceneMsg
 main =
     genMain { config = userConfig, allScenes = allScenes }

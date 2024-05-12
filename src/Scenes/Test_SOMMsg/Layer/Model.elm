@@ -1,7 +1,7 @@
 module Scenes.Test_SOMMsg.Layer.Model exposing (..)
 
-import Lib.Base exposing (..)
 import Canvas exposing (group)
+import Lib.Base exposing (..)
 import Messenger.Audio.Base exposing (AudioOption(..))
 import Messenger.Base exposing (WorldEvent(..))
 import Messenger.GeneralModel exposing (Matcher, Msg(..), MsgBase(..))
