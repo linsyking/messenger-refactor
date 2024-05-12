@@ -3,5 +3,5 @@ elm-stuff/
 build/
 *.html
 !public/*
-# .elm-doc/
-# .doit.db
+.elm-doc/
+.doit.db
