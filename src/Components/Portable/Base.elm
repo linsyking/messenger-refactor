@@ -5,8 +5,25 @@ module Components.Portable.Base exposing (..)
 
 import Components.Portable.A as A
 import Components.Portable.B as B
-import Components.User.Base exposing (ComponentMsg(..), ComponentTarget)
 import Messenger.Component.PortableComponent exposing (PortableMsgCodec, PortableTarCodec)
+
+
+{-| Component specific initialization (constructor)
+-}
+type alias InitData =
+    { initVal : Int
+    }
+
+
+{-| Component specific messages (interface)
+-}
+type ComponentMsg
+    = Null
+    | Init InitData
+
+
+type alias ComponentTarget =
+    String
 
 
 aMsgCodec : PortableMsgCodec A.ComponentMsg ComponentMsg

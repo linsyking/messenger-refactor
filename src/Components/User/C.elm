@@ -1,9 +1,10 @@
-module Components.Portable.B exposing (..)
+module Components.User.C exposing (..)
 
 import Canvas exposing (Renderable, empty)
 import Messenger.Base exposing (Env, WorldEvent(..))
 import Messenger.Component.PortableComponent exposing (ConcretePortableComponent, PortableComponentInit, PortableComponentStorageGeneral, PortableComponentStorageSpecific, PortableComponentUpdate, PortableComponentUpdateRec, PortableComponentView, genPortableComponentGeneral, genPortableComponentSpecific)
 import Messenger.GeneralModel exposing (Matcher, Msg(..), MsgBase(..))
+import Messenger.Scene.Scene exposing (SceneOutputMsg)
 
 
 type alias Data =
@@ -20,8 +21,8 @@ type alias InitData =
 -}
 type ComponentMsg
     = Null
-    | BInit InitData
-    | BIntMsg Int
+    | CInit InitData
+    | CIntMsg Int
 
 
 type alias ComponentTarget =
@@ -40,7 +41,7 @@ init env initMsg =
 update : PortableComponentUpdate Data userdata ComponentTarget ComponentMsg
 update env evnt d =
     if env.globalData.globalTime == 0 then
-        ( d, [ Parent <| OtherMsg <| BIntMsg 100, Other "A" (BIntMsg 3) ], ( env, False ) )
+        ( d, [ Parent <| OtherMsg <| CIntMsg 100, Other "uTest" (CIntMsg 3) ], ( env, False ) )
 
     else
         ( d, [], ( env, False ) )
@@ -49,13 +50,13 @@ update env evnt d =
 updaterec : PortableComponentUpdateRec Data userdata ComponentTarget ComponentMsg
 updaterec env msg d =
     case msg of
-        BIntMsg x ->
+        CIntMsg x ->
             let
                 test =
-                    Debug.log "B" x
+                    Debug.log "C" x
             in
             if x > 0 && x < 10 then
-                ( d, [ Parent <| OtherMsg <| BIntMsg -100 ], env )
+                ( d, [ Parent <| OtherMsg <| CIntMsg 0 ], env )
 
             else
                 ( d, [], env )
@@ -73,7 +74,7 @@ view env d =
 
 matcher : Matcher Data ComponentTarget
 matcher d tar =
-    tar == "B"
+    tar == "C"
 
 
 pTestcon : ConcretePortableComponent Data userdata ComponentTarget ComponentMsg
@@ -88,11 +89,11 @@ pTestcon =
 
 {-| Exported component
 -}
-pTestGernel : PortableComponentStorageGeneral cdata userdata ComponentTarget ComponentMsg gtar gmsg
-pTestGernel =
-    genPortableComponentGeneral pTestcon
-
-
 pTestSpecific : PortableComponentStorageSpecific cdata userdata ComponentTarget ComponentMsg gtar gmsg bdata scenemsg
 pTestSpecific =
     genPortableComponentSpecific pTestcon
+
+
+pTestGeneral : PortableComponentStorageGeneral cdata userdata ComponentTarget ComponentMsg gtar gmsg
+pTestGeneral =
+    genPortableComponentGeneral pTestcon
