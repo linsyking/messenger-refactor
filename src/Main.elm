@@ -1,11 +1,10 @@
-port module Main exposing (..)
+module Main exposing (..)
 
-import Base exposing (..)
 import Browser.Events exposing (Visibility(..))
 import Color
 import Dict
-import Json.Decode as Decode
-import Json.Encode as Encode
+import Lib.Base exposing (..)
+import Lib.Ports exposing (alert, audioPortFromJS, audioPortToJS, prompt, promptReceiver, sendInfo)
 import Messenger.Base exposing (GlobalData)
 import Messenger.UI exposing (Output, genMain)
 import Messenger.UI.Init exposing (emptyInternalData)
@@ -14,24 +13,6 @@ import Ports exposing (..)
 import Scenes.AllScenes exposing (allScenes)
 import Set
 import Time exposing (millisToPosix)
-
-
-port sendInfo : String -> Cmd msg
-
-
-port audioPortToJS : Encode.Value -> Cmd msg
-
-
-port audioPortFromJS : (Decode.Value -> msg) -> Sub msg
-
-
-port alert : String -> Cmd msg
-
-
-port prompt : { name : String, title : String } -> Cmd msg
-
-
-port promptReceiver : ({ name : String, result : String } -> msg) -> Sub msg
 
 
 

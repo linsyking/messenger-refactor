@@ -1,20 +1,13 @@
-module Lib.Resources.Sprites exposing (getResourcePath, allTexture)
+module Lib.Resources exposing (allTexture)
 
 {-|
 
 
 # Textures
 
-@docs getResourcePath, allTexture
+@docs allTexture
 
 -}
-
-
-{-| Get the path of the resource.
--}
-getResourcePath : String -> String
-getResourcePath x =
-    "assets/" ++ x
 
 
 {-| allTexture

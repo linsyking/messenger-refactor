@@ -1,14 +1,15 @@
 module Scenes.Main.Layer1.Model exposing (..)
 
-import Base exposing (..)
-import Canvas exposing (Renderable, empty, group)
+import Lib.Base exposing (..)
+import Canvas exposing (group)
 import Components.Portable.A as A
 import Components.Portable.B as B
 import Components.Portable.PTest as PTest
-import Messenger.Base exposing (Env, WorldEvent(..))
-import Messenger.Component.Component exposing (AbstractPortableComponent, updatePortableComponents, updatePortableComponentsWithTarget)
-import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
-import Messenger.Layer.Layer exposing (AbstractLayer, BasicUpdater, ConcreteLayer, Distributor, Handler, genLayer, handleComponentMsgs)
+import Components.User.Base as Base exposing (BaseData, ComponentMsg, ComponentTarget)
+import Messenger.Base exposing (WorldEvent(..))
+import Messenger.Component.Component exposing (AbstractComponent, updateComponents, updateComponentsWithTarget)
+import Messenger.GeneralModel exposing (Matcher, Msg(..), MsgBase(..))
+import Messenger.Layer.Layer exposing (BasicUpdater, ConcreteLayer, Distributor, Handler, LayerInit, LayerStorage, LayerUpdate, LayerUpdateRec, LayerView, genLayer, handleComponentMsgs)
 import Messenger.Render.Sprite exposing (renderSprite)
 import Messenger.Render.Text exposing (renderText)
 import Messenger.Scene.Scene exposing (SceneOutputMsg(..))
@@ -16,35 +17,35 @@ import Scenes.Main.LayerBase exposing (..)
 
 
 type alias Data =
-    { components : List (AbstractPortableComponent UserData PTest.GComponentTarget PTest.GComponentMsg)
+    { components : List (AbstractComponent SceneCommonData UserData ComponentTarget ComponentMsg BaseData SceneMsg)
     }
 
 
 type alias ComponentMsgPack =
-    { components : List (Msg PTest.GComponentTarget PTest.GComponentMsg (SceneOutputMsg () UserData))
+    { components : List (Msg ComponentTarget ComponentMsg (SceneOutputMsg SceneMsg UserData))
     }
 
 
-init : Env SceneCommonData UserData -> LayerMsg -> Data
+init : LayerInit SceneCommonData UserData LayerMsg Data
 init env initMsg =
     case initMsg of
         Init v ->
             Data
-                [ A.pTest PTest.aMsgCodec PTest.aTarCodec env (PTest.Init {})
-                , B.pTest PTest.bMsgCodec PTest.bTarCodec env (PTest.Init {})
+                [ A.pTest PTest.aMsgCodec PTest.aTarCodec 0 env (Base.Init { initVal = "", initBase = 1 })
+                , B.pTest PTest.bMsgCodec PTest.bTarCodec 0 env (Base.Init { initVal = "", initBase = 1 })
                 ]
 
         _ ->
             Data []
 
 
-handlePComponentMsg : Handler Data SceneCommonData UserData Target LayerMsg SceneMsg PTest.GComponentMsg
+handlePComponentMsg : Handler Data SceneCommonData UserData Target LayerMsg SceneMsg ComponentMsg
 handlePComponentMsg env pcompmsg data =
     case pcompmsg of
         SOMMsg som ->
             ( data, [ Parent <| SOMMsg som ], env )
 
-        OtherMsg (PTest.IntMsg x) ->
+        OtherMsg (Base.Init x) ->
             let
                 test =
                     Debug.log "layer" x
@@ -68,26 +69,26 @@ distributeComponentMsgs env evt data =
                 _ =
                     Debug.log "mousedown" x
             in
-            ( data, ( [], { components = [ Other "B" <| PTest.IntMsg 66 ] } ), env )
+            ( data, ( [], { components = [ Other "B" <| Base.Init { initVal = "", initBase = 1111 } ] } ), env )
 
         _ ->
             ( data, ( [], { components = [] } ), env )
 
 
-update : Env SceneCommonData UserData -> WorldEvent -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg UserData)), ( Env SceneCommonData UserData, Bool ) )
+update : LayerUpdate SceneCommonData UserData Target LayerMsg SceneMsg Data
 update env evt data =
     let
         ( nData, nlMsg, ( nEnv, nBlock ) ) =
             updateEvent env evt data
 
         ( newData, newcMsg, ( newEnv, newBlock ) ) =
-            updatePortableComponents nEnv evt nData.components
+            updateComponents nEnv evt nData.components
 
         ( newData2, ( newlMsg, compMsgs ), newEnv2 ) =
             distributeComponentMsgs newEnv evt { nData | components = newData }
 
         ( newData3, newcMsg2, newEnv3 ) =
-            updatePortableComponentsWithTarget newEnv2 compMsgs.components newData2.components
+            updateComponentsWithTarget newEnv2 compMsgs.components newData2.components
 
         ( newData4, newlMsg2, newEnv4 ) =
             handleComponentMsgs newEnv3 (newcMsg2 ++ newcMsg) { newData2 | components = newData3 } [] handlePComponentMsg
@@ -95,12 +96,12 @@ update env evt data =
     ( newData4, (Parent <| SOMMsg <| SOMSaveUserData) :: newlMsg2 ++ newlMsg ++ nlMsg, ( newEnv4, newBlock || nBlock ) )
 
 
-updaterec : Env SceneCommonData UserData -> LayerMsg -> Data -> ( Data, List (Msg Target LayerMsg (SceneOutputMsg SceneMsg UserData)), Env SceneCommonData UserData )
+updaterec : LayerUpdateRec SceneCommonData UserData Target LayerMsg SceneMsg Data
 updaterec env msg data =
     ( data, [], env )
 
 
-view : Env SceneCommonData UserData -> Data -> Renderable
+view : LayerView SceneCommonData UserData Data
 view env data =
     group []
         [ renderSprite env.globalData [] ( 0, 0 ) ( 1920, 1080 ) "blobcat"
@@ -109,7 +110,7 @@ view env data =
         ]
 
 
-matcher : Data -> Target -> Bool
+matcher : Matcher Data Target
 matcher data tar =
     tar == "layer1"
 
@@ -124,6 +125,6 @@ layer1con =
     }
 
 
-layer1 : Env SceneCommonData UserData -> LayerMsg -> AbstractLayer SceneCommonData UserData Target LayerMsg SceneMsg
+layer1 : LayerStorage SceneCommonData UserData Target LayerMsg SceneMsg
 layer1 =
     genLayer layer1con

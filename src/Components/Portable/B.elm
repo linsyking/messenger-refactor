@@ -2,9 +2,9 @@ module Components.Portable.B exposing (..)
 
 import Canvas exposing (Renderable, empty)
 import Messenger.Base exposing (Env, WorldEvent(..))
-import Messenger.Component.Component exposing (AbstractPortableComponent, ConcretePortableComponent, PortableMsgCodec, PortableTarCodec, genComponent, genPortableComponent, translatePortableComponent)
-import Messenger.GeneralModel exposing (Msg(..), MsgBase(..))
-import Messenger.Scene.Scene exposing (SceneOutputMsg, noCommonData)
+import Messenger.Component.PortableComponent exposing (ConcretePortableComponent, PortableComponentInit, PortableComponentStorage, PortableComponentUpdate, PortableComponentUpdateRec, PortableComponentView, genPortableComponent)
+import Messenger.GeneralModel exposing (Matcher, Msg(..), MsgBase(..))
+import Messenger.Scene.Scene exposing (SceneOutputMsg)
 
 
 type alias Data =
@@ -31,14 +31,14 @@ type alias ComponentTarget =
 
 {-| Initializer
 -}
-init : Env () localstorage -> ComponentMsg -> Data
+init : PortableComponentInit cdata userdata ComponentMsg Data
 init env initMsg =
     {}
 
 
 {-| Updater
 -}
-update : Env () localstorage -> WorldEvent -> Data -> ( Data, List (Msg ComponentTarget ComponentMsg (SceneOutputMsg () localstorage)), ( Env () localstorage, Bool ) )
+update : PortableComponentUpdate cdata Data userdata scenemsg ComponentTarget ComponentMsg
 update env evnt d =
     if env.globalData.globalTime == 0 then
         ( d, [ Parent <| OtherMsg <| BIntMsg 100, Other "A" (BIntMsg 3) ], ( env, False ) )
@@ -47,7 +47,7 @@ update env evnt d =
         ( d, [], ( env, False ) )
 
 
-updaterec : Env () localstorage -> ComponentMsg -> Data -> ( Data, List (Msg ComponentTarget ComponentMsg (SceneOutputMsg () localstorage)), Env () localstorage )
+updaterec : PortableComponentUpdateRec cdata Data userdata scenemsg ComponentTarget ComponentMsg
 updaterec env msg d =
     case msg of
         BIntMsg x ->
@@ -67,17 +67,17 @@ updaterec env msg d =
 
 {-| Renderer
 -}
-view : Env () localstorage -> Data -> ( Renderable, Int )
+view : PortableComponentView cdata userdata Data
 view env d =
     ( empty, 0 )
 
 
-matcher : Data -> ComponentTarget -> Bool
+matcher : Matcher Data ComponentTarget
 matcher d tar =
     tar == "B"
 
 
-pTestcon : ConcretePortableComponent Data localstorage ComponentTarget ComponentMsg
+pTestcon : ConcretePortableComponent Data cdata userdata ComponentTarget ComponentMsg scenemsg
 pTestcon =
     { init = init
     , update = update
@@ -89,6 +89,6 @@ pTestcon =
 
 {-| Exported component
 -}
-pTest : PortableMsgCodec ComponentMsg generalmsg -> PortableTarCodec ComponentTarget generaltar -> Env cdata localstorage -> generalmsg -> AbstractPortableComponent localstorage generaltar generalmsg
+pTest : PortableComponentStorage cdata userdata ComponentTarget ComponentMsg gtar gmsg bdata scenemsg
 pTest =
     genPortableComponent pTestcon
