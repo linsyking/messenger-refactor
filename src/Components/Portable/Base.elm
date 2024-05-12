@@ -1,4 +1,4 @@
-module Components.Portable.PTest exposing (..)
+module Components.Portable.Base exposing (..)
 
 {-| Component specific initialization (constructor)
 -}

@@ -1,11 +1,11 @@
 module Scenes.Main.Layer1.Model exposing (..)
 
-import Lib.Base exposing (..)
 import Canvas exposing (group)
 import Components.Portable.A as A
 import Components.Portable.B as B
-import Components.Portable.PTest as PTest
+import Components.Portable.Base as PTest
 import Components.User.Base as Base exposing (BaseData, ComponentMsg, ComponentTarget)
+import Lib.Base exposing (..)
 import Messenger.Base exposing (WorldEvent(..))
 import Messenger.Component.Component exposing (AbstractComponent, updateComponents, updateComponentsWithTarget)
 import Messenger.GeneralModel exposing (Matcher, Msg(..), MsgBase(..))

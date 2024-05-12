@@ -9,7 +9,6 @@ import Messenger.Base exposing (GlobalData)
 import Messenger.UI exposing (Output, genMain)
 import Messenger.UI.Init exposing (emptyInternalData)
 import Messenger.UserConfig exposing (UserConfig)
-import Ports exposing (..)
 import Scenes.AllScenes exposing (allScenes)
 import Set
 import Time exposing (millisToPosix)
