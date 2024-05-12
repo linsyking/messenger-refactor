@@ -1,10 +1,10 @@
 module Scenes.Main.Model exposing (..)
 
-import Lib.Base exposing (..)
 import Canvas.Settings exposing (Setting)
-import Messenger.Base exposing (Env, WorldEvent)
+import Lib.Base exposing (..)
+import Messenger.Base exposing (Env, WorldEvent, addCommonData)
 import Messenger.Scene.LayeredScene exposing (LayeredSceneData, genLayeredScene)
-import Messenger.Scene.Scene exposing (SceneStorage, addCommonData)
+import Messenger.Scene.Scene exposing (SceneStorage)
 import Scenes.Main.Layer1.Model exposing (layer1)
 import Scenes.Main.LayerBase exposing (..)
 
