@@ -37,7 +37,7 @@ init env msg =
 update : RawSceneUpdate Data UserData SceneMsg
 update env msg data =
     case msg of
-        Tick _ ->
+        Tick ->
             ( { data | time = data.time + 1 }, [], env )
 
         MouseDown 0 _ ->

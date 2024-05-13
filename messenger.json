@@ -2,12 +2,6 @@
     "version": "0.3.0",
     "template_repo": "https://github.com/linsyking/messenger-templates",
     "scenes": {
-        "Main": [
-            "Layer1"
-        ],
-        "Test_SOMMsg": [
-            "Layer"
-        ],
         "T2": [],
         "T1": []
     }
