@@ -37,6 +37,6 @@ settings _ _ _ =
     []
 
 
-mainScene : SceneStorage UserData SceneMsg
-mainScene =
+scene : SceneStorage UserData SceneMsg
+scene =
     genLayeredScene sceneInit settings

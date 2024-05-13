@@ -7,7 +7,7 @@ module Scenes.AllScenes exposing (allScenes)
 
 Record all the scenes here
 
-@docs allscenes
+@docs allScenes
 
 -}
 
@@ -15,6 +15,7 @@ import Lib.Base exposing (SceneMsg)
 import Lib.UserData exposing (UserData)
 import Messenger.Scene.Scene exposing (AllScenes)
 import Scenes.Main.Model as Main
+import Scenes.T1.Model as T1
 import Scenes.Test_SOMMsg.Model as Test_SOMMsg
 
 
@@ -25,6 +26,7 @@ Store all the scenes with their name here.
 -}
 allScenes : AllScenes UserData SceneMsg
 allScenes =
-    [ ( "Main", Main.mainScene )
-    , ( "Test_SOMMsg", Test_SOMMsg.mainScene )
+    [ ( "Main", Main.scene )
+    , ( "Test_SOMMsg", Test_SOMMsg.scene )
+    , ( "T1", T1.scene )
     ]

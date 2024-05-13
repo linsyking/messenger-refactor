@@ -2,7 +2,7 @@ module Scenes.Test_SOMMsg.Model exposing
     ( commonDataInit
     , sceneInit
     , settings
-    , mainScene
+    , scene
     )
 
 {-| Scene configuration module
@@ -72,6 +72,6 @@ settings _ _ _ =
 generate an abstract scnene.
 
 -}
-mainScene : SceneStorage UserData SceneMsg
-mainScene =
+scene : SceneStorage UserData SceneMsg
+scene =
     genLayeredScene sceneInit settings
