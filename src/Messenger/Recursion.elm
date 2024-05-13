@@ -11,6 +11,7 @@ List implementation for the recursion algorithm
 
 -}
 
+import List exposing (reverse)
 import Messenger.GeneralModel exposing (AbstractGeneralModel, Msg(..), MsgBase, unroll)
 
 
@@ -72,18 +73,18 @@ updateOne lastEnv evt objs lastObjs lastMsgUnfinished lastMsgFinished =
                         newMsg
             in
             if block then
-                ( lastObjs ++ newObj :: restObjs, ( lastMsgUnfinished ++ unfinishedMsg, lastMsgFinished ++ finishedMsg ), ( lastEnv, block ) )
+                ( reverse restObjs ++ newObj :: lastObjs, ( lastMsgUnfinished ++ unfinishedMsg, lastMsgFinished ++ finishedMsg ), ( lastEnv, block ) )
 
             else
-                updateOne newEnv evt restObjs (lastObjs ++ [ newObj ]) (lastMsgUnfinished ++ unfinishedMsg) (lastMsgFinished ++ finishedMsg)
+                updateOne newEnv evt restObjs (newObj :: lastObjs) (lastMsgUnfinished ++ unfinishedMsg) (lastMsgFinished ++ finishedMsg)
 
         [] ->
-            ( lastObjs, ( lastMsgUnfinished, lastMsgFinished ), ( lastEnv, True ) )
+            ( lastObjs, ( lastMsgUnfinished, lastMsgFinished ), ( lastEnv, False ) )
 
 
 updateOnce : env -> event -> List (AbstractGeneralModel env event tar msg ren bdata sommsg) -> ( List (AbstractGeneralModel env event tar msg ren bdata sommsg), ( List (Msg tar msg sommsg), List (MsgBase msg sommsg) ), ( env, Bool ) )
 updateOnce env evt objs =
-    updateOne env evt objs [] [] []
+    updateOne env evt (reverse objs) [] [] []
 
 
 {-| Recursively update remaining objects
@@ -96,7 +97,7 @@ updateRemain env ( unfinishedMsg, finishedMsg ) objs =
     else
         let
             ( newObjs, ( newUnfinishedMsg, newFinishedMsg ), newEnv ) =
-                List.foldr
+                List.foldl
                     (\ele ( lastObjs, ( lastMsgUnfinished, lastMsgFinished ), lastEnv ) ->
                         let
                             msgMatched =
