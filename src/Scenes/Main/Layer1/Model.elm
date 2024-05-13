@@ -142,7 +142,7 @@ update env evt data =
         ( newData5_2, newlMsg5_2, newEnv5_2 ) =
             handleComponentMsgs newEnv5_1 (newUcMsg2 ++ newUcMsg4) newData5_1 newlMsg5_1 handleUComponentMsg
     in
-    ( newData5_2, (Parent <| SOMMsg <| SOMSaveUserData) :: newlMsg5_2, ( newEnv5_2, newBlock1 || newBlock2_2 ) )
+    ( newData5_2, (Parent <| SOMMsg <| SOMSaveGlobalData) :: newlMsg5_2, ( newEnv5_2, newBlock1 || newBlock2_2 ) )
 
 
 updaterec : LayerUpdateRec SceneCommonData UserData Target LayerMsg SceneMsg Data
