@@ -159,4 +159,5 @@ type alias AllScenes userdata scenemsg =
 type alias SceneContext userdata scenemsg =
     { scene : MAbstractScene userdata scenemsg
     , sceneStartTime : Int
+    , name: String
     }

@@ -117,7 +117,7 @@ gameUpdate config scenes evnt model =
                                         lastModel.currentGlobalData
 
                                     newgd =
-                                        { oldgd | sceneStartTime = ctx.sceneStartTime }
+                                        { oldgd | sceneStartTime = ctx.sceneStartTime, currentScene = ctx.name }
 
                                     newModel =
                                         { lastModel | currentGlobalData = newgd, currentScene = ctx.scene }
@@ -127,7 +127,7 @@ gameUpdate config scenes evnt model =
                             SOMGetContext getter ->
                                 let
                                     ctx =
-                                        { scene = lastModel.currentScene, sceneStartTime = oldgd.sceneStartTime }
+                                        { scene = lastModel.currentScene, sceneStartTime = oldgd.sceneStartTime, name = oldgd.currentScene }
 
                                     oldgd =
                                         lastModel.currentGlobalData

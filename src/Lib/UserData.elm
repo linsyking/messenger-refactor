@@ -3,6 +3,7 @@ module Lib.UserData exposing
     , contextSetter
     , decodeUserData
     , encodeUserData
+    , getLastScene
     )
 
 import Json.Decode as Decode exposing (at, decodeString)
@@ -28,6 +29,13 @@ unroll storage =
     case storage of
         Roll { sceneStack } ->
             sceneStack
+
+
+getLastScene : UserData -> Maybe (SceneContext UserData SceneMsg)
+getLastScene storage =
+    case storage of
+        Roll { sceneStack } ->
+            List.head sceneStack
 
 
 contextSetter : SceneContext UserData SceneMsg -> UserData -> UserData
