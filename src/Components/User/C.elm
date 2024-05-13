@@ -1,7 +1,7 @@
 module Components.User.C exposing (..)
 
 import Canvas exposing (Renderable, empty)
-import Messenger.Base exposing (Env, WorldEvent(..))
+import Messenger.Base exposing (Env, UserEvent(..))
 import Messenger.Component.PortableComponent exposing (ConcretePortableComponent, PortableComponentInit, PortableComponentStorageGeneral, PortableComponentStorageSpecific, PortableComponentUpdate, PortableComponentUpdateRec, PortableComponentView, genPortableComponentGeneral, genPortableComponentSpecific)
 import Messenger.GeneralModel exposing (Matcher, Msg(..), MsgBase(..))
 import Messenger.Scene.Scene exposing (SceneOutputMsg)

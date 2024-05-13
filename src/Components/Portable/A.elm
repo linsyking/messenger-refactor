@@ -1,7 +1,7 @@
 module Components.Portable.A exposing (..)
 
 import Canvas exposing (empty)
-import Messenger.Base exposing (WorldEvent(..))
+import Messenger.Base exposing (UserEvent(..))
 import Messenger.Component.PortableComponent exposing (ConcretePortableComponent, PortableComponentInit, PortableComponentStorageGeneral, PortableComponentStorageSpecific, PortableComponentUpdate, PortableComponentUpdateRec, PortableComponentView, genPortableComponentGeneral, genPortableComponentSpecific)
 import Messenger.GeneralModel exposing (Matcher, Msg(..), MsgBase(..))
 

@@ -3,7 +3,7 @@ module Scenes.Main.Model exposing (..)
 import Canvas.Settings exposing (Setting)
 import Lib.Base exposing (..)
 import Lib.UserData exposing (UserData)
-import Messenger.Base exposing (Env, WorldEvent, addCommonData)
+import Messenger.Base exposing (Env, UserEvent, addCommonData)
 import Messenger.Scene.LayeredScene exposing (LayeredSceneData, genLayeredScene)
 import Messenger.Scene.Scene exposing (SceneStorage)
 import Scenes.Main.Layer1.Model exposing (layer1)
@@ -32,7 +32,7 @@ sceneInit env msg =
     }
 
 
-settings : Env () UserData -> WorldEvent -> LayeredSceneData SceneCommonData UserData Target LayerMsg SceneMsg -> List Setting
+settings : Env () UserData -> UserEvent -> LayeredSceneData SceneCommonData UserData Target LayerMsg SceneMsg -> List Setting
 settings _ _ _ =
     []
 

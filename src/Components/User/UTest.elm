@@ -4,7 +4,7 @@ import Canvas exposing (Renderable, empty)
 import Components.User.Base exposing (BaseData, ComponentMsg(..), ComponentTarget)
 import Lib.Base exposing (SceneMsg)
 import Lib.UserData exposing (UserData)
-import Messenger.Base exposing (Env, WorldEvent)
+import Messenger.Base exposing (Env, UserEvent)
 import Messenger.Component.Component exposing (AbstractComponent, ConcreteUserComponent, genComponent)
 import Messenger.GeneralModel exposing (Msg)
 import Messenger.Scene.Scene exposing (SceneOutputMsg)
@@ -29,7 +29,7 @@ init env initMsg =
 
 {-| Updater
 -}
-update : Env SceneCommonData UserData -> WorldEvent -> Data -> BaseData -> ( ( Data, BaseData ), List (Msg ComponentTarget ComponentMsg (SceneOutputMsg SceneMsg UserData)), ( Env SceneCommonData UserData, Bool ) )
+update : Env SceneCommonData UserData -> UserEvent -> Data -> BaseData -> ( ( Data, BaseData ), List (Msg ComponentTarget ComponentMsg (SceneOutputMsg SceneMsg UserData)), ( Env SceneCommonData UserData, Bool ) )
 update env evnt d bd =
     ( ( d, bd ), [], ( env, False ) )
 
