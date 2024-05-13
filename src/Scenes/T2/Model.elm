@@ -6,7 +6,6 @@ module Scenes.T2.Model exposing (scene)
 
 -}
 
-import Canvas
 import Lib.Base exposing (SceneMsg)
 import Lib.UserData exposing (UserData, contextSetter)
 import Messenger.Base exposing (UserEvent(..))
