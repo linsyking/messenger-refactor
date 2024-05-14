@@ -10,6 +10,7 @@ import Canvas
 import Lib.Base exposing (SceneMsg)
 import Lib.UserData exposing (UserData)
 import Messenger.Base exposing (UserEvent(..))
+import Messenger.Render.Sprite exposing (renderSprite)
 import Messenger.Scene.RawScene exposing (RawSceneInit, RawSceneUpdate, RawSceneView, genRawScene)
 import Messenger.Scene.Scene exposing (MConcreteScene, SceneOutputMsg(..), SceneStorage)
 
@@ -36,7 +37,7 @@ update env msg data =
         MouseDown 0 _ ->
             case Lib.UserData.getLastScene env.globalData.userData of
                 Just s ->
-                    ( data, [ SOMSetContext s ], env )
+                    ( data, [ SOMSetContext ( s, Nothing ) ], env )
 
                 _ ->
                     ( data, [], env )
@@ -47,7 +48,7 @@ update env msg data =
 
 view : RawSceneView UserData Data
 view env data =
-    Canvas.empty
+    renderSprite env.globalData [] ( 0, 0 ) ( 1920, 1080 ) "blobcat"
 
 
 scenecon : MConcreteScene Data UserData SceneMsg

@@ -6,12 +6,16 @@ module Scenes.T2.Model exposing (scene)
 
 -}
 
+import Canvas exposing (group)
 import Lib.Base exposing (SceneMsg)
 import Lib.UserData exposing (UserData, contextSetter)
 import Messenger.Base exposing (UserEvent(..))
+import Messenger.Render.Sprite exposing (renderSprite)
 import Messenger.Render.Text exposing (renderText)
 import Messenger.Scene.RawScene exposing (RawSceneInit, RawSceneUpdate, RawSceneView, genRawScene)
 import Messenger.Scene.Scene exposing (MConcreteScene, SceneOutputMsg(..), SceneStorage)
+import Messenger.Scene.Transitions.Base exposing (genTransition, nullTransition)
+import Messenger.Scene.Transitions.Fade exposing (fadeInBlack, fadeInWithRenderable, fadeOutBlack)
 import String exposing (fromInt)
 
 
@@ -40,7 +44,7 @@ update env msg data =
             ( { data | time = data.time + 1 }, [], env )
 
         MouseDown 0 _ ->
-            ( data, [ SOMGetContext contextSetter, SOMChangeScene ( Nothing, "T1", Nothing ) ], env )
+            ( data, [ SOMGetContext contextSetter, SOMChangeScene ( Nothing, "T1", Just <| genTransition 30 30 fadeOutBlack fadeInBlack ) ], env )
 
         _ ->
             ( data, [], env )
@@ -48,7 +52,10 @@ update env msg data =
 
 view : RawSceneView UserData Data
 view env data =
-    renderText env.globalData 40 (fromInt env.globalData.sceneStartTime ++ "; local: " ++ fromInt data.time) "Arial" ( 100, 100 )
+    group []
+        [ renderText env.globalData 40 (fromInt env.globalData.sceneStartTime ++ "; local: " ++ fromInt data.time) "Arial" ( 100, 100 )
+        , renderSprite env.globalData [] ( 100, 300 ) ( 100, 100 ) "blobcat"
+        ]
 
 
 scenecon : MConcreteScene Data UserData SceneMsg
