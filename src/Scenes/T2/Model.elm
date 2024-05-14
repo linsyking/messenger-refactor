@@ -17,6 +17,8 @@ import Messenger.Scene.Scene exposing (MConcreteScene, SceneOutputMsg(..), Scene
 import Messenger.Scene.Transitions.Base exposing (genTransition, nullTransition)
 import Messenger.Scene.Transitions.Fade exposing (fadeInBlack, fadeInWithRenderable, fadeOutBlack)
 import String exposing (fromInt)
+import Messenger.UserConfig exposing (coloredBackground)
+import Color
 
 
 {-| Scene data
@@ -44,7 +46,7 @@ update env msg data =
             ( { data | time = data.time + 1 }, [], env )
 
         MouseDown 0 _ ->
-            ( data, [ SOMGetContext contextSetter, SOMChangeScene ( Nothing, "T1", Just <| genTransition 30 30 fadeOutBlack fadeInBlack ) ], env )
+            ( data, [ SOMGetContext contextSetter, SOMChangeScene ( Nothing, "T1", Just <| genTransition 0 30 nullTransition (fadeInWithRenderable <| view env data) ) ], env )
 
         _ ->
             ( data, [], env )
@@ -53,8 +55,8 @@ update env msg data =
 view : RawSceneView UserData Data
 view env data =
     group []
-        [ renderText env.globalData 40 (fromInt env.globalData.sceneStartTime ++ "; local: " ++ fromInt data.time) "Arial" ( 100, 100 )
-        , renderSprite env.globalData [] ( 100, 300 ) ( 100, 100 ) "blobcat"
+        [ coloredBackground Color.white env.globalData
+        , renderText env.globalData 40 (fromInt env.globalData.sceneStartTime ++ "; local: " ++ fromInt data.time) "Arial" ( 100, 100 )
         ]
 
 

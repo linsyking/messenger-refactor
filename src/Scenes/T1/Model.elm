@@ -37,7 +37,7 @@ update env msg data =
         MouseDown 0 _ ->
             case Lib.UserData.getLastScene env.globalData.userData of
                 Just s ->
-                    ( data, [ SOMSetContext ( s, Nothing ) ], env )
+                    ( data, [ SOMSetContext s ], env )
 
                 _ ->
                     ( data, [], env )
