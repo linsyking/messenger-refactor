@@ -8,7 +8,7 @@ module Scenes.T1.Model exposing (scene)
 
 import Canvas
 import Lib.Base exposing (SceneMsg)
-import Lib.UserData exposing (UserData)
+import Lib.UserData exposing (UserData, popLastScene)
 import Messenger.Base exposing (UserEvent(..))
 import Messenger.Render.Sprite exposing (renderSprite)
 import Messenger.Scene.RawScene exposing (RawSceneInit, RawSceneUpdate, RawSceneView, genRawScene)
@@ -35,9 +35,17 @@ update : RawSceneUpdate Data UserData SceneMsg
 update env msg data =
     case msg of
         MouseDown 0 _ ->
-            case Lib.UserData.getLastScene env.globalData.userData of
-                Just s ->
-                    ( data, [ SOMSetContext s ], env )
+            let
+                gd =
+                    env.globalData
+            in
+            case popLastScene gd.userData of
+                ( Just s, newud ) ->
+                    let
+                        newgd =
+                            { gd | userData = newud }
+                    in
+                    ( data, [ SOMSetContext s ], { env | globalData = newgd } )
 
                 _ ->
                     ( data, [], env )
