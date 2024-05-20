@@ -35,20 +35,7 @@ update : RawSceneUpdate Data UserData SceneMsg
 update env msg data =
     case msg of
         MouseDown 0 _ ->
-            let
-                gd =
-                    env.globalData
-            in
-            case popLastScene gd.userData of
-                ( Just s, newud ) ->
-                    let
-                        newgd =
-                            { gd | userData = newud }
-                    in
-                    ( data, [ SOMSetContext s ], { env | globalData = newgd } )
-
-                _ ->
-                    ( data, [], env )
+            ( data, [ SOMAlert "Hi1", SOMAlert "Hi2" ], env )
 
         _ ->
             ( data, [], env )

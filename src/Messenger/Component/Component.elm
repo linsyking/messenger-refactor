@@ -2,12 +2,12 @@ module Messenger.Component.Component exposing
     ( AbstractComponent
     , ConcreteUserComponent
     , genComponent
-    , updateComponents
+    , updateComponents, updateComponentsWithBlock
     , updateComponentsWithTarget
     , genComponentsRenderList, viewComponentsRenderList
     , viewComponents
     , ComponentInit, ComponentUpdate, ComponentUpdateRec, ComponentView, ComponentMatcher
-    , ComponentStorage
+    , ComponentStorage, LevelComponentStorage
     )
 
 {-|
@@ -31,7 +31,7 @@ In this case, your basedata would be a record with these properties.
 @docs AbstractComponent
 @docs ConcreteUserComponent
 @docs genComponent
-@docs updateComponents
+@docs updateComponents, updateComponentsWithBlock
 @docs updateComponentsWithTarget
 
 
@@ -44,13 +44,13 @@ In this case, your basedata would be a record with these properties.
 # Type sugar
 
 @docs ComponentInit, ComponentUpdate, ComponentUpdateRec, ComponentView, ComponentMatcher
-@docs ComponentStorage
+@docs ComponentStorage, LevelComponentStorage
 
 -}
 
 import Canvas exposing (Renderable, group)
 import Messenger.Base exposing (Env, UserEvent)
-import Messenger.GeneralModel exposing (AbstractGeneralModel, ConcreteGeneralModel, Msg, MsgBase, abstract, unroll)
+import Messenger.GeneralModel exposing (AbstractGeneralModel, ConcreteGeneralModel, MMsg, MMsgBase, abstract, unroll)
 import Messenger.Recursion exposing (updateObjects, updateObjectsWithTarget)
 import Messenger.Scene.Scene exposing (SceneOutputMsg)
 
@@ -70,16 +70,19 @@ type alias ComponentInit cdata userdata msg data bdata =
 {-| Component update type sugar
 -}
 type alias ComponentUpdate cdata data userdata scenemsg tar msg bdata =
-    Env cdata userdata -> UserEvent -> data -> bdata -> ( ( data, bdata ), List (Msg tar msg (SceneOutputMsg scenemsg userdata)), ( Env cdata userdata, Bool ) )
+    Env cdata userdata -> UserEvent -> data -> bdata -> ( ( data, bdata ), List (MMsg tar msg scenemsg userdata), ( Env cdata userdata, Bool ) )
 
 
 {-| Component updaterec type sugar
 -}
 type alias ComponentUpdateRec cdata data userdata scenemsg tar msg bdata =
-    Env cdata userdata -> msg -> data -> bdata -> ( ( data, bdata ), List (Msg tar msg (SceneOutputMsg scenemsg userdata)), Env cdata userdata )
+    Env cdata userdata -> msg -> data -> bdata -> ( ( data, bdata ), List (MMsg tar msg scenemsg userdata), Env cdata userdata )
 
 
 {-| Component view type sugar
+
+The second entry is the "z-index" of the component.
+
 -}
 type alias ComponentView cdata userdata data bdata =
     Env cdata userdata -> data -> bdata -> ( Renderable, Int )
@@ -88,7 +91,13 @@ type alias ComponentView cdata userdata data bdata =
 {-| Component storage type sugar
 -}
 type alias ComponentStorage cdata userdata tar msg bdata scenemsg =
-    Env cdata userdata -> msg -> AbstractComponent cdata userdata tar msg bdata scenemsg
+    msg -> LevelComponentStorage cdata userdata tar msg bdata scenemsg
+
+
+{-| Level component storage type sugar
+-}
+type alias LevelComponentStorage cdata userdata tar msg bdata scenemsg =
+    Env cdata userdata -> AbstractComponent cdata userdata tar msg bdata scenemsg
 
 
 {-| Abstract component
@@ -112,14 +121,28 @@ genComponent concomp =
 
 {-| Update a list of abstract user components.
 -}
-updateComponents : Env cdata userdata -> UserEvent -> List (AbstractComponent cdata userdata tar msg bdata scenemsg) -> ( List (AbstractComponent cdata userdata tar msg bdata scenemsg), List (MsgBase msg (SceneOutputMsg scenemsg userdata)), ( Env cdata userdata, Bool ) )
+updateComponents : Env cdata userdata -> UserEvent -> List (AbstractComponent cdata userdata tar msg bdata scenemsg) -> ( List (AbstractComponent cdata userdata tar msg bdata scenemsg), List (MMsgBase msg scenemsg userdata), ( Env cdata userdata, Bool ) )
 updateComponents env evt comps =
     updateObjects env evt comps
 
 
+{-| Update a list of abstract user components with block indicator.
+
+It block is True, this function will not update anything.
+
+-}
+updateComponentsWithBlock : Env cdata userdata -> UserEvent -> Bool -> List (AbstractComponent cdata userdata tar msg bdata scenemsg) -> ( List (AbstractComponent cdata userdata tar msg bdata scenemsg), List (MMsgBase msg scenemsg userdata), ( Env cdata userdata, Bool ) )
+updateComponentsWithBlock env evt block comps =
+    if block then
+        ( comps, [], ( env, True ) )
+
+    else
+        updateObjects env evt comps
+
+
 {-| Update a list of abstract user components with targeted msgs.
 -}
-updateComponentsWithTarget : Env cdata userdata -> List (Msg tar msg (SceneOutputMsg scenemsg userdata)) -> List (AbstractComponent cdata userdata tar msg bdata scenemsg) -> ( List (AbstractComponent cdata userdata tar msg bdata scenemsg), List (MsgBase msg (SceneOutputMsg scenemsg userdata)), Env cdata userdata )
+updateComponentsWithTarget : Env cdata userdata -> List ( tar, msg ) -> List (AbstractComponent cdata userdata tar msg bdata scenemsg) -> ( List (AbstractComponent cdata userdata tar msg bdata scenemsg), List (MMsgBase msg scenemsg userdata), Env cdata userdata )
 updateComponentsWithTarget env msgs comps =
     updateObjectsWithTarget env msgs comps
 

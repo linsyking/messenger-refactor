@@ -7,6 +7,7 @@ module Scenes.T2.Model exposing (scene)
 -}
 
 import Canvas exposing (group)
+import Color
 import Lib.Base exposing (SceneMsg)
 import Lib.UserData exposing (UserData, contextSetter)
 import Messenger.Base exposing (UserEvent(..))
@@ -16,9 +17,8 @@ import Messenger.Scene.RawScene exposing (RawSceneInit, RawSceneUpdate, RawScene
 import Messenger.Scene.Scene exposing (MConcreteScene, SceneOutputMsg(..), SceneStorage)
 import Messenger.Scene.Transitions.Base exposing (genTransition, nullTransition)
 import Messenger.Scene.Transitions.Fade exposing (fadeInBlack, fadeInWithRenderable, fadeOutBlack)
-import String exposing (fromInt)
 import Messenger.UserConfig exposing (coloredBackground)
-import Color
+import String exposing (fromInt)
 
 
 {-| Scene data
@@ -46,7 +46,7 @@ update env msg data =
             ( { data | time = data.time + 1 }, [], env )
 
         MouseDown 0 _ ->
-            ( data, [ SOMGetContext contextSetter, SOMChangeScene ( Nothing, "T1", Just <| genTransition 0 30 nullTransition (fadeInWithRenderable <| view env data) ) ], env )
+            ( data, [ SOMGetContext contextSetter, SOMChangeScene Nothing "T1" <| Just <| genTransition 0 30 nullTransition (fadeInWithRenderable <| view env data) ], env )
 
         _ ->
             ( data, [], env )

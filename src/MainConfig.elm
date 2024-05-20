@@ -36,7 +36,7 @@ import Messenger.UserConfig exposing (transparentBackground)
 -}
 initScene : String
 initScene =
-    "T2"
+    "T1"
 
 
 {-| Initial scene message

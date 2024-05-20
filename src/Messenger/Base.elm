@@ -1,7 +1,7 @@
 module Messenger.Base exposing
     ( WorldEvent(..)
     , UserEvent(..), eventFilter
-    , GlobalData, InternalData
+    , GlobalData, InternalData, loadedSpriteNum
     , Env
     , Flags
     , removeCommonData, addCommonData
@@ -18,7 +18,7 @@ Some Basic Data Types for the game
 
 @docs WorldEvent
 @docs UserEvent, eventFilter
-@docs GlobalData, InternalData
+@docs GlobalData, InternalData, loadedSpriteNum
 @docs Env
 @docs Flags
 @docs removeCommonData, addCommonData
@@ -69,7 +69,7 @@ This is the User Event for the game.
 
 Users can get outside information through these events.
 
-`Tick` records the time.
+`Tick` is triggered every timeInterval.
 
 `KeyDown`, `KeyUp` records the keyboard events.
 check all the keycodes [here](https://www.toptal.com/developers/keycode).
@@ -167,6 +167,13 @@ type alias UserViewGlobalData userdata =
     , canvasAttributes : List (Html.Attribute WorldEvent)
     , userData : userdata
     }
+
+
+{-| Get the number of loaded sprites.
+-}
+loadedSpriteNum : GlobalData userdata -> Int
+loadedSpriteNum globalData =
+    Dict.size globalData.internalData.sprites
 
 
 {-| Empty InternalData
