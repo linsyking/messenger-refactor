@@ -1,6 +1,6 @@
 module Messenger.Base exposing
     ( WorldEvent(..)
-    , UserEvent(..), eventFilter
+    , UserEvent(..)
     , GlobalData, InternalData, loadedSpriteNum
     , Env
     , Flags
@@ -17,7 +17,7 @@ module Messenger.Base exposing
 Some Basic Data Types for the game
 
 @docs WorldEvent
-@docs UserEvent, eventFilter
+@docs UserEvent
 @docs GlobalData, InternalData, loadedSpriteNum
 @docs Env
 @docs Flags
@@ -32,7 +32,7 @@ import Browser.Events exposing (Visibility(..))
 import Canvas.Texture exposing (Texture)
 import Dict exposing (Dict)
 import Html exposing (Html)
-import Messenger.Audio.Base exposing (AudioOption)
+import Messenger.Audio.Audio exposing (AudioRepo, emptyRepo)
 import Set exposing (Set)
 import Time exposing (millisToPosix)
 
@@ -52,14 +52,13 @@ type WorldEvent
     | WKeyUp Int
     | NewWindowSize ( Float, Float )
     | WindowVisibility Visibility
-    | SoundLoaded String AudioOption (Result Audio.LoadError Audio.Source)
-    | PlaySoundGotTime String AudioOption Audio.Source Time.Posix
+    | SoundLoaded String (Result Audio.LoadError Audio.Source)
     | TextureLoaded String (Maybe Texture)
     | WMouseDown Int ( Float, Float )
     | WMouseUp Int ( Float, Float )
     | MouseMove ( Float, Float )
     | WMouseWheel Int
-    | Prompt String String
+    | WPrompt String String
     | NullEvent
 
 
@@ -85,42 +84,13 @@ negative value means scroll up. It can be also used for touchpad.
 
 -}
 type UserEvent
-    = Tick
+    = Tick Int
     | KeyDown Int
     | KeyUp Int
     | MouseDown Int ( Float, Float )
     | MouseUp Int ( Float, Float )
     | MouseWheel Int
-
-
-{-| Event filter
-
-Change world events into user events.
-
--}
-eventFilter : WorldEvent -> Maybe UserEvent
-eventFilter event =
-    case event of
-        WTick _ ->
-            Just <| Tick
-
-        WKeyDown x ->
-            Just <| KeyDown x
-
-        WKeyUp x ->
-            Just <| KeyUp x
-
-        WMouseDown x p ->
-            Just <| MouseDown x p
-
-        WMouseUp x p ->
-            Just <| MouseUp x p
-
-        WMouseWheel x ->
-            Just <| MouseWheel x
-
-        _ ->
-            Nothing
+    | Prompt String String
 
 
 {-| GlobalData
@@ -143,7 +113,9 @@ It is mainly used for display and reading/writing some localstorage data.
 type alias GlobalData userdata =
     { internalData : InternalData
     , sceneStartTime : Int
-    , globalTime : Int
+    , globalStartTime : Int
+    , sceneStartFrame : Int
+    , globalStartFrame : Int
     , currentTimeStamp : Time.Posix
     , windowVisibility : Visibility
     , mousePos : ( Float, Float )
@@ -161,7 +133,9 @@ type alias GlobalData userdata =
 -}
 type alias UserViewGlobalData userdata =
     { sceneStartTime : Int
-    , globalTime : Int
+    , globalStartTime : Int
+    , sceneStartFrame : Int
+    , globalStartFrame : Int
     , volume : Float
     , extraHTML : Maybe (Html WorldEvent)
     , canvasAttributes : List (Html.Attribute WorldEvent)
@@ -188,6 +162,7 @@ emptyInternalData =
     , sprites = Dict.empty
     , virtualWidth = 0
     , virtualHeight = 0
+    , audioRepo = emptyRepo
     }
 
 
@@ -198,7 +173,9 @@ userGlobalDataToGlobalData user =
     { internalData = emptyInternalData
     , currentTimeStamp = millisToPosix 0
     , sceneStartTime = user.sceneStartTime
-    , globalTime = user.globalTime
+    , globalStartTime = user.globalStartTime
+    , sceneStartFrame = user.sceneStartFrame
+    , globalStartFrame = user.globalStartFrame
     , volume = user.volume
     , windowVisibility = Visible
     , pressedKeys = Set.empty
@@ -216,7 +193,9 @@ userGlobalDataToGlobalData user =
 globalDataToUserGlobalData : GlobalData userdata -> UserViewGlobalData userdata
 globalDataToUserGlobalData globalData =
     { sceneStartTime = globalData.sceneStartTime
-    , globalTime = globalData.globalTime
+    , globalStartTime = globalData.globalStartTime
+    , sceneStartFrame = globalData.sceneStartFrame
+    , globalStartFrame = globalData.globalStartFrame
     , volume = globalData.volume
     , extraHTML = globalData.extraHTML
     , canvasAttributes = globalData.canvasAttributes
@@ -278,6 +257,7 @@ type alias InternalData =
     , sprites : Dict String Texture
     , virtualWidth : Float
     , virtualHeight : Float
+    , audioRepo : AudioRepo
     }
 
 
