@@ -1,16 +1,25 @@
-module Lib.Resources exposing (allTexture, allSpriteSheets)
+module Lib.Resources exposing (resources)
 
 {-|
 
 
 # Textures
 
-@docs allTexture, allSpriteSheets
+@docs resources
 
 -}
 
-import Dict
+import Dict exposing (Dict)
 import Messenger.Render.SpriteSheet exposing (SpriteSheet)
+import Messenger.UserConfig exposing (Resources)
+
+
+resources : Resources
+resources =
+    { allTexture = allTexture
+    , allSpriteSheets = allSpriteSheets
+    , allAudio = allAudio
+    }
 
 
 {-| allTexture
@@ -27,10 +36,11 @@ Examples:
 ]
 
 -}
-allTexture : List ( String, String )
+allTexture : Dict String String
 allTexture =
-    [ ( "blobcat", "assets/blobcat.png" )
-    ]
+    Dict.fromList
+        [ ( "blobcat", "assets/blobcat.png" )
+        ]
 
 
 {-| Add all your sprite sheets here.
@@ -58,3 +68,10 @@ Example:
 allSpriteSheets : SpriteSheet
 allSpriteSheets =
     Dict.empty
+
+
+allAudio : Dict.Dict String String
+allAudio =
+    Dict.fromList
+        [ ( "biu", "assets/biu.ogg" )
+        ]

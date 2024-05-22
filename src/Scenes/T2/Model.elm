@@ -8,6 +8,7 @@ module Scenes.T2.Model exposing (scene)
 
 import Canvas exposing (group)
 import Color
+import Duration
 import Lib.Base exposing (SceneMsg)
 import Lib.UserData exposing (UserData, contextSetter)
 import Messenger.Base exposing (UserEvent(..))
@@ -42,11 +43,11 @@ init env msg =
 update : RawSceneUpdate Data UserData SceneMsg
 update env msg data =
     case msg of
-        Tick ->
+        Tick _ ->
             ( { data | time = data.time + 1 }, [], env )
 
         MouseDown 0 _ ->
-            ( data, [ SOMGetContext contextSetter, SOMChangeScene Nothing "T1" <| Just <| genTransition 0 30 nullTransition (fadeInWithRenderable <| view env data) ], env )
+            ( data, [ SOMGetContext contextSetter, SOMChangeScene Nothing "T1" <| Just <| genTransition ( nullTransition, Duration.seconds 0 ) ( fadeInWithRenderable <| view env data, Duration.seconds 2 ) ], env )
 
         _ ->
             ( data, [], env )
