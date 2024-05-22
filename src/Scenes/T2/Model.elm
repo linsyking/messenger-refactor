@@ -20,6 +20,9 @@ import Messenger.Scene.Transitions.Base exposing (genTransition, nullTransition)
 import Messenger.Scene.Transitions.Fade exposing (fadeInBlack, fadeInWithRenderable, fadeOutBlack)
 import Messenger.UserConfig exposing (coloredBackground)
 import String exposing (fromInt)
+import Messenger.Base exposing (loadedResourceNum)
+import Messenger.UserConfig exposing (resourceNum)
+import Lib.Resources exposing (resources)
 
 
 {-| Scene data
@@ -47,7 +50,7 @@ update env msg data =
             ( { data | time = data.time + 1 }, [], env )
 
         MouseDown 0 _ ->
-            ( data, [ SOMGetContext contextSetter, SOMChangeScene Nothing "T1" <| Just <| genTransition ( nullTransition, Duration.seconds 0 ) ( fadeInWithRenderable <| view env data, Duration.seconds 2 ) ], env )
+            ( data, [ SOMChangeScene Nothing "T1" <| Just <| genTransition ( nullTransition, Duration.seconds 0 ) ( fadeInWithRenderable <| view env data, Duration.seconds 1 ) ], env )
 
         _ ->
             ( data, [], env )
@@ -58,6 +61,7 @@ view env data =
     group []
         [ coloredBackground Color.white env.globalData
         , renderText env.globalData 40 (fromInt env.globalData.sceneStartTime ++ "; local: " ++ fromInt data.time) "Arial" ( 100, 100 )
+        , renderText env.globalData 40 (fromInt (loadedResourceNum env.globalData) ++ "/" ++ fromInt (resourceNum resources)) "Arial" ( 100, 200 )
         ]
 
 

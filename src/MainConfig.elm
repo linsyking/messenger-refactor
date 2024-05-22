@@ -36,7 +36,7 @@ import Messenger.UserConfig exposing (TimeInterval(..), transparentBackground)
 -}
 initScene : String
 initScene =
-    "T1"
+    "T2"
 
 
 {-| Initial scene message
@@ -71,7 +71,7 @@ background =
 -}
 timeInterval : TimeInterval
 timeInterval =
-    Fixed 15
+    Animation
 
 
 {-| Initialize the global data with the user data.
