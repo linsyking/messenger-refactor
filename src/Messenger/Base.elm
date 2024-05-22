@@ -33,7 +33,7 @@ import Browser.Events exposing (Visibility(..))
 import Canvas.Texture exposing (Texture)
 import Dict exposing (Dict)
 import Html exposing (Html)
-import Messenger.Audio.Audio exposing (AudioRepo, emptyRepo)
+import Messenger.Audio.Internal exposing (AudioRepo, emptyRepo)
 import Set exposing (Set)
 import Time exposing (millisToPosix)
 

@@ -74,4 +74,5 @@ allAudio : Dict.Dict String String
 allAudio =
     Dict.fromList
         [ ( "biu", "assets/biu.ogg" )
+        , ( "bgm", "assets/cd.mp3" )
         ]

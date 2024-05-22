@@ -9,6 +9,7 @@ module Scenes.T1.Model exposing (scene)
 import Canvas exposing (group)
 import Lib.Base exposing (SceneMsg)
 import Lib.UserData exposing (UserData, popLastScene)
+import Messenger.Audio.Base exposing (AudioOption(..))
 import Messenger.Base exposing (UserEvent(..))
 import Messenger.Render.Sprite exposing (renderSprite)
 import Messenger.Render.Text exposing (renderText)
@@ -44,7 +45,17 @@ update env msg data =
             ( { data | name = result }, [], env )
 
         _ ->
-            ( data, [], env )
+            if env.globalData.sceneStartFrame == 10 then
+                ( data, [ SOMPlayAudio 1 "biu" ALoop ], env )
+
+            else if env.globalData.sceneStartFrame == 20 then
+                ( data, [ SOMPlayAudio 1 "biu" AOnce ], env )
+
+            else if env.globalData.sceneStartFrame == 30 then
+                ( data, [ SOMStopAudio 1, SOMPlayAudio 0 "bgm" AOnce ], env )
+
+            else
+                ( data, [], env )
 
 
 view : RawSceneView UserData Data
