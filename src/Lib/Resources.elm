@@ -30,12 +30,12 @@ A list of all the textures.
 
 Add your textures here. Don't worry if your list is too long. You can split those resources according to their usage.
 
-Examples:
+Example:
 
-[
-( "ball", "assets/img/ball.png" ),
-( "car", "assets/img/car.jpg" )
-]
+    Dict.fromList
+        [ ( "ball", "assets/img/ball.png" )
+        , ( "car", "assets/img/car.jpg" )
+        ]
 
 -}
 allTexture : Dict String String
@@ -72,6 +72,11 @@ allSpriteSheets =
     Dict.empty
 
 
+{-| All audio assets.
+
+The format is the same with `allTexture`.
+
+-}
 allAudio : Dict.Dict String String
 allAudio =
     Dict.fromList

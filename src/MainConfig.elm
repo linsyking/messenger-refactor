@@ -60,14 +60,14 @@ debug =
     True
 
 
-{-| Background of the scene.
+{-| Background of the scene
 -}
 background : Messenger.Base.GlobalData userdata -> Renderable
 background =
     transparentBackground
 
 
-{-| Interval between two Tick messages in milliseconds.
+{-| Interval between two Tick messages
 -}
 timeInterval : TimeInterval
 timeInterval =
