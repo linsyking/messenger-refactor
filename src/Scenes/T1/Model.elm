@@ -52,7 +52,16 @@ update env msg data =
                 ( data, [ SOMPlayAudio 1 "biu" AOnce ], env )
 
             else if env.globalData.sceneStartFrame == 30 then
-                ( data, [ SOMStopAudio 1, SOMPlayAudio 0 "bgm" AOnce ], env )
+                ( data, [ SOMStopAudio 1, SOMPlayAudio 0 "bgm" ALoop ], env )
+
+            else if env.globalData.sceneStartFrame == 100 then
+                ( data, [ SOMStopAudio 0, SOMPlayAudio 0 "bgm" AOnce ], env )
+
+            else if env.globalData.sceneStartFrame == 120 then
+                ( data, [ SOMPlayAudio 1 "biu" ALoop ], env )
+
+            else if env.globalData.sceneStartFrame == 230 then
+                ( data, [ SOMStopAudio 1 ], env )
 
             else
                 ( data, [], env )
