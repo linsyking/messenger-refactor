@@ -11,14 +11,13 @@ import Color
 import Duration
 import Lib.Base exposing (SceneMsg)
 import Lib.Resources exposing (resources)
-import Lib.UserData exposing (UserData, contextSetter)
+import Lib.UserData exposing (UserData)
 import Messenger.Base exposing (UserEvent(..), loadedResourceNum)
-import Messenger.Render.Sprite exposing (renderSprite)
 import Messenger.Render.Text exposing (renderText)
 import Messenger.Scene.RawScene exposing (RawSceneInit, RawSceneUpdate, RawSceneView, genRawScene)
 import Messenger.Scene.Scene exposing (MConcreteScene, SceneOutputMsg(..), SceneStorage)
 import Messenger.Scene.Transitions.Base exposing (genTransition, nullTransition)
-import Messenger.Scene.Transitions.Fade exposing (fadeInBlack, fadeInWithRenderable, fadeOutBlack)
+import Messenger.Scene.Transitions.Fade exposing (fadeInWithRenderable)
 import Messenger.UserConfig exposing (coloredBackground, resourceNum)
 import String exposing (fromInt)
 

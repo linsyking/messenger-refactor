@@ -8,7 +8,7 @@ module Scenes.T1.Model exposing (scene)
 
 import Canvas exposing (group)
 import Lib.Base exposing (SceneMsg)
-import Lib.UserData exposing (UserData, popLastScene)
+import Lib.UserData exposing (UserData)
 import Messenger.Audio.Base exposing (AudioOption(..))
 import Messenger.Base exposing (UserEvent(..))
 import Messenger.Render.Sprite exposing (renderSprite)

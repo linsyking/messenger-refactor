@@ -1,59 +1,25 @@
-module Lib.UserData exposing
-    ( UserData
-    , contextSetter
-    , decodeUserData
-    , encodeUserData
-    , popLastScene
-    )
+module Lib.UserData exposing (UserData, decodeUserData, encodeUserData)
+
+{-|
+
+
+# User data
+
+@docs UserData, decodeUserData, encodeUserData
+
+-}
 
 import Json.Decode as Decode exposing (at, decodeString)
 import Json.Encode as Encode
-import Lib.Base exposing (SceneMsg)
-import Messenger.Scene.Scene exposing (SceneContext)
 
 
-type SceneStack
-    = Roll (List (SceneContext UserData SceneMsg))
-
-
-{-| UserData
-
-`UserData` can store any data in the game.
-Users can **save their own global data** and **implement local storage** here.
-
+{-| User defined data
 -}
 type alias UserData =
-    { sceneStack : SceneStack
-    }
+    {}
 
 
-unroll : UserData -> List (SceneContext UserData SceneMsg)
-unroll storage =
-    case storage.sceneStack of
-        Roll stack ->
-            stack
-
-
-popLastScene : UserData -> ( Maybe (SceneContext UserData SceneMsg), UserData )
-popLastScene storage =
-    case unroll storage of
-        [] ->
-            ( Nothing, storage )
-
-        scene :: rest ->
-            ( Just scene, { storage | sceneStack = Roll rest } )
-
-
-contextSetter : SceneContext UserData SceneMsg -> UserData -> UserData
-contextSetter context storage =
-    { sceneStack = Roll <| context :: unroll storage
-    }
-
-
-{-| encodeUserData
-
-encoder for the Userdata to store the data you want.
-
+{-| Encoder for the UserData.
 -}
 encodeUserData : UserData -> String
 encodeUserData storage =
@@ -66,10 +32,7 @@ encodeUserData storage =
         )
 
 
-{-| decodeUserData
-
-decoder for the Userdata to get data from the storage.
-
+{-| Decoder for the UserData.
 -}
 decodeUserData : String -> UserData
 decodeUserData ls =
@@ -78,5 +41,4 @@ decodeUserData ls =
     --     vol =
     --         Result.withDefault 0.5 (decodeString (at [ "volume" ] Decode.float) ls)
     -- in
-    { sceneStack = Roll []
-    }
+    UserData

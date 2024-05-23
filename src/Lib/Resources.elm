@@ -14,6 +14,8 @@ import Messenger.Render.SpriteSheet exposing (SpriteSheet)
 import Messenger.UserConfig exposing (Resources)
 
 
+{-| Resources
+-}
 resources : Resources
 resources =
     { allTexture = allTexture
